@@ -1,0 +1,26 @@
+<x-app-layout>
+    <x-slot name="header"><h2 class="font-semibold text-xl text-gray-800 leading-tight">Users</h2></x-slot>
+    <div class="py-6 max-w-7xl mx-auto sm:px-6 lg:px-8">
+        @if (session('sukses'))<p class="mb-4 p-3 text-sm bg-green-50 border border-green-200 rounded-lg">{{ session('sukses') }}</p>@endif
+        <a href="{{ route('admin.users.create') }}" class="inline-flex items-center px-4 py-2 text-sm font-semibold text-white bg-[#C1121F] rounded-lg min-h-[44px]">Tambah User</a>
+        <div class="mt-4 bg-white rounded-xl shadow-sm overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead><tr class="border-b"><th class="text-left px-4 py-3">Nama</th><th class="text-left px-4 py-3">Email</th><th class="text-left px-4 py-3">Role</th><th class="text-left px-4 py-3">Cabang</th><th class="px-4 py-3"></th></tr></thead>
+                <tbody>
+                    @forelse ($users as $user)
+                        <tr class="border-b last:border-0">
+                            <td class="px-4 py-3 font-medium">{{ $user->name }}</td>
+                            <td class="px-4 py-3">{{ $user->email }}</td>
+                            <td class="px-4 py-3">{{ $user->roles->pluck('name')->join(', ') ?: '-' }}</td>
+                            <td class="px-4 py-3">{{ $user->branch->nama ?? '-' }}</td>
+                            <td class="px-4 py-3"><a href="{{ route('admin.users.edit', $user) }}" class="underline min-h-[44px] inline-flex items-center">Ubah</a></td>
+                        </tr>
+                    @empty
+                        <tr><td colspan="5" class="px-4 py-6 text-gray-500">Belum ada user.</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-4">{{ $users->links() }}</div>
+    </div>
+</x-app-layout>

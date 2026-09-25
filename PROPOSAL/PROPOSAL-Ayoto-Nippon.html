@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Proposal Pembangunan Web App Dealer Mobil PT Ayoto Nippon</title>
+<style>
+  * { color: #000 !important; }
+  html, body { background: #fff !important; color: #000 !important; }
+  body { font-family: Arial, Helvetica, sans-serif; font-size: 12pt; line-height: 1.6; margin: 24mm 20mm; max-width: 170mm; }
+  h1 { font-size: 20pt; border-bottom: 2px solid #000; padding-bottom: 8px; }
+  h2 { font-size: 15pt; margin-top: 28px; border-bottom: 1px solid #000; padding-bottom: 4px; }
+  h3 { font-size: 12.5pt; margin-top: 20px; }
+  p, li { color: #000 !important; }
+  a { color: #000 !important; text-decoration: underline; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 10.5pt; }
+  th, td { border: 1px solid #000; padding: 6px 8px; text-align: left; color: #000 !important; }
+  th { background: #eee !important; font-weight: bold; }
+  hr { border: none; border-top: 1px solid #000; margin: 20px 0; }
+  code, pre { color: #000 !important; background: #f5f5f5 !important; }
+  @media print { body { margin: 0; } }
+</style>
+</head>
+<body>
+<h1>Proposal Pembangunan Web App Dealer Mobil PT Ayoto Nippon</h1>
+<p><strong>Dokumen:</strong> Proposal Teknis dan Biaya
+<strong>Acuan:</strong> PRD v1.0 Final, 23 September 2026 (PRD-Ayoto-Nippon-Full-Dealer.md)
+<strong>Disusun untuk:</strong> Direksi PT Ayoto Nippon
+<strong>Tanggal proposal:</strong> 23 September 2026
+<strong>Masa berlaku:</strong> 30 hari kalender
+<strong>Revisi 1, 24 September 2026:</strong> alur di bawah diselaraskan dengan aplikasi yang sudah dibangun (daftar wajib login, pilih cabang di SPK, order sparepart SPO, invoice terlampir di email, chat WA dua arah).</p>
+<hr />
+<h2>1. Pemahaman Kebutuhan</h2>
+<p>PT Ayoto Nippon membutuhkan satu sistem web untuk menggantikan proses manual yang saat ini tersebar di katalog, WhatsApp, dan pencatatan stok.</p>
+<p>Empat masalah utama yang disepakati di PRD:</p>
+<ol>
+<li>Leads online tidak tercatat rapi, sehingga sulit di follow-up.</li>
+<li>Risiko double-book untuk VIN yang sama antar cabang atau antar sales.</li>
+<li>Proses SPK tidak punya status yang jelas dari pengajuan sampai deal.</li>
+<li>No-show servis karena tidak ada reminder terstruktur.</li>
+</ol>
+<p>Sistem yang diusulkan menjawab keempat hal tersebut dalam satu aplikasi: katalog publik, stok per VIN per cabang, SPK online dengan verifikasi, CRM leads, test drive, trade-in, booking servis, sparepart, promo/CMS, dan laporan.</p>
+<h2>2. Tujuan dan Indikator Keberhasilan</h2>
+<table>
+<thead>
+<tr>
+<th>Tujuan</th>
+<th>Indikator</th>
+<th>Target sesuai PRD</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Leads tercatat</td>
+<td>Semua pengajuan web masuk CRM</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>Stok akurat</td>
+<td>Kasus double-book VIN</td>
+<td>0 kasus</td>
+</tr>
+<tr>
+<td>SPK terkontrol</td>
+<td>SPK tanpa kepastian tidak mengunci stok lama</td>
+<td>Expire otomatis 1x24 jam</td>
+</tr>
+<tr>
+<td>Servis terjadwal</td>
+<td>Reminder servis H-1 terkirim via WA</td>
+<td>100% booking</td>
+</tr>
+</tbody>
+</table>
+<p>Proposal ini dinyatakan berhasil jika tujuh kriteria UAT pada PRD Pasal 15 lolos semua, termasuk uji konkuren VIN dan uji expire otomatis.</p>
+<h2>3. Ruang Lingkup Pekerjaan</h2>
+<h3>3.1 Yang dikerjakan (In Scope)</h3>
+<p>Merujuk PRD Pasal 4.1, lingkup mencakup 16 modul:</p>
+<ol>
+<li>Katalog: brand, model, varian, warna, galeri, spesifikasi, harga OTR per cabang, status stok. Terbuka publik tanpa login.</li>
+<li>Stok unit per VIN dengan status Tersedia, Dipesan, Terjual.</li>
+<li>SPK online (wajib login): pilih cabang dulu lalu unit, isi data diri, NIK otomatis dikaitkan ke akun login, nomor otomatis SPK-YYYY-NNNN, upload KTP/KK, instruksi transfer, upload bukti, verifikasi, timeline, BAST. Bukti milik akun lain ditolak dengan pesan jelas.</li>
+<li>Simulasi kredit yang tersimpan sebagai leads.</li>
+<li>Master leasing partner.</li>
+<li>Trade-in (wajib login): pengajuan, inspeksi, penawaran, deal/tolak, tautan ke SPK.</li>
+<li>Booking test drive (wajib login) dan konfirmasi sales.</li>
+<li>Booking servis (wajib login): jadwal, estimasi SA, pengerjaan mekanik, status real-time, reminder H-1, riwayat per VIN.</li>
+<li>Katalog dan stok sparepart per cabang plus order sparepart sendiri (nomor SPO): checkout, transfer, upload bukti, konfirmasi admin, stok dicadangkan dan dikembalikan saat batal.</li>
+<li>CRM leads: sumber Web/WA/Showroom, assign sales, pipeline Baru sampai Deal/Batal, log follow-up.</li>
+<li>Promo dan CMS: banner (bisa upload), promo per cabang berperiode, berita, halaman cabang plus Google Maps. Tanpa testimoni fiktif.</li>
+<li>Master rekening bank per cabang.</li>
+<li>Invoice dan kuitansi PDF otomatis saat Deal, dilampirkan di email customer, bisa diunduh mandiri oleh pemilik SPK, plus tombol chat WA dua arah (admin ke customer, customer ke cabang).</li>
+<li>Notifikasi WA via antrean (driver log sampai kredensial Fonnte/Wablas ada; tombol chat WA langsung berfungsi) dan email via queue.</li>
+<li>Dashboard per peran dan laporan plus export Excel: penjualan, leads, stok aging, servis, komisi.</li>
+<li>Audit log untuk verifikasi SPK, upload BAST, dan perubahan harga.</li>
+</ol>
+<p>Hak akses tujuh peran: customer, sales, admin cabang, service advisor, mekanik, pimpinan, superadmin. Implementasi memakai Laravel Breeze/Jetstream dan Spatie Permission, dengan lingkup data per cabang kecuali pimpinan dan superadmin.</p>
+<h3>3.2 Yang tidak termasuk (Out of Scope)</h3>
+<ol>
+<li>Payment gateway otomatis (VA, QRIS, callback Midtrans/Xendit).</li>
+<li>Aplikasi mobile native. Sistem disiapkan API via Sanctum untuk kebutuhan tersebut di masa depan.</li>
+<li>Modul akuntansi penuh atau ERP.</li>
+<li>Integrasi core-system leasing.</li>
+</ol>
+<p>Perubahan di luar daftar 3.1 dicatat sebagai change request terpisah.</p>
+<h2>4. Solusi Teknis</h2>
+<p>Stack sesuai PRD Pasal 9, tanpa perubahan:</p>
+<ul>
+<li>Backend: Laravel 11, PHP 8.2, MySQL 8</li>
+<li>Frontend: Blade, Livewire/Alpine, Tailwind CSS, mobile-first responsive</li>
+<li>Auth dan role: Breeze/Jetstream, Spatie Permission, Sanctum</li>
+<li>Queue: database/Redis untuk WA dan email (Jobs: SendWaJob, SendMailJob)</li>
+<li>File: storage lokal/S3 untuk foto, KTP, bukti. KTP dan bukti di storage private dengan akses berbasis role.</li>
+<li>Dokumen: DomPDF untuk SPK/invoice/kuitansi, Laravel-Excel untuk laporan</li>
+<li>Scheduler: expire SPK tiap jam, reminder bayar H-6 jam, reminder servis H-1</li>
+<li>Deploy: VPS Nginx, SSL, supervisor untuk queue, cron scheduler, backup DB harian</li>
+</ul>
+<p>Keputusan teknis yang dikunci dari PRD Pasal 5:</p>
+<ul>
+<li>Multi-cabang sejak awal, Bahasa Indonesia, IDR, Asia/Jakarta</li>
+<li>Booking fee flat per cabang, configurable di pengaturan</li>
+<li>Deadline bayar SPK 1x24 jam</li>
+<li>Bukti: JPG/PNG/PDF, maks 2 MB</li>
+<li>Satu VIN hanya boleh punya satu SPK aktif (MenungguBayar atau MenungguVerifikasi), ditegakkan di DB transaction plus lock</li>
+</ul>
+<h2>5. Tahapan, Jadwal, dan Deliverable</h2>
+<p>Total durasi 10 sampai 12 minggu untuk tim 2 sampai 3 developer, dengan asumsi memakai template admin siap pakai. Demo dilakukan di akhir setiap milestone.</p>
+<h3>M1, minggu 1-3: Fondasi dan katalog</h3>
+<ul>
+<li>Auth, role, manajemen user, cabang</li>
+<li>Master mobil, cabang, rekening, price list</li>
+<li>Katalog publik plus filter dan slug SEO</li>
+<li>Deliverable: aplikasi staging bisa login per peran, katalog bisa dibuka publik</li>
+</ul>
+<h3>M2, minggu 4-6: Stok, SPK, leads</h3>
+<ul>
+<li>Stok per VIN, validasi anti double-book</li>
+<li>SPK manual sampai MenungguBayar, upload bukti, antrean verifikasi</li>
+<li>Simulasi kredit, test drive, CRM leads tahap awal</li>
+<li>Deliverable: alur katalog sampai SPK MenungguBayar plus WA instruksi berjalan</li>
+</ul>
+<h3>M3, minggu 7-9: After-sales dan notifikasi</h3>
+<ul>
+<li>Trade-in, booking servis, sparepart</li>
+<li>Notifikasi WA dan email via queue</li>
+<li>Promo dan CMS</li>
+<li>Deliverable: booking servis dengan reminder H-1, trade-in bisa ditautkan ke SPK</li>
+</ul>
+<h3>M4, minggu 10-12: Laporan, hardening, deploy</h3>
+<ul>
+<li>Dashboard dan lima laporan plus export Excel</li>
+<li>Hardening keamanan, audit log, backup dan uji restore</li>
+<li>UAT, panduan admin, deploy produksi</li>
+<li>Deliverable: rilis v1.0 siap UAT sesuai tujuh kriteria PRD Pasal 15</li>
+</ul>
+<p>Jadwal rinci per minggu disepakati ulang saat kickoff setelah data master cabang dan rekening diterima.</p>
+<h2>6. Kriteria Penerimaan (UAT)</h2>
+<p>UAT memakai tujuh skenario dari PRD Pasal 15:</p>
+<ol>
+<li>Katalog sampai SPK MenungguBayar dan WA instruksi diterima.</li>
+<li>Upload bukti mengubah status ke MenungguVerifikasi, admin bisa Terima atau Tolak dengan alasan.</li>
+<li>SPK Deal menerbitkan invoice PDF dan unit menjadi Terjual.</li>
+<li>Uji konkuren: dua SPK untuk VIN yang sama tidak bisa aktif bersamaan.</li>
+<li>SPK lewat deadline otomatis Expired dan VIN kembali Tersedia.</li>
+<li>Pimpinan bisa melihat laporan penjualan, leads, dan stok per cabang per periode.</li>
+<li>Backup dan restore DB teruji, panduan admin diserahkan.</li>
+</ol>
+<p>Serah terima dilakukan setelah semua skenario lolos dan ditandatangani dalam berita acara.</p>
+<h2>7. Estimasi Biaya</h2>
+<p>Estimasi di bawah ini untuk lingkup penuh Pasal 3.1 dengan durasi 10 sampai 12 minggu. Angka final dikunci setelah workshop kickoff dan review data master.</p>
+<table>
+<thead>
+<tr>
+<th>Paket</th>
+<th>Lingkup</th>
+<th>Estimasi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A. Full Dealer v1.0 (disarankan)</td>
+<td>16 modul, 7 peran, multi-cabang, WA/email, laporan plus export, deploy, panduan</td>
+<td>Rp 145.000.000 sampai Rp 185.000.000</td>
+</tr>
+<tr>
+<td>B. MVP M1+M2 saja</td>
+<td>Fondasi, katalog, stok, SPK, simulasi, leads, test drive. Tanpa trade-in, servis lanjutan, dan laporan komisi.</td>
+<td>Rp 75.000.000 sampai Rp 95.000.000</td>
+</tr>
+</tbody>
+</table>
+<p>Rincian kasar paket A:</p>
+<table>
+<thead>
+<tr>
+<th>Komponen</th>
+<th>Porsi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>M1 fondasi dan katalog</td>
+<td>20%</td>
+</tr>
+<tr>
+<td>M2 stok, SPK, leads</td>
+<td>30%</td>
+</tr>
+<tr>
+<td>M3 trade-in, servis, notifikasi, CMS</td>
+<td>30%</td>
+</tr>
+<tr>
+<td>M4 laporan, hardening, deploy, dokumentasi</td>
+<td>20%</td>
+</tr>
+</tbody>
+</table>
+<p>Yang sudah termasuk: source code, 1x deploy VPS, template admin, DomPDF dan Excel export, panduan admin, garansi bug 60 hari.</p>
+<p>Yang belum termasuk: biaya VPS dan domain, lisensi WA gateway (Fonnte/Wablas) dan SMTP, pengadaan foto unit, input data awal massal di luar seeder PRD Pasal 10, dan change request di luar PRD v1.0.</p>
+<h2>8. Skema Pembayaran</h2>
+<p>Termin mengikuti milestone agar sejajar dengan demo:</p>
+<ul>
+<li>20% DP saat kickoff dan PRD dikunci</li>
+<li>20% saat M1 diterima</li>
+<li>25% saat M2 diterima</li>
+<li>25% saat M3 diterima</li>
+<li>10% pelunasan saat BAST rilis v1.0</li>
+</ul>
+<p>Pembayaran per termin maksimal 7 hari kalender setelah berita acara milestone. Keterlambatan data atau keputusan dari pihak Ayoto menggeser jadwal secara proporsional.</p>
+<h2>9. Garansi dan Maintenance</h2>
+<ul>
+<li>Garansi bug 60 hari kalender sejak BAST, gratis, untuk defect yang mereplikasi skenario UAT.</li>
+<li>Di luar garansi atau untuk fitur baru, tersedia dua opsi:</li>
+<li>Retainer bulanan: Rp 6.000.000 sampai Rp 9.000.000 per bulan, mencakup monitoring queue dan scheduler, backup check, update minor, dan SLA respon 1x24 jam hari kerja.</li>
+<li>Pay-per-change: diestimasi per change request, cocok jika perubahan jarang.</li>
+<li>SLA verifikasi manual dan antrean SPK tetap tanggung jawab operasional internal Ayoto, sistem hanya menyediakan halaman antrean dan notifikasi ke admin.</li>
+</ul>
+<h2>10. Asumsi, Risiko, dan Mitigasi</h2>
+<table>
+<thead>
+<tr>
+<th>Risiko dari PRD</th>
+<th>Mitigasi yang kami bangun</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Antrean verifikasi menumpuk</td>
+<td>Halaman antrean verifikasi, notif WA ke admin, pencatatan verified_by dan verified_at</td>
+</tr>
+<tr>
+<td>Bukti transfer palsu</td>
+<td>Preview wajib, batas upload ulang, audit log</td>
+</tr>
+<tr>
+<td>Stok terkunci terlalu lama</td>
+<td>Expire otomatis tiap jam, reminder H-6 jam, VIN dilepas otomatis</td>
+</tr>
+<tr>
+<td>Data KTP dan bukti bocor</td>
+<td>Storage private, akses berbasis role, validasi server-side</td>
+</tr>
+<tr>
+<td>Scope membesar</td>
+<td>PRD v1.0 dikunci, perubahan lewat change request</td>
+</tr>
+</tbody>
+</table>
+<p>Asumsi yang perlu dipenuhi Ayoto sebelum M1: daftar 2 cabang plus rekening, data master brand/model/varian/warna awal, akun WA gateway dan SMTP, serta akses VPS.</p>
+<h2>11. Tim Pelaksana</h2>
+<ul>
+<li>1 project lead merangkap backend Laravel</li>
+<li>1 sampai 2 developer fullstack (Blade, Livewire, Tailwind)</li>
+<li>1 QA part-time untuk skenario UAT Pasal 15</li>
+</ul>
+<p>Komunikasi: satu grup koordinasi, demo tiap milestone, laporan progres mingguan satu halaman.</p>
+<h2>12. Langkah Selanjutnya</h2>
+<ol>
+<li>Setujui paket A atau B dan kunci PRD v1.0 sebagai acuan tunggal.</li>
+<li>Tanda tangan SPK kerja dan pembayaran DP 20%.</li>
+<li>Workshop kickoff 1 hari: validasi cabang, rekening, booking fee, template WA, dan struktur price list.</li>
+<li>M1 dimulai maksimal 5 hari kerja setelah data master diterima lengkap.</li>
+</ol>
+<hr />
+<p><em>Lampiran acuan: PRD-Ayoto-Nippon-Full-Dealer.md v1.0. Jika ada perbedaan antara proposal ini dan PRD, isi PRD yang berlaku kecuali disepakati tertulis sebagai change request.</em></p>
+</body>
+</html>
