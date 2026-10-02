@@ -384,19 +384,19 @@ class MasterSeeder extends Seeder
 
         // [slug varian, slug model, nama, transmisi, bbm, kursi, mesin, otr, file foto]
         $variants = [
-            ['avanza-1-5-g-cvt', 'avanza', '1.5 G CVT', 'CVT', 'Bensin', 7, '1496 cc', 255000000, 'images/unit/real-avanza.jpg'],
-            ['avanza-1-3-e-mt', 'avanza', '1.3 E MT', 'MT', 'Bensin', 7, '1329 cc', 235000000, 'images/unit/real-avanza.jpg'],
-            ['brio-rs-cvt', 'brio', 'RS CVT', 'CVT', 'Bensin', 5, '1199 cc', 243000000, 'images/unit/real-brio.jpg'],
-            ['xenia-1-3-x-mt', 'xenia', '1.3 X MT', 'MT', 'Bensin', 7, '1329 cc', 227000000, 'images/unit/real-xenia.jpg'],
+            ['avanza-1-5-g-cvt', 'avanza', '1.5 G CVT', 'CVT', 'Bensin', 7, '1496 cc', 282100000, 'images/unit/real-avanza.jpg'],
+            ['avanza-1-3-e-mt', 'avanza', '1.3 E MT', 'MT', 'Bensin', 7, '1329 cc', 244200000, 'images/unit/real-avanza.jpg'],
+            ['brio-rs-cvt', 'brio', 'RS CVT', 'CVT', 'Bensin', 5, '1199 cc', 275100000, 'images/unit/real-brio.jpg'],
+            ['xenia-1-3-x-mt', 'xenia', '1.3 X MT', 'MT', 'Bensin', 7, '1329 cc', 231850000, 'images/unit/real-xenia.jpg'],
             ['ertiga-gx-hybrid-at', 'ertiga', 'GX Hybrid AT', 'AT', 'Bensin', 7, '1462 cc', 287000000, 'images/unit/real-ertiga.jpg'],
-            ['xpander-sport-at', 'xpander', 'Sport AT', 'AT', 'Bensin', 7, '1499 cc', 322000000, 'images/unit/real-xpander.jpg'],
-            ['innova-2-4-g-at', 'kijang-innova', '2.4 G AT', 'AT', 'Diesel', 7, '2393 cc', 425000000, 'images/unit/real-innova.jpg'],
-            ['calya-1-2-g-mt', 'calya', '1.2 G MT', 'MT', 'Bensin', 7, '1197 cc', 172000000, 'images/unit/m-calya.jpg'],
-            ['fortuner-2-8-vrz-at', 'fortuner', '2.8 VRZ AT', 'AT', 'Diesel', 7, '2755 cc', 640000000, 'images/unit/m-fortuner.jpg'],
-            ['rush-s-at', 'rush', 'S AT', 'AT', 'Bensin', 7, '1496 cc', 295000000, 'images/unit/m-rush.jpg'],
-            ['hr-v-e-cvt', 'hr-v', 'E CVT', 'CVT', 'Bensin', 5, '1498 cc', 390000000, 'images/unit/m-hrv.jpg'],
-            ['br-v-prestige-cvt', 'br-v', 'Prestige CVT', 'CVT', 'Bensin', 7, '1496 cc', 335000000, 'images/unit/m-brv.jpg'],
-            ['terios-r-mt', 'terios', 'R MT', 'MT', 'Bensin', 7, '1496 cc', 245000000, 'images/unit/m-terios.jpg'],
+            ['xpander-sport-at', 'xpander', 'Sport AT', 'AT', 'Bensin', 7, '1499 cc', 314500000, 'images/unit/real-xpander.jpg'],
+            ['innova-2-4-g-at', 'kijang-innova', '2.4 G AT', 'AT', 'Diesel', 7, '2393 cc', 438700000, 'images/unit/real-innova.jpg'],
+            ['calya-1-2-g-mt', 'calya', '1.2 G MT', 'MT', 'Bensin', 7, '1197 cc', 178800000, 'images/unit/m-calya.jpg'],
+            ['fortuner-2-8-vrz-at', 'fortuner', '2.8 VRZ AT', 'AT', 'Diesel', 7, '2755 cc', 651800000, 'images/unit/m-fortuner.jpg'],
+            ['rush-s-at', 'rush', 'S AT', 'AT', 'Bensin', 7, '1496 cc', 315600000, 'images/unit/m-rush.jpg'],
+            ['hr-v-e-cvt', 'hr-v', 'E CVT', 'CVT', 'Bensin', 5, '1498 cc', 388700000, 'images/unit/m-hrv.jpg'],
+            ['br-v-prestige-cvt', 'br-v', 'Prestige CVT', 'CVT', 'Bensin', 7, '1496 cc', 362200000, 'images/unit/m-brv.jpg'],
+            ['terios-r-mt', 'terios', 'R MT', 'MT', 'Bensin', 7, '1496 cc', 282350000, 'images/unit/m-terios.jpg'],
             ['ayla-1-0-x-mt', 'ayla', '1.0 X MT', 'MT', 'Bensin', 5, '998 cc', 140000000, 'images/unit/m-ayla.jpg'],
             ['pajero-sport-dakar-at', 'pajero-sport', 'Dakar AT', 'AT', 'Diesel', 7, '2442 cc', 650000000, 'images/unit/m-pajero.jpg'],
             ['xforce-ultimate-cvt', 'xforce', 'Ultimate CVT', 'CVT', 'Bensin', 5, '1499 cc', 415000000, 'images/unit/m-xforce.jpg'],
@@ -804,11 +804,26 @@ class MasterSeeder extends Seeder
         $varianNonID = ['avenger-long', 'cherokee-limited', 'commander-limited', 'compass-long', 'gc-limited', 'patriot-limited', 'renegade-long', 'wagoneer-s', 'arteon-rline', 'id4-ev', 'passat-tsi', 'polo-tsi', 'touareg-rline', 'troc-tsi', 'q4-etron', 'n7-ev', 'n8-dmi', 'n8l-dmi', 'z9-ev', 'z9-gt', 'ami-ev', 'berlingo-m', 'c4-feel', 'c4x-shine', 'c5x-shine', 'spacetourer-at', 'vfwild-ev', 'vf6s-ev', 'vf5plus-ev', 'freed-e', 'mobilio-s', 'panther-lv', 'bronco-bigbend', 'explorer-limited', 'f150-lariat', 'fiesta-sport', 'focus-trend', 'territory-titanium', 'ascent-24t', 'impreza-is', 'legacy-is', 'solterra-awd', 'xv-is', 'marvelr-ev', 'mg7-at', 'han-ev', 'tang-ev', 'songplus-dmi', 'qinplus-dmi', 'h-ev', 'hyptecssr', 'rt-650', 's-ev', 'aion-lx-plus', 'delica-d5', 'mirage-g4-cvt', 'outlander-20', 'note-epower', 'terra-vl', 'taft-4x4', 'sirion-r', 'ignis-gx', 'freelander-se', 'miniev-ev', 'tiggo9-phev', 'venue-gls', 'picanto-gt', 'rio-at', 'sorento-at', 'is-lux', 'v60-b5', 'c40-ev', 'cx8-elite', 'j5-ev', 'j5-plus', 'x50-at', 'shanhai-l6', 'traveller-20td'];
         $variants = array_values(array_filter($variants, fn ($r) => !in_array($r[0], $varianNonID, true) && !in_array($r[1], $modelNonID, true)));
         Variant::whereIn('slug', $varianNonID)->delete();
+        // Override spek resmi (brosur) untuk varian hero
+        $spekReal = [
+            'avanza-1-5-g-cvt' => ['mesin_lengkap' => '1496 cc (2NR-VE, 4 silinder Dual VVT-i)', 'tenaga_maksimum' => '106 PS @ 6.000 rpm', 'torsi_maksimum' => '138 Nm @ 4.200 rpm', 'konsumsi_bbm' => '± 14 km/l', 'dimensi' => '4.395 x 1.730 x 1.700 mm', 'wheelbase' => '2.750 mm', 'ground_clearance' => '205 mm', 'tangki' => '43 L', 'ban' => '185/60 R15'],
+            'avanza-1-3-e-mt' => ['mesin_lengkap' => '1329 cc (1NR-VE, 4 silinder Dual VVT-i)', 'tenaga_maksimum' => '98 PS @ 6.000 rpm', 'torsi_maksimum' => '122 Nm @ 4.200 rpm', 'konsumsi_bbm' => '± 15 km/l', 'dimensi' => '4.395 x 1.730 x 1.665 mm', 'wheelbase' => '2.750 mm', 'ground_clearance' => '205 mm', 'tangki' => '43 L', 'ban' => '185/60 R15'],
+            'brio-rs-cvt' => ['mesin_lengkap' => '1199 cc (1.2L i-VTEC SOHC)', 'tenaga_maksimum' => '90 PS @ 6.000 rpm', 'torsi_maksimum' => '110 Nm @ 4.800 rpm', 'konsumsi_bbm' => '± 20 km/l', 'dimensi' => '3.800 x 1.680 x 1.485 mm', 'wheelbase' => '2.405 mm', 'ground_clearance' => '165 mm', 'tangki' => '35 L', 'ban' => '185/55 R15'],
+            'xenia-1-3-x-mt' => ['mesin_lengkap' => '1329 cc (1NR-VE, 4 silinder Dual VVT-i)', 'tenaga_maksimum' => '98 PS @ 6.000 rpm', 'torsi_maksimum' => '122 Nm @ 4.200 rpm', 'konsumsi_bbm' => '± 14 km/l', 'dimensi' => '4.395 x 1.730 x 1.665 mm', 'wheelbase' => '2.750 mm', 'ground_clearance' => '195 mm', 'tangki' => '43 L', 'ban' => '185/65 R15'],
+            'calya-1-2-g-mt' => ['mesin_lengkap' => '1197 cc (3NR-VE, 4 silinder Dual VVT-i)', 'tenaga_maksimum' => '88 PS @ 6.000 rpm', 'torsi_maksimum' => '108 Nm @ 4.200 rpm', 'konsumsi_bbm' => '± 14 km/l', 'dimensi' => '4.110 x 1.655 x 1.600 mm', 'wheelbase' => '2.525 mm', 'ground_clearance' => '180 mm', 'tangki' => '36 L', 'ban' => '175/65 R14', 'bagasi' => '263 L'],
+            'rush-s-at' => ['mesin_lengkap' => '1496 cc (2NR-VE, 4 silinder Dual VVT-i)', 'tenaga_maksimum' => '104 PS @ 6.000 rpm', 'torsi_maksimum' => '136 Nm @ 4.200 rpm', 'penggerak' => 'RWD', 'konsumsi_bbm' => '± 13 km/l', 'dimensi' => '4.435 x 1.695 x 1.705 mm', 'wheelbase' => '2.685 mm', 'ground_clearance' => '220 mm', 'tangki' => '45 L', 'ban' => '215/65 R16', 'suspensi_belakang' => 'Multi-link', 'airbag' => '6 SRS'],
+            'terios-r-mt' => ['mesin_lengkap' => '1496 cc (2NR-VE, DOHC Dual VVT-i)', 'tenaga_maksimum' => '104 PS @ 6.000 rpm', 'torsi_maksimum' => '136 Nm @ 4.200 rpm', 'penggerak' => 'RWD', 'konsumsi_bbm' => '± 13 km/l', 'dimensi' => '4.435 x 1.695 x 1.705 mm', 'wheelbase' => '2.685 mm', 'ground_clearance' => '220 mm', 'tangki' => '45 L', 'ban' => '215/60 R17', 'suspensi_belakang' => 'Multi-link'],
+            'br-v-prestige-cvt' => ['mesin_lengkap' => '1498 cc (L15ZF i-VTEC DOHC)', 'tenaga_maksimum' => '121 PS @ 6.600 rpm', 'torsi_maksimum' => '145 Nm @ 4.300 rpm', 'konsumsi_bbm' => '± 14 km/l', 'dimensi' => '4.490 x 1.780 x 1.685 mm', 'wheelbase' => '2.700 mm', 'ground_clearance' => '207 mm', 'tangki' => '42 L', 'ban' => '215/55 R17'],
+            'hr-v-e-cvt' => ['mesin_lengkap' => '1498 cc (1.5L DOHC i-VTEC)', 'tenaga_maksimum' => '121 PS @ 6.600 rpm', 'torsi_maksimum' => '145 Nm @ 4.300 rpm', 'konsumsi_bbm' => '± 15 km/l', 'dimensi' => '4.347 x 1.790 x 1.590 mm', 'wheelbase' => '2.610 mm', 'ground_clearance' => '212 mm', 'tangki' => '40 L', 'ban' => '215/60 R17'],
+            'xpander-sport-at' => ['mesin_lengkap' => '1499 cc (1.5L MIVEC DOHC)', 'tenaga_maksimum' => '104 PS @ 6.000 rpm', 'torsi_maksimum' => '141 Nm @ 4.000 rpm', 'konsumsi_bbm' => '± 14 km/l', 'dimensi' => '4.595 x 1.750 x 1.750 mm', 'wheelbase' => '2.775 mm', 'ground_clearance' => '220 mm', 'tangki' => '45 L', 'ban' => '195/65 R16'],
+            'innova-2-4-g-at' => ['mesin_lengkap' => '2393 cc (2GD-FTV common-rail VNT Intercooler)', 'tenaga_maksimum' => '149 PS @ 3.400 rpm', 'torsi_maksimum' => '342 Nm @ 1.200-2.800 rpm', 'penggerak' => 'RWD', 'konsumsi_bbm' => '± 13 km/l', 'dimensi' => '4.735 x 1.830 x 1.795 mm', 'wheelbase' => '2.750 mm', 'ground_clearance' => '178 mm', 'tangki' => '55 L', 'ban' => '205/65 R16', 'suspensi_depan' => 'Double wishbone', 'suspensi_belakang' => '4-link lateral rod', 'rem_depan' => 'Cakram ventilasi', 'rem_belakang' => 'Tromol'],
+            'fortuner-2-8-vrz-at' => ['mesin_lengkap' => '2755 cc (1GD-FTV common-rail VNT Intercooler)', 'tenaga_maksimum' => '204 PS @ 3.000 rpm', 'torsi_maksimum' => '500 Nm @ 1.600-2.800 rpm', 'penggerak' => 'RWD', 'konsumsi_bbm' => '± 12 km/l', 'dimensi' => '4.795 x 1.855 x 1.835 mm', 'wheelbase' => '2.750 mm', 'ground_clearance' => '279 mm', 'tangki' => '80 L', 'ban' => '265/60 R18', 'suspensi_depan' => 'Double wishbone', 'suspensi_belakang' => '4-link lateral rod'],
+        ];
         foreach ($variants as [$slug, $model, $nama, $transmisi, $bbm, $kursi, $mesin, $otr, $foto]) {
             $v = Variant::firstOrCreate(['slug' => $slug], [
                 'car_model_id' => $modelId($model), 'nama' => $nama,
                 'transmisi' => $transmisi, 'bbm' => $bbm,
-                'spesifikasi' => ['kursi' => $kursi, 'mesin' => $mesin],
+                'spesifikasi' => array_merge(['kursi' => $kursi, 'mesin' => $mesin], $spekReal[$slug] ?? []),
             ]);
             foreach ([$jakarta, $bandung] as $branch) {
                 PriceList::firstOrCreate(
@@ -901,13 +916,13 @@ class MasterSeeder extends Seeder
             $hargaMap[$p->variant_id][$p->branch_id] = $p->otr;
         }
         $adaVin = Unit::pluck('vin')->flip()->toArray();
-        // Tiap model 51-65 unit (bervariasi), terbagi di kedua cabang
+        // Tiap model 4-6 unit (realistis), terbagi di kedua cabang
         foreach (CarModel::orderBy('id')->get(['id', 'slug']) as $model) {
             $daftar = Variant::where('car_model_id', $model->id)->orderBy('id')->get(['id', 'slug']);
             if ($daftar->isEmpty()) {
                 continue;
             }
-            $target = 51 + ($model->id % 15);
+            $target = 4 + ($model->id % 3);
             $tJ = intdiv($target, 2) + ($model->id % 2);
             $tB = $target - $tJ;
             $n = 0;
@@ -993,10 +1008,30 @@ class MasterSeeder extends Seeder
         Promo::firstOrCreate(['slug' => 'dp-ringan-oktober-2026'], [
             'branch_id' => null,
             'judul' => 'DP Ringan Semua Cabang',
-            'banner' => 'images/unit/foto-4.jpg',
+            'banner' => 'images/promos/promo DP.png',
             'deskripsi' => 'Uang muka mulai 15% untuk pengajuan SPK bulan ini.',
             'mulai' => '2026-09-01',
             'selesai' => '2026-10-31',
+            'aktif' => true,
+        ]);
+
+        Promo::firstOrCreate(['slug' => 'bunga-0-persen-free-servis'], [
+            'branch_id' => null,
+            'judul' => 'Bunga 0% & Free Servis 3 Tahun',
+            'banner' => 'images/promos/promo SERVICE.png',
+            'deskripsi' => 'Spesial pembelian unit MPV & SUV pilihan dengan bunga 0% tenor hingga 2 tahun serta gratis biaya servis dan oli selama 3 tahun.',
+            'mulai' => '2026-09-01',
+            'selesai' => '2026-11-30',
+            'aktif' => true,
+        ]);
+
+        Promo::firstOrCreate(['slug' => 'cashback-trade-in-25-juta'], [
+            'branch_id' => null,
+            'judul' => 'Cashback Trade-In s.d 25 Juta',
+            'banner' => 'images/promos/promo CASHBACK trade in.png',
+            'deskripsi' => 'Tukar tambah mobil lama Anda ke mobil baru semua merk di Ayoto Nippon dan dapatkan ekstra cashback hingga Rp 25.000.000.',
+            'mulai' => '2026-09-15',
+            'selesai' => '2026-12-31',
             'aktif' => true,
         ]);
 

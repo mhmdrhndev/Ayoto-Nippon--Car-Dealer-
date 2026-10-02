@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\SendWaJob;
+use App\Support\Notifikasi;
 use App\Models\Customer;
 use App\Models\Sparepart;
 use App\Models\SparepartOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class SparepartOrderController extends Controller
 {
@@ -46,7 +48,9 @@ class SparepartOrderController extends Controller
             if ($customer->user_id === null) {
                 $customer->update(['user_id' => $request->user()->id]);
             }
-            abort_if($customer->user_id !== $request->user()->id, 422, 'NIK ini terdaftar pada akun lain. Hubungi admin cabang.');
+            if ($customer->user_id !== $request->user()->id) {
+                throw ValidationException::withMessages(['nik' => 'NIK ini terdaftar pada akun lain. Hubungi admin cabang.']);
+            }
 
             $sparepart->decrement('stok', $data['qty']);
 
@@ -71,7 +75,7 @@ class SparepartOrderController extends Controller
             return $order;
         });
 
-        SendWaJob::dispatch($order->customer->telp, "Order sparepart {$order->no_spo} dibuat. Total Rp ".number_format($order->total, 0, ',', '.').". Transfer sebelum {$order->deadline_at->format('d M Y H:i')} lalu upload bukti.");
+        SendWaJob::dispatch($order->customer->telp, Notifikasi::spoDibuat($order));
 
         return redirect()->route('sparepart.order.show', $order->no_spo)->with('sukses', 'Order sparepart dibuat. Segera transfer sebelum deadline.');
     }
@@ -96,7 +100,7 @@ class SparepartOrderController extends Controller
             'bukti_path' => $request->file('bukti')->store('bukti-sparepart', 'local'),
         ]);
 
-        SendWaJob::dispatch($order->customer->telp, "Bukti bayar order {$order->no_spo} diterima dan menunggu konfirmasi admin.");
+        SendWaJob::dispatch($order->customer->telp, Notifikasi::spoBukti($order));
 
         return redirect()->route('sparepart.order.show', $order->no_spo)->with('sukses', 'Bukti diterima dan menunggu konfirmasi admin.');
     }
@@ -117,8 +121,8 @@ class SparepartOrderController extends Controller
         });
 
         SendWaJob::dispatch($order->customer->telp, $data['aksi'] === 'lunas'
-            ? "Order sparepart {$order->no_spo} lunas. Ambil di cabang {$order->branch->nama}."
-            : "Order sparepart {$order->no_spo} dibatalkan, stok dikembalikan.");
+            ? Notifikasi::spoLunas($order)
+            : Notifikasi::spoBatal($order));
 
         return back()->with('sukses', 'Status order diperbarui.');
     }

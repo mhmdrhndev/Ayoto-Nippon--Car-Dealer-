@@ -1,8 +1,30 @@
 <x-site-layout>
     <x-site-header />
 
-    <section class="relative bg-[#16181D]">
-        <img src="{{ asset('images/unit/foto-8.jpg') }}" alt="Showroom Ayoto Nippon" class="absolute inset-0 h-full w-full object-cover opacity-40">
+    <section class="relative bg-[#16181D] overflow-hidden"
+        x-data="{
+            active: 0,
+            total: 3,
+            timer: null,
+            init() {
+                this.timer = setInterval(() => { this.active = (this.active + 1) % this.total; }, 7000);
+            }
+        }">
+        <div class="absolute inset-0 pointer-events-none">
+            <img src="{{ asset('images/unit/foto-8.jpg') }}" alt=""
+                class="absolute inset-0 h-full w-full object-cover"
+                style="transition: opacity 1.6s cubic-bezier(0.4, 0, 0.2, 1), transform 8s ease-out;"
+                :class="active === 0 ? 'opacity-40 scale-105' : 'opacity-0 scale-100'">
+            <img src="{{ asset('images/unit/foto-7.jpg') }}" alt=""
+                class="absolute inset-0 h-full w-full object-cover"
+                style="transition: opacity 1.6s cubic-bezier(0.4, 0, 0.2, 1), transform 8s ease-out;"
+                :class="active === 1 ? 'opacity-40 scale-105' : 'opacity-0 scale-100'">
+            <img src="{{ asset('images/unit/foto-9.jpg') }}" alt=""
+                class="absolute inset-0 h-full w-full object-cover"
+                style="transition: opacity 1.6s cubic-bezier(0.4, 0, 0.2, 1), transform 8s ease-out;"
+                :class="active === 2 ? 'opacity-40 scale-105' : 'opacity-0 scale-100'">
+            <div class="absolute inset-0 bg-[#16181D]/60"></div>
+        </div>
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-24">
             <h1 class="text-3xl sm:text-5xl font-bold text-white max-w-2xl">Mobil baru dengan harga OTR jelas per cabang</h1>
             <p class="mt-3 text-base sm:text-lg text-gray-200 max-w-xl">Stok dihitung per unit. Saat ini ada {{ $totalUnit }} unit tersedia di Jakarta dan Bandung.</p>
@@ -21,6 +43,21 @@
                 <a href="{{ route('simulasi.form') }}" class="px-4 py-2 text-sm font-semibold text-white border border-white/60 rounded-lg min-h-[44px] inline-flex items-center">Simulasi Kredit</a>
                 <a href="{{ route('lacak.form') }}" class="px-4 py-2 text-sm font-semibold text-white border border-white/60 rounded-lg min-h-[44px] inline-flex items-center">Lacak SPK</a>
             </div>
+        </div>
+
+        <div class="absolute bottom-4 right-4 sm:right-8 flex gap-2 z-10">
+            <button type="button" @click="active = 0; clearInterval(timer)"
+                :class="active === 0 ? 'bg-white w-7' : 'bg-white/40 w-2.5 hover:bg-white/70'"
+                class="h-2.5 rounded-full transition-all duration-300 min-h-[20px] flex items-center justify-center"
+                aria-label="Slide 1"></button>
+            <button type="button" @click="active = 1; clearInterval(timer)"
+                :class="active === 1 ? 'bg-white w-7' : 'bg-white/40 w-2.5 hover:bg-white/70'"
+                class="h-2.5 rounded-full transition-all duration-300 min-h-[20px] flex items-center justify-center"
+                aria-label="Slide 2"></button>
+            <button type="button" @click="active = 2; clearInterval(timer)"
+                :class="active === 2 ? 'bg-white w-7' : 'bg-white/40 w-2.5 hover:bg-white/70'"
+                class="h-2.5 rounded-full transition-all duration-300 min-h-[20px] flex items-center justify-center"
+                aria-label="Slide 3"></button>
         </div>
     </section>
 
@@ -47,11 +84,6 @@
                         <span class="text-xs sm:text-sm font-semibold text-[#16181D] group-hover:text-[#C1121F] transition-colors truncate w-full">{{ $brand->nama }}</span>
                     </a>
                 @endforeach
-            </div>
-            <div class="mt-4 text-center sm:hidden" x-show="!showAll">
-                <button type="button" @click="showAll = true" class="w-full py-2.5 px-4 text-xs font-semibold text-[#C1121F] bg-red-50 hover:bg-red-100 rounded-xl border border-red-200 transition-colors min-h-[44px]">
-                    Lihat Semua Merek ({{ $brands->count() }})
-                </button>
             </div>
         </section>
 

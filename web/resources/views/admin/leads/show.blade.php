@@ -3,7 +3,7 @@
     <div class="py-6 max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-4">
         @if (session('sukses'))<p class="p-3 text-sm bg-green-50 border border-green-200 rounded-lg">{{ session('sukses') }}</p>@endif
         <div class="bg-white p-5 rounded-xl shadow-sm">
-            <p class="text-sm text-gray-500">Customer: <span class="font-semibold text-gray-800">{{ $lead->customer->nama ?? '-' }} ({{ $lead->customer->telp ?? '-' }})</span></p>
+            <p class="text-sm text-gray-500">Customer: <span class="font-semibold text-gray-800">{{ $lead->customer->nama ?? '-' }} ({{ $lead->customer->telp ?? '-' }})</span>@if ($lead->customer?->telp) <a href="{{ \App\Support\Wa::chat($lead->customer->telp, \App\Support\Notifikasi::followupLead($lead)) }}" target="_blank" rel="noopener" class="underline font-medium text-gray-800 min-h-[44px] inline-flex items-center">Chat WA</a>@endif</p>
             <p class="text-sm text-gray-500">Sumber: {{ $lead->sumber }}, Status: <span class="font-semibold text-gray-800">{{ $lead->status }}</span></p>
             <p class="mt-2 text-sm">{{ $lead->kebutuhan_text }}</p>
             <form action="{{ route('admin.leads.assign', $lead) }}" method="POST" class="mt-3 flex gap-3">

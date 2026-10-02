@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\SendMailJob;
 use App\Jobs\SendWaJob;
+use App\Support\Notifikasi;
 use App\Models\ActivityLog;
 use App\Models\Invoice;
 use App\Models\Order;
@@ -21,7 +22,13 @@ class VerifyController extends Controller
             ->orderBy('updated_at')
             ->paginate(15);
 
-        return view('admin.verify.index', compact('orders'));
+        $riwayat = Order::with(['customer', 'unit.variant.carModel.brand', 'branch', 'invoice', 'verifier'])
+            ->whereNotNull('verified_at')
+            ->orderByDesc('verified_at')
+            ->limit(10)
+            ->get();
+
+        return view('admin.verify.index', compact('orders', 'riwayat'));
     }
 
     public function update(Request $request, Order $order)
@@ -74,16 +81,25 @@ class VerifyController extends Controller
         });
 
         $fresh = $order->fresh();
-        SendWaJob::dispatch($fresh->customer->telp, $fresh->status === 'Deal'
-            ? "SPK {$fresh->no_spk} Deal. Unit sudah terkunci untuk Anda. Pelunasan sisa dilakukan di dealer."
-            : "SPK {$fresh->no_spk} belum bisa diterima: {$fresh->tolak_alasan}");
+        $pesan = $fresh->status === 'Deal' ? Notifikasi::spkDeal($fresh) : Notifikasi::spkTolak($fresh);
+        SendWaJob::dispatch($fresh->customer->telp, $pesan);
 
         $email = $fresh->customer->user?->email;
         if ($email) {
             $lampiran = $fresh->status === 'Deal' && $fresh->invoice?->pdf_path ? [$fresh->invoice->pdf_path] : [];
-            SendMailJob::dispatch($email, "Status SPK {$fresh->no_spk}: {$fresh->status}",
-                $fresh->status === 'Deal' ? "SPK Anda Deal. Invoice {$fresh->invoice->no_inv} terlampir." : "SPK belum bisa diterima: {$fresh->tolak_alasan}",
-                $lampiran);
+            if ($fresh->status === 'Deal') {
+                $salesNama = $fresh->customer->leads()->latest()->first()?->sales?->name ?? '-';
+                $isi = view('emails.receipt', ['order' => $fresh, 'salesNama' => $salesNama])->render();
+                SendMailJob::dispatch($email, "Receipt {$fresh->invoice->no_inv} SPK {$fresh->no_spk} Deal", $isi, $lampiran, true);
+            } else {
+                $isi = view('emails.notifikasi', [
+                    'judul' => "Status SPK {$fresh->no_spk}: {$fresh->status}",
+                    'baris' => explode("\n", $pesan),
+                    'tombol' => $fresh->status === 'MenungguBayar' ? ['teks' => 'Upload Bukti Baru', 'url' => route('spk.show', $fresh->no_spk)] : null,
+                    'kontak' => null,
+                ])->render();
+                SendMailJob::dispatch($email, "Status SPK {$fresh->no_spk}: {$fresh->status}", $isi, $lampiran, true);
+            }
         }
 
         if ($data['keputusan'] === 'tolak') {

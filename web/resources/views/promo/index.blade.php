@@ -22,12 +22,26 @@
         @if ($promos->isEmpty())
             <div class="mt-6 p-6 border border-gray-200 rounded-xl"><p class="font-semibold text-[#16181D]">Belum ada promo berjalan.</p><p class="text-sm text-[#4B5563]">Kembali lagi nanti atau lihat katalog mobil.</p></div>
         @else
-            <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach ($promos as $promo)
-                    <div class="p-5 border border-gray-200 rounded-xl">
-                        <h2 class="font-bold text-[#16181D]">{{ $promo->judul }}</h2>
-                        <p class="text-xs text-[#4B5563]">{{ $promo->branch->nama ?? 'Semua cabang' }}, sampai {{ $promo->selesai->format('d M Y') }}</p>
-                        @if ($promo->deskripsi)<p class="mt-2 text-sm text-[#16181D]">{{ $promo->deskripsi }}</p>@endif
+                    <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-shadow flex flex-col">
+                        @if ($promo->banner)
+                            <div class="relative w-full h-48 bg-gray-100 overflow-hidden">
+                                <img src="{{ asset($promo->banner) }}" alt="{{ $promo->judul }}" class="w-full h-full object-cover">
+                            </div>
+                        @endif
+                        <div class="p-5 flex-1 flex flex-col justify-between">
+                            <div>
+                                <h2 class="font-bold text-lg text-[#16181D]">{{ $promo->judul }}</h2>
+                                <p class="text-xs text-[#4B5563] mt-1">{{ $promo->branch->nama ?? 'Semua cabang' }} • Berlaku s.d {{ $promo->selesai->format('d M Y') }}</p>
+                                @if ($promo->deskripsi)<p class="mt-2.5 text-sm text-gray-700 leading-relaxed">{{ $promo->deskripsi }}</p>@endif
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-gray-100">
+                                <a href="{{ route('katalog.index') }}" class="text-xs font-semibold text-[#C1121F] hover:underline inline-flex items-center gap-1 min-h-[44px]">
+                                    Lihat Mobil Promo &rarr;
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 @endforeach
             </div>

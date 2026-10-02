@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\SendWaJob;
+use App\Support\Notifikasi;
 use App\Models\Branch;
 use App\Models\Customer;
 use App\Models\Lead;
@@ -71,7 +72,7 @@ class TestDriveController extends Controller
         $testDrive->update($data);
 
         if ($data['status'] === 'Dikonfirmasi') {
-            SendWaJob::dispatch($testDrive->customer->telp, "Test drive dikonfirmasi: {$testDrive->jadwal->format('d M Y H:i')} di {$testDrive->branch->nama}.");
+            SendWaJob::dispatch($testDrive->customer->telp, Notifikasi::testDriveDikonfirmasi($testDrive));
         }
 
         return back()->with('sukses', 'Status test drive diperbarui.');

@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Jobs\SendWaJob;
+use App\Support\Notifikasi;
 use App\Models\Order;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -25,7 +26,7 @@ class ExpireSpkOrders extends Command
                         $order->unit()->update(['status' => 'Tersedia']);
                         $count++;
                     });
-                    SendWaJob::dispatch($order->customer->telp, "SPK {$order->no_spk} Expired karena lewat batas bayar. Unit dilepas, Anda bisa mengajukan ulang.");
+                    SendWaJob::dispatch($order->customer->telp, Notifikasi::spkExpired($order));
                 }
             });
 

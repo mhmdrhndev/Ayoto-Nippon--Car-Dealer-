@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Jobs\SendMailJob;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -52,5 +53,22 @@ class User extends Authenticatable
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class);
+    }
+
+    // Link reset password memakai template email branded Indonesia.
+    public function sendPasswordResetNotification($token): void
+    {
+        $isi = view('emails.notifikasi', [
+            'judul' => 'Reset Password Akun',
+            'baris' => [
+                'Yth. Bapak/Ibu,',
+                'Kami menerima permintaan reset password untuk akun Anda. Klik tombol di bawah untuk membuat password baru. Link ini kedaluwarsa dalam 60 menit.',
+                'Abaikan email ini jika Anda tidak memintanya.',
+                "Hormat kami,\nPT Ayoto Nippon.",
+            ],
+            'tombol' => ['teks' => 'Reset Password', 'url' => route('password.reset', ['token' => $token, 'email' => $this->email])],
+            'kontak' => null,
+        ])->render();
+        SendMailJob::dispatch($this->email, 'Reset Password Akun Ayoto Nippon', $isi, [], true);
     }
 }

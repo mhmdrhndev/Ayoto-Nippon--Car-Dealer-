@@ -85,8 +85,34 @@ class Variant extends Model
         unset($dimensi['ban']);
 
         $hasil = ['Mesin dan performa' => $mesin, 'Dimensi dan kapasitas' => $dimensi, 'Kaki-kaki dan keselamatan' => $kaki];
+        // Kunci override data resmi (brosur) menimpa angka turunan di atas.
+        $peta = [
+            'mesin_lengkap' => ['Mesin dan performa', 'Mesin'],
+            'tenaga' => ['Mesin dan performa', 'Tenaga maksimum'],
+            'torsi' => ['Mesin dan performa', 'Torsi maksimum'],
+            'tenaga_maksimum' => ['Mesin dan performa', 'Tenaga maksimum'],
+            'torsi_maksimum' => ['Mesin dan performa', 'Torsi maksimum'],
+            'penggerak' => ['Mesin dan performa', 'Penggerak'],
+            'konsumsi_bbm' => ['Mesin dan performa', 'Konsumsi BBM'],
+            'dimensi' => ['Dimensi dan kapasitas', 'Panjang x lebar x tinggi'],
+            'wheelbase' => ['Dimensi dan kapasitas', 'Jarak sumbu roda'],
+            'ground_clearance' => ['Dimensi dan kapasitas', 'Ground clearance'],
+            'tangki' => ['Dimensi dan kapasitas', 'Kapasitas tangki'],
+            'bagasi' => ['Dimensi dan kapasitas', 'Bagasi'],
+            'ban' => ['Kaki-kaki dan keselamatan', 'Ukuran ban'],
+            'suspensi_depan' => ['Kaki-kaki dan keselamatan', 'Suspensi depan'],
+            'suspensi_belakang' => ['Kaki-kaki dan keselamatan', 'Suspensi belakang'],
+            'rem_depan' => ['Kaki-kaki dan keselamatan', 'Rem depan'],
+            'rem_belakang' => ['Kaki-kaki dan keselamatan', 'Rem belakang'],
+            'airbag' => ['Kaki-kaki dan keselamatan', 'Airbag'],
+        ];
+        foreach ($peta as $kunci => [$grup, $label]) {
+            if (isset($spek[$kunci])) {
+                $hasil[$grup][$label] = $spek[$kunci];
+            }
+        }
         foreach ($spek as $kunci => $nilai) {
-            if (! in_array($kunci, ['kursi', 'mesin'], true)) {
+            if (! in_array($kunci, array_merge(['kursi', 'mesin'], array_keys($peta)), true)) {
                 $hasil['Lainnya'][ucwords(str_replace('_', ' ', $kunci))] = is_array($nilai) ? implode(', ', $nilai) : $nilai;
             }
         }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\SendMailJob;
 use App\Jobs\SendWaJob;
+use App\Support\Notifikasi;
 use App\Models\Branch;
 use App\Models\Color;
 use App\Models\Customer;
@@ -16,6 +17,7 @@ use App\Models\Variant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class SpkController extends Controller
 {
@@ -93,8 +95,12 @@ class SpkController extends Controller
         $order = DB::transaction(function () use ($data, $request) {
             $unit = Unit::whereKey($data['unit_id'])->lockForUpdate()->firstOrFail();
 
-            abort_if($unit->status !== 'Tersedia', 422, 'Unit sudah tidak tersedia.');
-            abort_if(Order::where('unit_id', $unit->id)->aktif()->lockForUpdate()->exists(), 422, 'Unit sedang dalam proses SPK lain.');
+            if ($unit->status !== 'Tersedia') {
+                throw ValidationException::withMessages(['unit_id' => 'Unit sudah tidak tersedia. Silakan pilih VIN lain.']);
+            }
+            if (Order::where('unit_id', $unit->id)->aktif()->lockForUpdate()->exists()) {
+                throw ValidationException::withMessages(['unit_id' => 'Unit sedang dalam proses SPK lain. Silakan pilih VIN lain.']);
+            }
 
             $customer = Customer::firstOrCreate(
                 ['nik' => $data['nik']],
@@ -111,7 +117,9 @@ class SpkController extends Controller
             if ($customer->user_id === null) {
                 $customer->update(['user_id' => $request->user()->id]);
             }
-            abort_if($customer->user_id !== $request->user()->id, 422, 'NIK ini terdaftar pada akun lain. Hubungi admin cabang.');
+            if ($customer->user_id !== $request->user()->id) {
+                throw ValidationException::withMessages(['nik' => 'NIK ini terdaftar pada akun lain. Hubungi admin cabang.']);
+            }
 
             $tahun = now()->format('Y');
             $seq = Order::where('no_spk', 'like', "SPK-{$tahun}-%")->lockForUpdate()->count() + 1;
@@ -144,13 +152,16 @@ class SpkController extends Controller
         });
 
         $rek = $order->branch->bankAccounts()->where('aktif', true)->first();
-        SendWaJob::dispatch(
-            $order->customer->telp,
-            "SPK {$order->no_spk} dibuat. Transfer Rp ".number_format($order->booking_fee, 0, ',', '.').($rek ? " ke {$rek->bank} {$rek->no_rek} a.n. {$rek->atas_nama}" : '')." sebelum {$order->deadline_at->format('d M Y H:i')}."
-        );
+        $pesanSpk = Notifikasi::spkDibuat($order, $rek);
+        SendWaJob::dispatch($order->customer->telp, $pesanSpk);
         if ($request->user()->email) {
-            SendMailJob::dispatch($request->user()->email, "SPK {$order->no_spk} dibuat",
-                "Instruksi transfer Rp ".number_format($order->booking_fee, 0, ',', '.')." sebelum {$order->deadline_at->format('d M Y H:i')}. Lacak di halaman Lacak SPK.");
+            $isi = view('emails.notifikasi', [
+                'judul' => "SPK {$order->no_spk} dibuat",
+                'baris' => explode("\n", $pesanSpk),
+                'tombol' => ['teks' => 'Lacak SPK', 'url' => route('spk.show', $order->no_spk)],
+                'kontak' => null,
+            ])->render();
+            SendMailJob::dispatch($request->user()->email, "SPK {$order->no_spk} dibuat", $isi, [], true);
         }
 
         return redirect()->route('spk.show', $order->no_spk)->with('sukses', 'SPK berhasil dibuat. Segera transfer booking fee sebelum deadline.');
@@ -183,7 +194,17 @@ class SpkController extends Controller
             'status' => 'MenungguVerifikasi',
         ]);
 
-        SendWaJob::dispatch($order->customer->telp, "Bukti bayar SPK {$order->no_spk} diterima dan menunggu verifikasi admin.");
+        $pesanBukti = Notifikasi::buktiDiterima($order);
+        SendWaJob::dispatch($order->customer->telp, $pesanBukti);
+        if ($request->user()->email) {
+            $isi = view('emails.notifikasi', [
+                'judul' => "Bukti bayar SPK {$order->no_spk} diterima",
+                'baris' => explode("\n", $pesanBukti),
+                'tombol' => ['teks' => 'Lacak SPK', 'url' => route('spk.show', $order->no_spk)],
+                'kontak' => null,
+            ])->render();
+            SendMailJob::dispatch($request->user()->email, "Bukti bayar SPK {$order->no_spk} diterima", $isi, [], true);
+        }
 
         return redirect()->route('spk.show', $order->no_spk)->with('sukses', 'Bukti diterima dan menunggu verifikasi admin.');
     }

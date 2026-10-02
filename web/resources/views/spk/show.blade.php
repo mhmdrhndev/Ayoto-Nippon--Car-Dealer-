@@ -16,7 +16,7 @@
         <h1 class="mt-1 text-2xl font-bold text-[#16181D]">Status: {{ $order->status }}</h1>
         <p class="mt-1 text-sm text-[#4B5563]">{{ $order->unit->variant->carModel->brand->nama }} {{ $order->unit->variant->carModel->nama }} {{ $order->unit->variant->nama }}, {{ $order->unit->color->nama }}, VIN <span class="font-mono">{{ $order->unit->vin }}</span></p>
         @if ($order->branch->telp)
-            <p class="mt-2 text-sm"><a href="{{ \App\Support\Wa::chat($order->branch->telp, 'Halo Ayoto Nippon '.$order->branch->nama.', saya bertanya mengenai SPK '.$order->no_spk.'.') }}" target="_blank" rel="noopener" class="underline font-semibold text-[#16181D] min-h-[44px] inline-flex items-center">Chat WA cabang</a></p>
+            <p class="mt-2 text-sm"><a href="{{ \App\Support\Wa::chat($order->branch->telp, 'Halo'.$order->branch->nama.', saya bertanya mengenai SPK '.$order->no_spk.'.') }}" target="_blank" rel="noopener" class="underline font-semibold text-[#16181D] min-h-[44px] inline-flex items-center">Chat WA cabang</a></p>
         @endif
 
         @if ($order->status === 'MenungguBayar')

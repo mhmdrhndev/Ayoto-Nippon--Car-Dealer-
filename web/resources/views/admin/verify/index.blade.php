@@ -51,5 +51,30 @@
             </div>
             <div class="mt-4">{{ $orders->links() }}</div>
         @endif
+        <h2 class="mt-8 font-semibold text-xl text-gray-800 leading-tight">Riwayat verifikasi</h2>
+        @if ($riwayat->isEmpty())
+            <div class="mt-3 bg-white p-6 rounded-xl shadow-sm"><p class="font-semibold">Belum ada riwayat.</p><p class="text-sm text-gray-500">SPK yang sudah diverifikasi akan tampil di sini.</p></div>
+        @else
+            <div class="mt-3 bg-white rounded-xl shadow-sm overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead><tr class="border-b">
+                        <th class="text-left px-4 py-3">No. SPK</th><th class="text-left px-4 py-3">Pembeli</th>
+                        <th class="text-left px-4 py-3">Unit</th><th class="text-left px-4 py-3">Status</th><th class="text-left px-4 py-3">Diverifikasi</th><th class="text-left px-4 py-3">Konfirmasi</th>
+                    </tr></thead>
+                    <tbody>
+                        @foreach ($riwayat as $selesai)
+                            <tr class="border-b last:border-0 align-top">
+                                <td class="px-4 py-3 font-mono">{{ $selesai->no_spk }}</td>
+                                <td class="px-4 py-3">{{ $selesai->customer->nama }}<br><span class="text-gray-500">{{ $selesai->customer->telp }}</span></td>
+                                <td class="px-4 py-3">{{ $selesai->unit->variant->carModel->nama }} {{ $selesai->unit->variant->nama }}<br><span class="font-mono text-gray-500">{{ $selesai->unit->vin }}</span></td>
+                                <td class="px-4 py-3"><x-status-badge status="{{ $selesai->status }}" /></td>
+                                <td class="px-4 py-3 text-gray-500">{{ $selesai->verifier->name ?? '-' }}<br>{{ $selesai->verified_at?->format('d M Y H:i') }}</td>
+                                <td class="px-4 py-3"><a href="{{ \App\Support\Wa::chat($selesai->customer->telp, $selesai->status === 'Deal' ? \App\Support\Notifikasi::spkDealKonfirmasi($selesai) : \App\Support\Notifikasi::spkTolakKonfirmasi($selesai)) }}" target="_blank" rel="noopener" class="underline font-medium min-h-[44px] inline-flex items-center">Chat pembeli</a></td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @endif
     </div>
 </x-app-layout>

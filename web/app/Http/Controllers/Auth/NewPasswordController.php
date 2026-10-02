@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendMailJob;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -53,9 +54,23 @@ class NewPasswordController extends Controller
         // If the password was successfully reset, we will redirect the user back to
         // the application's home authenticated view. If there is an error we can
         // redirect them back to where they came from with their error message.
-        return $status == Password::PASSWORD_RESET
-                    ? redirect()->route('login')->with('status', __($status))
-                    : back()->withInput($request->only('email'))
-                            ->withErrors(['email' => __($status)]);
+        if ($status == Password::PASSWORD_RESET) {
+            $isi = view('emails.notifikasi', [
+                'judul' => 'Password berhasil diubah',
+                'baris' => [
+                    'Yth. Bapak/Ibu,',
+                    'Password akun Ayoto Nippon Anda baru saja diubah melalui halaman lupa password. Abaikan email ini jika itu Anda. Jika bukan Anda, segera hubungi admin cabang.',
+                    "Hormat kami,\nPT Ayoto Nippon.",
+                ],
+                'tombol' => ['teks' => 'Masuk', 'url' => route('login')],
+                'kontak' => null,
+            ])->render();
+            SendMailJob::dispatch($request->email, 'Password akun Ayoto Nippon berhasil diubah', $isi, [], true);
+
+            return redirect()->route('login')->with('status', __($status));
+        }
+
+        return back()->withInput($request->only('email'))
+            ->withErrors(['email' => __($status)]);
     }
 }

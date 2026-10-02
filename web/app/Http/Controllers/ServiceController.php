@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\SendWaJob;
+use App\Support\Notifikasi;
 use App\Models\Branch;
 use App\Models\Customer;
 use App\Models\ServiceBooking;
@@ -115,8 +116,8 @@ class ServiceController extends Controller
         $fresh = $service->fresh();
         if (in_array($fresh->status, ['Dikonfirmasi', 'Selesai'])) {
             $pesan = $fresh->status === 'Selesai'
-                ? "Servis {$fresh->no_svc} selesai. Total Rp ".number_format($fresh->total(), 0, ',', '.').'. Unit bisa diambil.'
-                : "Booking servis {$fresh->no_svc} dikonfirmasi. Estimasi Rp ".number_format($fresh->estimasi_biaya, 0, ',', '.').', jadwal '.$fresh->jadwal->format('d M Y H:i').'.';
+                ? Notifikasi::servisSelesai($fresh, $fresh->total())
+                : Notifikasi::servisDikonfirmasi($fresh);
             SendWaJob::dispatch($fresh->customer->telp, $pesan);
         }
 
