@@ -79,7 +79,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/invoice/{invoice}', [VerifyController::class, 'invoice'])->name('invoice.download');
 });
 
-Route::middleware(['auth', 'role:sales|admin-cabang|pimpinan|superadmin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:sales|admin-cabang|pimpinan|superadmin|owner'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/verify', [VerifyController::class, 'index'])->name('verify.index');
     Route::patch('/verify/{order}', [VerifyController::class, 'update'])->name('verify.update');
     Route::get('/verify/{order}/file/{jenis}', [VerifyController::class, 'file'])->name('verify.file');
@@ -104,7 +104,7 @@ Route::middleware(['auth', 'role:sales|admin-cabang|pimpinan|superadmin'])->pref
     Route::get('/test-drives', [TestDriveController::class, 'index'])->name('test-drives.index');
 });
 
-Route::middleware(['auth', 'role:superadmin|pimpinan|admin-cabang'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:superadmin|owner|pimpinan|admin-cabang'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('/brands', BrandController::class)->except(['show', 'destroy']);
     Route::resource('/models', CarModelController::class)->except(['show', 'destroy']);
     Route::resource('/variants', VariantController::class)->except(['show', 'destroy']);
@@ -113,17 +113,17 @@ Route::middleware(['auth', 'role:superadmin|pimpinan|admin-cabang'])->prefix('ad
     Route::resource('/branches', BranchController::class)->except(['show', 'destroy']);
 });
 
-Route::middleware(['auth', 'role:superadmin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:superadmin|owner'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('/users', UserController::class)->except(['show', 'destroy']);
 });
 
-Route::middleware(['auth', 'role:pimpinan|superadmin|admin-cabang'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:pimpinan|superadmin|owner|admin-cabang'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::get('/laporan/{jenis}', [LaporanController::class, 'show'])->name('laporan.show');
     Route::get('/laporan/{jenis}/export', [LaporanController::class, 'export'])->name('laporan.export');
 });
 
-Route::middleware(['auth', 'role:service-advisor|mekanik|admin-cabang|pimpinan|superadmin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:service-advisor|mekanik|admin-cabang|pimpinan|superadmin|owner'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
     Route::get('/services/{service}', [ServiceController::class, 'show'])->name('services.show');
     Route::patch('/services/{service}', [ServiceController::class, 'update'])->name('services.update');

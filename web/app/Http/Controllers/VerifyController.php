@@ -88,9 +88,13 @@ class VerifyController extends Controller
         if ($email) {
             $lampiran = $fresh->status === 'Deal' && $fresh->invoice?->pdf_path ? [$fresh->invoice->pdf_path] : [];
             if ($fresh->status === 'Deal') {
-                $salesNama = $fresh->customer->leads()->latest()->first()?->sales?->name ?? '-';
-                $isi = view('emails.receipt', ['order' => $fresh, 'salesNama' => $salesNama])->render();
-                SendMailJob::dispatch($email, "Receipt {$fresh->invoice->no_inv} SPK {$fresh->no_spk} Deal", $isi, $lampiran, true);
+                $isi = view('emails.notifikasi', [
+                    'judul' => "SPK {$fresh->no_spk} Deal",
+                    'baris' => explode("\n", $pesan),
+                    'tombol' => ['teks' => 'Lacak SPK', 'url' => route('spk.show', $fresh->no_spk)],
+                    'kontak' => null,
+                ])->render();
+                SendMailJob::dispatch($email, "Status SPK {$fresh->no_spk}: Deal", $isi, $lampiran, true);
             } else {
                 $isi = view('emails.notifikasi', [
                     'judul' => "Status SPK {$fresh->no_spk}: {$fresh->status}",

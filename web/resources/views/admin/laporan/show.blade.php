@@ -9,6 +9,12 @@
             </form>
             <a href="{{ route('admin.laporan.export', array_merge(['jenis' => $jenis], request()->only(['dari', 'sampai']))) }}" class="px-4 py-2 text-sm font-semibold text-[#16181D] border border-gray-300 rounded-lg min-h-[44px] inline-flex items-center">Export Excel</a>
         </div>
+        @if (auth()->user()->hasRole('admin-cabang'))
+            <p class="mb-4 p-3 text-sm text-[#16181D] bg-blue-50 border border-blue-200 rounded-lg">Menampilkan data {{ auth()->user()->branch->nama }}.</p>
+        @endif
+        @if ($jenis === 'penjualan' && $total !== null)
+            <div class="mb-4 bg-white p-5 rounded-xl shadow-sm"><p class="text-sm text-gray-500">Total omzet{{ auth()->user()->hasRole('admin-cabang') ? ' '.auth()->user()->branch->nama : ' semua cabang' }}</p><p class="text-2xl font-bold text-[#16181D] tabular-nums">Rp {{ number_format($total, 0, ',', '.') }}</p></div>
+        @endif
         @if (empty($rows))
             <div class="bg-white p-6 rounded-xl shadow-sm"><p class="font-semibold">Tidak ada data.</p><p class="text-sm text-gray-500">Ubah rentang tanggal atau cabang.</p></div>
         @else

@@ -20,7 +20,7 @@
         <p class="mt-3 text-sm text-[#4B5563]">Hasil ini sudah tersimpan. Sales kami akan menghubungi Anda.</p>
         <div class="mt-4 flex flex-col sm:flex-row gap-3">
             <a href="{{ route('spk.create', ['variant_id' => $variant->id]) }}" class="px-6 py-3 text-center font-semibold text-white bg-[#C1121F] rounded-lg min-h-[44px]">Ajukan SPK</a>
-            <a href="{{ route('simulasi.form') }}" class="px-6 py-3 text-center font-semibold text-[#16181D] border border-gray-300 rounded-lg min-h-[44px]">Hitung Ulang</a>
+            <a href="{{ route('simulasi.form', ['variant_id' => $variant->id]) }}" class="px-6 py-3 text-center font-semibold text-[#16181D] border border-gray-300 rounded-lg min-h-[44px]">Hitung Ulang</a>
         </div>
     </div>
 </x-site-layout>

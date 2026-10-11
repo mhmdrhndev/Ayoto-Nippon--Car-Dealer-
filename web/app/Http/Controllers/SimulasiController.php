@@ -11,14 +11,18 @@ use Illuminate\Http\Request;
 
 class SimulasiController extends Controller
 {
-    public function form()
+    public function form(Request $request)
     {
         $variants = Variant::with('carModel.brand')->where('aktif', true)->orderBy('nama')->get();
         $leasings = LeasingPartner::where('aktif', true)->orderBy('nama')->get();
         $branches = Branch::where('aktif', true)->orderBy('nama')->get();
         $prices = PriceList::all(['variant_id', 'branch_id', 'otr']);
+        $variantId = $request->query('variant_id');
+        if ($variantId && ! $variants->contains('id', (int) $variantId)) {
+            $variantId = null;
+        }
 
-        return view('simulasi.form', compact('variants', 'leasings', 'branches', 'prices'));
+        return view('simulasi.form', compact('variants', 'leasings', 'branches', 'prices', 'variantId'));
     }
 
     public function hitung(Request $request)
@@ -47,6 +51,11 @@ class SimulasiController extends Controller
             'kebutuhan_text' => "Simulasi: {$variant->carModel->brand->nama} {$variant->carModel->nama} {$variant->nama}, OTR Rp ".number_format($otr, 0, ',', '.').", DP Rp ".number_format($data['dp'], 0, ',', '.').", tenor {$data['tenor']} bln, {$leasing->nama}, estimasi Rp ".number_format($angsuran, 0, ',', '.').'/bln',
         ]);
 
-        return view('simulasi.hasil', compact('variant', 'leasing', 'otr', 'angsuran') + $data);
+        $hasil = compact('variant', 'leasing', 'otr', 'angsuran') + $data;
+        if ($request->expectsJson()) {
+            return response()->json(['html' => view('simulasi.hasil-inline', $hasil)->render()]);
+        }
+
+        return view('simulasi.hasil', $hasil);
     }
 }

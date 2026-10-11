@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Branch;
 use App\Models\Brand;
 use App\Models\CarModel;
+use App\Models\LeasingPartner;
 use App\Models\Promo;
 use App\Models\Unit;
 use App\Models\Variant;
@@ -72,7 +73,11 @@ class CatalogController extends Controller
             ->whereHas('brand', fn ($q) => $q->where('slug', $brand))
             ->firstOrFail();
 
-        return view('katalog.model', compact('m'));
+        $ringkasan = $this->ringkasanModel($m);
+        $kategori = $this->kategoriModel($m);
+        $mulai = $m->variants->flatMap->priceLists->pluck('otr')->filter()->min();
+
+        return view('katalog.model', compact('m', 'ringkasan', 'kategori', 'mulai'));
     }
 
     public function show(string $slug)
@@ -91,6 +96,41 @@ class CatalogController extends Controller
         $warnaPerCabang = $variant->units->where('status', 'Tersedia')->groupBy('branch_id')
             ->map(fn ($units) => $units->map(fn ($u) => $u->color?->nama)->filter()->unique()->values());
 
-        return view('katalog.show', compact('variant', 'stok', 'warnaPerCabang'));
+        $leasings = LeasingPartner::where('aktif', true)->orderBy('nama')->get();
+
+        return view('katalog.show', compact('variant', 'stok', 'warnaPerCabang', 'leasings'));
+    }
+
+    // Pecah deskripsi "Sedan 5 penumpang" jadi bodi dan kapasitas.
+    private function kategoriModel(CarModel $m): ?array
+    {
+        if (! $m->deskripsi || ! preg_match('/^(.*)\s+(\d+)\s+penumpang$/', $m->deskripsi, $cocok)) {
+            return null;
+        }
+
+        return ['body' => $cocok[1], 'kursi' => $cocok[2]];
+    }
+
+    // Ringkasan header halaman model dari data relasi yang sudah dimuat.
+    private function ringkasanModel(CarModel $m): string
+    {
+        $jumlah = $m->variants->count();
+        $transmisi = $m->variants->pluck('transmisi')->unique()->values()->join(', ');
+        $bbm = $m->variants->pluck('bbm')->unique()->values()->join(', ');
+        $otr = $m->variants->flatMap->priceLists->pluck('otr')->filter();
+        $cabang = $m->variants->flatMap->units->where('status', 'Tersedia')->pluck('branch_id')->unique()->count();
+
+        $kalimat = "{$jumlah} varian ({$transmisi}; {$bbm}).";
+        if ($otr->isNotEmpty()) {
+            $min = 'Rp '.number_format($otr->min(), 0, ',', '.');
+            $kalimat .= $otr->min() === $otr->max()
+                ? " Harga OTR {$min}."
+                : ' Harga OTR '.$min.' sampai Rp '.number_format($otr->max(), 0, ',', '.').'.';
+        } else {
+            $kalimat .= ' Harga mengikuti cabang.';
+        }
+        $kalimat .= $cabang > 0 ? " Terpantau di {$cabang} cabang." : ' Belum terpantau stok tersedia.';
+
+        return $kalimat;
     }
 }

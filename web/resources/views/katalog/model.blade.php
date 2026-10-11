@@ -20,9 +20,18 @@
                 <p class="text-sm font-medium text-[#4B5563]">{{ $m->brand->nama }}</p>
                 <h1 class="mt-1 text-2xl sm:text-3xl font-bold text-[#16181D]">{{ $m->nama }}</h1>
                 <p class="mt-2"><x-status-badge status="{{ $adaStok ? 'Tersedia' : 'Dipesan' }}" /></p>
-                @if ($m->deskripsi)
+                @if ($kategori)
+                    <p class="mt-3 flex gap-2 text-xs">
+                        <span class="px-2 py-1 bg-gray-100 rounded-md text-[#16181D]">{{ $kategori['body'] }}</span>
+                        <span class="px-2 py-1 bg-gray-100 rounded-md text-[#16181D]">{{ $kategori['kursi'] }} kursi</span>
+                    </p>
+                @elseif ($m->deskripsi)
                     <p class="mt-3 text-sm text-[#4B5563]">{{ $m->deskripsi }}</p>
                 @endif
+                @if ($mulai)
+                    <p class="mt-3 text-lg font-bold text-[#16181D] tabular-nums">Mulai Rp {{ number_format($mulai, 0, ',', '.') }}</p>
+                @endif
+                <p class="mt-2 text-sm text-[#16181D]">{{ $ringkasan }}</p>
             </div>
         </div>
 

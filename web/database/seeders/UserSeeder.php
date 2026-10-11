@@ -27,8 +27,8 @@ class UserSeeder extends Seeder
             ['name' => 'Juki', 'email' => 'juki@ayotonippon.com', 'role' => 'mekanik', 'branch_id' => $bdg?->id],
 
             // Admin Cabang
-            ['name' => 'Budi Santoso', 'email' => 'budi.admin@ayotonippon.com', 'role' => 'admin-cabang', 'branch_id' => $jkt?->id],
-            ['name' => 'Asep Hidayat', 'email' => 'asep.admin@ayotonippon.com', 'role' => 'admin-cabang', 'branch_id' => $bdg?->id],
+            ['name' => 'Owprabo', 'email' => 'owprabo@ayotonippon.com', 'role' => 'admin-cabang', 'branch_id' => $jkt?->id],
+            ['name' => 'Okwijo', 'email' => 'okwijo@ayotonippon.com', 'role' => 'admin-cabang', 'branch_id' => $bdg?->id],
 
             // Pimpinan
             ['name' => 'Yunnita Rohmalia', 'email' => 'yunnita@ayotonippon.com', 'role' => 'pimpinan', 'branch_id' => $jkt?->id],

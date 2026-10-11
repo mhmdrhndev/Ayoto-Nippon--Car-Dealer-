@@ -4,7 +4,7 @@
         <form method="GET" class="mb-4 flex flex-col sm:flex-row gap-3">
             <select name="status" class="rounded-lg border-gray-300 min-h-[44px]">
                 <option value="">Semua status</option>
-                @foreach (['Baru', 'Dihubungi', 'TestDrive', 'SPK', 'Deal', 'Batal'] as $s)
+                @foreach (['Baru', 'Dihubungi', 'TestDrive', 'SPK', 'Deal', 'Lunas', 'Batal'] as $s)
                     <option value="{{ $s }}" @selected(request('status') === $s)>{{ $s }}</option>
                 @endforeach
             </select>

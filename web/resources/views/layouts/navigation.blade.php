@@ -15,7 +15,7 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    @hasanyrole('sales|admin-cabang|pimpinan|superadmin')
+                    @hasanyrole('sales|admin-cabang|pimpinan|superadmin|owner')
                         <x-dropdown align="left" width="48">
                             <x-slot name="trigger">
                                 <button class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 {{ request()->routeIs('admin.verify.*', 'admin.leads.*', 'admin.units.*', 'admin.test-drives.*', 'admin.trade-ins.*') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} focus:outline-none transition duration-150 ease-in-out">
@@ -32,7 +32,7 @@
                             </x-slot>
                         </x-dropdown>
                     @endhasanyrole
-                    @hasanyrole('service-advisor|mekanik|admin-cabang|pimpinan|superadmin')
+                    @hasanyrole('service-advisor|mekanik|admin-cabang|pimpinan|superadmin|owner')
                         <x-dropdown align="left" width="48">
                             <x-slot name="trigger">
                                 <button class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 {{ request()->routeIs('admin.services.*', 'admin.spareparts.*', 'admin.sparepart-orders.*') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} focus:outline-none transition duration-150 ease-in-out">
@@ -47,7 +47,7 @@
                             </x-slot>
                         </x-dropdown>
                     @endhasanyrole
-                    @hasanyrole('superadmin|pimpinan|admin-cabang')
+                    @hasanyrole('superadmin|pimpinan|admin-cabang|owner')
                         <x-dropdown align="left" width="48">
                             <x-slot name="trigger">
                                 <button class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 {{ request()->routeIs('admin.brands.*', 'admin.models.*', 'admin.variants.*', 'admin.colors.*', 'admin.leasings.*', 'admin.branches.*', 'admin.promos.*', 'admin.contents.*', 'admin.laporan.*', 'admin.users.*') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} focus:outline-none transition duration-150 ease-in-out">
@@ -65,9 +65,9 @@
                                 <x-dropdown-link :href="route('admin.promos.index')">Promo</x-dropdown-link>
                                 <x-dropdown-link :href="route('admin.contents.index')">Konten</x-dropdown-link>
                                 <x-dropdown-link :href="route('admin.laporan.index')">Laporan</x-dropdown-link>
-                                @hasrole('superadmin')
+                                @hasanyrole('superadmin|owner')
                                     <x-dropdown-link :href="route('admin.users.index')">Users</x-dropdown-link>
-                                @endhasrole
+                                @endhasanyrole
                             </x-slot>
                         </x-dropdown>
                     @endhasanyrole
@@ -126,7 +126,7 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            @hasanyrole('sales|admin-cabang|pimpinan|superadmin')
+            @hasanyrole('sales|admin-cabang|pimpinan|superadmin|owner')
                 <x-responsive-nav-link :href="route('admin.verify.index')" :active="request()->routeIs('admin.verify.*')">Verifikasi</x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.leads.index')" :active="request()->routeIs('admin.leads.*')">Leads</x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.units.index')" :active="request()->routeIs('admin.units.*')">Stok</x-responsive-nav-link>
@@ -137,7 +137,7 @@
                 <x-responsive-nav-link :href="route('admin.promos.index')" :active="request()->routeIs('admin.promos.*')">Promo</x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.contents.index')" :active="request()->routeIs('admin.contents.*')">Konten</x-responsive-nav-link>
             @endhasanyrole
-            @hasanyrole('superadmin|pimpinan|admin-cabang')
+            @hasanyrole('superadmin|pimpinan|admin-cabang|owner')
                 <x-responsive-nav-link :href="route('admin.brands.index')" :active="request()->routeIs('admin.brands.*')">Brand</x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.models.index')" :active="request()->routeIs('admin.models.*')">Model</x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.variants.index')" :active="request()->routeIs('admin.variants.*')">Varian</x-responsive-nav-link>
@@ -145,13 +145,13 @@
                 <x-responsive-nav-link :href="route('admin.leasings.index')" :active="request()->routeIs('admin.leasings.*')">Leasing</x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.branches.index')" :active="request()->routeIs('admin.branches.*')">Cabang</x-responsive-nav-link>
             @endhasanyrole
-            @hasanyrole('superadmin')
+            @hasanyrole('superadmin|owner')
                 <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">Users</x-responsive-nav-link>
             @endhasanyrole
-            @hasanyrole('service-advisor|mekanik|admin-cabang|pimpinan|superadmin')
+            @hasanyrole('service-advisor|mekanik|admin-cabang|pimpinan|superadmin|owner')
                 <x-responsive-nav-link :href="route('admin.services.index')" :active="request()->routeIs('admin.services.*')">Servis</x-responsive-nav-link>
             @endhasanyrole
-            @hasanyrole('pimpinan|superadmin|admin-cabang')
+            @hasanyrole('pimpinan|superadmin|owner|admin-cabang')
                 <x-responsive-nav-link :href="route('admin.laporan.index')" :active="request()->routeIs('admin.laporan.*')">Laporan</x-responsive-nav-link>
             @endhasanyrole
         </div>

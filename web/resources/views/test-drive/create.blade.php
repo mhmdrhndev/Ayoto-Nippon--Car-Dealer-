@@ -46,6 +46,7 @@
                 <div>
                     <label for="variant_id" class="block text-sm font-medium text-[#16181D]">Varian</label>
                     <select id="variant_id" name="variant_id" required class="mt-1 w-full rounded-lg border-gray-300 min-h-[44px]">
+                        <option value="" @selected(!old('variant_id'))>Pilih mobil</option>
                         @foreach ($variants as $variant)
                             <option value="{{ $variant->id }}">{{ $variant->carModel->brand->nama }} {{ $variant->carModel->nama }} {{ $variant->nama }}</option>
                         @endforeach

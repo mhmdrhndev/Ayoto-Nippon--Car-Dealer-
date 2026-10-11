@@ -29,10 +29,12 @@ class LaporanController extends Controller
             'sampai' => ['nullable', 'date', 'after_or_equal:dari'],
             'cabang' => ['nullable', 'exists:branches,id'],
         ]);
+        $filter = $this->scopeCabang($request, $filter);
 
         [$headers, $rows] = $this->data($jenis, $filter);
+        $total = $jenis === 'penjualan' ? array_sum(array_column($rows, 5)) : null;
 
-        return view('admin.laporan.show', compact('jenis', 'headers', 'rows'));
+        return view('admin.laporan.show', compact('jenis', 'headers', 'rows', 'total'));
     }
 
     public function export(Request $request, string $jenis)
@@ -44,8 +46,21 @@ class LaporanController extends Controller
             'sampai' => ['nullable', 'date', 'after_or_equal:dari'],
             'cabang' => ['nullable', 'exists:branches,id'],
         ]);
+        $filter = $this->scopeCabang($request, $filter);
 
         return Excel::download(new LaporanExport($jenis, $filter), "laporan-{$jenis}.xlsx");
+    }
+
+    // Manajemen (pimpinan, superadmin) melihat semua cabang, admin cabang terkunci ke cabangnya.
+    private function scopeCabang(Request $request, array $filter): array
+    {
+        $user = $request->user();
+        if ($user->hasAnyRole(['pimpinan', 'superadmin', 'owner'])) {
+            return $filter;
+        }
+        abort_if($user->branch_id === null, 403, 'Akun admin cabang belum terikat cabang. Hubungi superadmin.');
+
+        return array_merge($filter, ['cabang' => $user->branch_id]);
     }
 
     public static function data(string $jenis, array $filter): array
@@ -79,10 +94,12 @@ class LaporanController extends Controller
     {
         $q = Lead::query()
             ->when($filter['dari'] ?? null, fn ($qq, $d) => $qq->whereDate('created_at', '>=', $d))
-            ->when($filter['sampai'] ?? null, fn ($qq, $s) => $qq->whereDate('created_at', '<=', $s));
+            ->when($filter['sampai'] ?? null, fn ($qq, $s) => $qq->whereDate('created_at', '<=', $s))
+            ->when($filter['cabang'] ?? null, fn ($qq, $c) => $qq->whereIn('customer_id',
+                Order::where('branch_id', $c)->select('customer_id')));
         $perStatus = (clone $q)->selectRaw('status, count(*) as jml')->groupBy('status')->pluck('jml', 'status');
         $rows = [['Semua leads', $q->count()]];
-        foreach (['Baru', 'Dihubungi', 'TestDrive', 'SPK', 'Deal', 'Batal'] as $s) {
+        foreach (['Baru', 'Dihubungi', 'TestDrive', 'SPK', 'Deal', 'Lunas', 'Batal'] as $s) {
             $rows[] = ["Status {$s}", $perStatus[$s] ?? 0];
         }
 
@@ -111,7 +128,9 @@ class LaporanController extends Controller
 
     private static function komisi(array $filter): array
     {
-        $salesList = User::role('sales')->orderBy('name')->get();
+        $salesList = User::role('sales')
+            ->when($filter['cabang'] ?? null, fn ($q, $c) => $q->where('branch_id', $c))
+            ->orderBy('name')->get();
         $rows = $salesList->map(function ($sales) use ($filter) {
             $deal = Lead::where('sales_id', $sales->id)->where('status', 'Deal')
                 ->when($filter['dari'] ?? null, fn ($q, $d) => $q->whereDate('updated_at', '>=', $d))
@@ -119,6 +138,7 @@ class LaporanController extends Controller
                 ->count();
             $nilai = Order::where('orders.status', 'Deal')
                 ->whereIn('customer_id', Lead::where('sales_id', $sales->id)->where('status', 'Deal')->select('customer_id'))
+                ->when($filter['cabang'] ?? null, fn ($q, $c) => $q->where('orders.branch_id', $c))
                 ->join('units', 'units.id', '=', 'orders.unit_id')->sum('units.harga');
 
             return [$sales->name, $deal, $nilai, (int) round($nilai * 0.01)];

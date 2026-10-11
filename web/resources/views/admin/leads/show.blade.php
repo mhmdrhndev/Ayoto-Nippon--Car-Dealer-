@@ -25,7 +25,7 @@
                 <div class="flex flex-col sm:flex-row gap-3">
                     <select name="status" class="rounded-lg border-gray-300 text-sm min-h-[44px]">
                         <option value="">Status tetap {{ $lead->status }}</option>
-                        @foreach (['Baru', 'Dihubungi', 'TestDrive', 'SPK', 'Deal', 'Batal'] as $s)
+                        @foreach (['Baru', 'Dihubungi', 'TestDrive', 'SPK', 'Deal', 'Lunas', 'Batal'] as $s)
                             <option value="{{ $s }}">{{ $s }}</option>
                         @endforeach
                     </select>

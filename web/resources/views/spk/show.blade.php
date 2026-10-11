@@ -59,7 +59,7 @@
                 @endif
                 </p>
             @endif
-            @if (auth()->user()?->hasAnyRole(['admin-cabang', 'sales', 'pimpinan', 'superadmin']))
+            @if (auth()->user()?->hasAnyRole(['admin-cabang', 'sales', 'pimpinan', 'superadmin', 'owner']))
                 @if ($order->bast_path)
                     <p class="mt-2 text-sm text-[#16181D]">BAST serah terima sudah diunggah.</p>
                 @else

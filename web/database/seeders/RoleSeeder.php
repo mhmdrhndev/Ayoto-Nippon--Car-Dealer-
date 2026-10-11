@@ -10,7 +10,7 @@ class RoleSeeder extends Seeder
 {
     public function run(): void
     {
-        $roles = ['superadmin', 'pimpinan', 'admin-cabang', 'sales', 'service-advisor', 'mekanik', 'customer'];
+        $roles = ['superadmin', 'owner', 'pimpinan', 'admin-cabang', 'sales', 'service-advisor', 'mekanik', 'customer'];
 
         foreach ($roles as $role) {
             Role::firstOrCreate(['name' => $role, 'guard_name' => 'web']);
