@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendMailJob;
 use App\Jobs\SendWaJob;
 use App\Support\Notifikasi;
 use App\Models\Customer;
 use App\Models\Sparepart;
 use App\Models\SparepartOrder;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -77,6 +79,20 @@ class SparepartOrderController extends Controller
 
         SendWaJob::dispatch($order->customer->telp, Notifikasi::spoDibuat($order));
 
+        $order->load(['customer', 'branch', 'items.sparepart']);
+        foreach (User::role('admin-cabang')->where('branch_id', $order->branch_id)->whereNotNull('email')->get() as $admin) {
+            if (! ($ke = Notifikasi::emailStaf($admin->email))) {
+                continue;
+            }
+            SendMailJob::dispatch($ke, "Order sparepart baru {$order->no_spo}",
+                view('emails.notifikasi', [
+                    'judul' => "Order sparepart baru {$order->no_spo}",
+                    'baris' => explode("\n", Notifikasi::spoBaruUntukAdmin($order)),
+                    'tombol' => null,
+                    'kontak' => null,
+                ])->render(), [], true);
+        }
+
         return redirect()->route('sparepart.order.show', $order->no_spo)->with('sukses', 'Order sparepart dibuat. Segera transfer sebelum deadline.');
     }
 
@@ -123,6 +139,18 @@ class SparepartOrderController extends Controller
         SendWaJob::dispatch($order->customer->telp, $data['aksi'] === 'lunas'
             ? Notifikasi::spoLunas($order)
             : Notifikasi::spoBatal($order));
+
+        $fresh = $order->fresh();
+        if ($email = $fresh->customer->user?->email) {
+            $pesan = $data['aksi'] === 'lunas' ? Notifikasi::spoLunas($fresh) : Notifikasi::spoBatal($fresh);
+            SendMailJob::dispatch($email, "Order sparepart {$fresh->no_spo} {$data['aksi']}",
+                view('emails.notifikasi', [
+                    'judul' => "Order sparepart {$fresh->no_spo} {$data['aksi']}",
+                    'baris' => explode("\n", $pesan),
+                    'tombol' => null,
+                    'kontak' => null,
+                ])->render(), [], true);
+        }
 
         return back()->with('sukses', 'Status order diperbarui.');
     }

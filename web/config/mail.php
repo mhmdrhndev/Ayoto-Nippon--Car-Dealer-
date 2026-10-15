@@ -100,4 +100,7 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+    // Pengalihan sementara notifikasi staf bengkel (kosongkan untuk kirim ke email akun masing-masing).
+    'workshop_to' => env('WORKSHOP_NOTIFY_TO'),
+
 ];

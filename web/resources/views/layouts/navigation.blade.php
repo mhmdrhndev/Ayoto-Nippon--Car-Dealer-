@@ -50,7 +50,7 @@
                     @hasanyrole('superadmin|pimpinan|admin-cabang|owner')
                         <x-dropdown align="left" width="48">
                             <x-slot name="trigger">
-                                <button class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 {{ request()->routeIs('admin.brands.*', 'admin.models.*', 'admin.variants.*', 'admin.colors.*', 'admin.leasings.*', 'admin.branches.*', 'admin.promos.*', 'admin.contents.*', 'admin.laporan.*', 'admin.users.*') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} focus:outline-none transition duration-150 ease-in-out">
+                                <button class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 {{ request()->routeIs('admin.brands.*', 'admin.models.*', 'admin.variants.*', 'admin.colors.*', 'admin.leasings.*', 'admin.branches.*', 'admin.promos.*', 'admin.contents.*', 'admin.hero-slides.*', 'admin.laporan.*', 'admin.users.*') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} focus:outline-none transition duration-150 ease-in-out">
                                     <div>Kelola</div>
                                     <div class="ms-1"><svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" /></svg></div>
                                 </button>
@@ -64,6 +64,7 @@
                                 <x-dropdown-link :href="route('admin.branches.index')">Cabang</x-dropdown-link>
                                 <x-dropdown-link :href="route('admin.promos.index')">Promo</x-dropdown-link>
                                 <x-dropdown-link :href="route('admin.contents.index')">Konten</x-dropdown-link>
+                                <x-dropdown-link :href="route('admin.hero-slides.index')">Hero</x-dropdown-link>
                                 <x-dropdown-link :href="route('admin.laporan.index')">Laporan</x-dropdown-link>
                                 @hasanyrole('superadmin|owner')
                                     <x-dropdown-link :href="route('admin.users.index')">Users</x-dropdown-link>
@@ -136,6 +137,7 @@
                 <x-responsive-nav-link :href="route('admin.sparepart-orders.index')" :active="request()->routeIs('admin.sparepart-orders.*')">Order Part</x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.promos.index')" :active="request()->routeIs('admin.promos.*')">Promo</x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.contents.index')" :active="request()->routeIs('admin.contents.*')">Konten</x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.hero-slides.index')" :active="request()->routeIs('admin.hero-slides.*')">Hero</x-responsive-nav-link>
             @endhasanyrole
             @hasanyrole('superadmin|pimpinan|admin-cabang|owner')
                 <x-responsive-nav-link :href="route('admin.brands.index')" :active="request()->routeIs('admin.brands.*')">Brand</x-responsive-nav-link>

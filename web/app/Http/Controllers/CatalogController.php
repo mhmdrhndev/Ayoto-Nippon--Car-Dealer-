@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Branch;
 use App\Models\Brand;
 use App\Models\CarModel;
+use App\Models\HeroSlide;
 use App\Models\LeasingPartner;
 use App\Models\Promo;
 use App\Models\Unit;
@@ -19,8 +20,13 @@ class CatalogController extends Controller
         $branches = Branch::where('aktif', true)->orderBy('nama')->get();
         $totalUnit = Unit::tersedia()->count();
         $promos = Promo::berjalan()->orderBy('selesai')->limit(3)->get();
+        $slides = HeroSlide::aktif()->terurut()->get();
+        if ($slides->isEmpty()) {
+            $slides = collect(['foto-8.jpg', 'foto-7.jpg', 'foto-9.jpg'])
+                ->map(fn ($foto, $i) => new HeroSlide(['nama' => 'Default '.($i + 1), 'foto' => 'images/unit/'.$foto]));
+        }
 
-        return view('home', compact('brands', 'branches', 'totalUnit', 'promos'));
+        return view('home', compact('brands', 'branches', 'totalUnit', 'promos', 'slides'));
     }
 
     public function index(Request $request)

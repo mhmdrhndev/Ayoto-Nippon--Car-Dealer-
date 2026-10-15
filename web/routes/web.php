@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CarModelController;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\ContentController;
+use App\Http\Controllers\Admin\HeroSlideController;
 use App\Http\Controllers\Admin\LeasingController;
 use App\Http\Controllers\Admin\PriceListController;
 use App\Http\Controllers\Admin\PromoController;
@@ -111,6 +112,7 @@ Route::middleware(['auth', 'role:superadmin|owner|pimpinan|admin-cabang'])->pref
     Route::resource('/colors', ColorController::class)->except(['show', 'destroy']);
     Route::resource('/leasings', LeasingController::class)->except(['show', 'destroy']);
     Route::resource('/branches', BranchController::class)->except(['show', 'destroy']);
+    Route::resource('/hero-slides', HeroSlideController::class)->except(['show', 'destroy']);
 });
 
 Route::middleware(['auth', 'role:superadmin|owner'])->prefix('admin')->name('admin.')->group(function () {
@@ -128,6 +130,7 @@ Route::middleware(['auth', 'role:service-advisor|mekanik|admin-cabang|pimpinan|s
     Route::get('/services/{service}', [ServiceController::class, 'show'])->name('services.show');
     Route::patch('/services/{service}', [ServiceController::class, 'update'])->name('services.update');
     Route::post('/services/{service}/detail', [ServiceController::class, 'addDetail'])->name('services.detail');
+    Route::patch('/services/{service}/tanggapi', [ServiceController::class, 'tanggapi'])->name('services.tanggapi');
 });
 
 require __DIR__.'/auth.php';

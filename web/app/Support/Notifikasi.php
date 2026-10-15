@@ -10,6 +10,12 @@ class Notifikasi
         return number_format($nominal, 0, ',', '.');
     }
 
+    // Pengalihan sementara notifikasi staf (lihat WORKSHOP_NOTIFY_TO di .env).
+    public static function emailStaf(?string $email): ?string
+    {
+        return config('mail.workshop_to') ?: $email;
+    }
+
     private static function sapa(?string $nama): string
     {
         return 'Yth. Bapak/Ibu '.($nama ?: 'Pelanggan').',';
@@ -97,7 +103,9 @@ class Notifikasi
 
     public static function servisSelesai($booking, int $total): string
     {
-        return self::sapa($booking->customer->nama)."\nServis {$booking->no_svc} telah selesai dengan total Rp ".self::rp($total).'.'
+        $bayar = $booking->metode_bayar ? " Dibayar via {$booking->metode_bayar}." : '';
+
+        return self::sapa($booking->customer->nama)."\nServis {$booking->no_svc} telah selesai dengan total Rp ".self::rp($total).'.'.$bayar
             ."\nUnit dapat diambil di {$booking->branch->nama}."
             ."\n".self::tutup($booking->branch);
     }
@@ -105,6 +113,102 @@ class Notifikasi
     public static function reminderServis($booking): string
     {
         return self::sapa($booking->customer->nama)."\nMengingatkan jadwal servis {$booking->no_svc} besok {$booking->jadwal->format('d M Y H:i')} di {$booking->branch->nama}. Mohon datang tepat waktu."
+            ."\n".self::tutup($booking->branch);
+    }
+
+    public static function servisBaruUntukBengkel($booking): string
+    {
+        return "Yth. tim {$booking->branch->nama},\nBooking servis baru {$booking->no_svc} dari {$booking->customer->nama} ({$booking->customer->telp})."
+            ."\nUnit {$booking->nopol}, jadwal {$booking->jadwal->format('d M Y H:i')}. Keluhan: {$booking->keluhan}"
+            ."\nMohon segera konfirmasi dan tugaskan mekanik."
+            ."\n".self::tutup(null);
+    }
+
+    public static function tugasServisUntukMekanik($booking): string
+    {
+        $nama = $booking->mekanik?->name ?? 'mekanik';
+        $jadwal = $booking->jadwal instanceof \DateTimeInterface ? $booking->jadwal->format('d M Y H:i') : $booking->jadwal;
+
+        return "Yth. Sdr. {$nama},\nAnda ditugaskan menangani servis {$booking->no_svc} ({$booking->customer->nama}, {$booking->nopol})."
+            ."\nJadwal: {$jadwal} di {$booking->branch->nama}. Keluhan: {$booking->keluhan}"
+            ."\n".self::tutup($booking->branch);
+    }
+
+    public static function estimasiBerjalan($booking): string
+    {
+        $teks = self::sapa($booking->customer->nama)."\nEstimasi berjalan servis {$booking->no_svc}: Rp ".self::rp($booking->total()).'.';
+        foreach ($booking->details as $detail) {
+            $teks .= "\n- [{$detail->jenis}] {$detail->deskripsi} x {$detail->qty}: Rp ".self::rp($detail->subtotal);
+        }
+
+        return $teks."\n".self::tutup($booking->branch);
+    }
+
+    public static function testDriveBaruUntukSales($testDrive): string
+    {
+        $v = $testDrive->variant;
+
+        return "Yth. tim sales {$testDrive->branch->nama},\nPengajuan test drive baru dari {$testDrive->customer->nama} ({$testDrive->customer->telp})."
+            ."\nUnit: {$v->carModel->brand->nama} {$v->carModel->nama} {$v->nama}, jadwal {$testDrive->jadwal->format('d M Y H:i')} di {$testDrive->branch->nama}."
+            ."\nMohon segera hubungi customer untuk konfirmasi."
+            ."\n".self::tutup(null);
+    }
+
+    public static function tradeInBaruUntukAdmin($tradeIn): string
+    {
+        return "Yth. tim admin,\nPengajuan trade-in baru dari {$tradeIn->customer->nama} ({$tradeIn->customer->telp})."
+            ."\nUnit lama: {$tradeIn->merk_tipe} tahun {$tradeIn->tahun}, KM ".number_format($tradeIn->km, 0, ',', '.').($tradeIn->order_id ? " (tertaut SPK ID {$tradeIn->order_id})" : '')
+            ."\nMohon segera jadwalkan inspeksi."
+            ."\n".self::tutup(null);
+    }
+
+    public static function testDriveBatalUntukCustomer($testDrive): string
+    {
+        $v = $testDrive->variant;
+
+        return self::sapa($testDrive->customer->nama)."\nPengajuan test drive {$v->carModel->nama} {$v->nama} kami batalkan."
+            ."\nHubungi {$testDrive->branch->nama} untuk menjadwalkan ulang."
+            ."\n".self::tutup($testDrive->branch);
+    }
+
+    public static function tradeInStatusUntukCustomer($tradeIn): string
+    {
+        $kalimat = match ($tradeIn->status) {
+            'Inspeksi' => "Pengajuan trade-in {$tradeIn->merk_tipe} tahun {$tradeIn->tahun} masuk tahap inspeksi. Tim kami akan menghubungi jadwalnya.",
+            'Ditawar' => "Kendaraan Anda kami tawar Rp ".self::rp($tradeIn->harga_penawaran ?? 0).'. Silakan konfirmasi setuju atau tolak ke admin cabang.',
+            'Deal' => "Trade-in {$tradeIn->merk_tipe} tahun {$tradeIn->tahun} Deal dengan harga Rp ".self::rp($tradeIn->harga_penawaran ?? 0).'.',
+            default => "Pengajuan trade-in {$tradeIn->merk_tipe} tahun {$tradeIn->tahun} belum dapat kami terima.",
+        };
+
+        return self::sapa($tradeIn->customer->nama)."\n{$kalimat}"
+            ."\n".self::tutup(null);
+    }
+
+    public static function spoBaruUntukAdmin($order): string
+    {
+        $items = $order->items->map(fn ($i) => "{$i->sparepart->nama} x {$i->qty}")->join(', ');
+
+        return "Yth. tim {$order->branch->nama},\nOrder sparepart baru {$order->no_spo} dari {$order->customer->nama} ({$order->customer->telp})."
+            ."\nItem: {$items}. Total Rp ".self::rp($order->total).'.'
+            ."\nMohon pantau pembayaran dan siapkan barang."
+            ."\n".self::tutup(null);
+    }
+
+    public static function spkBaruUntukStaf($order, ?string $salesNama): string
+    {
+        $v = $order->unit->variant;
+
+        return 'Yth. tim '.$order->branch->nama.",\nSPK baru {$order->no_spk} dari {$order->customer->nama} ({$order->customer->telp})."
+            ."\nUnit: {$v->carModel->brand->nama} {$v->carModel->nama} {$v->nama}, metode {$order->metode}."
+            .($salesNama ? "\nSales pendamping: {$salesNama}." : '')
+            ."\nMohon pantau pembayaran booking fee."
+            ."\n".self::tutup(null);
+    }
+
+    public static function tanggapanServis($booking): string
+    {
+        return self::sapa($booking->customer->nama)."\nMenindaklanjuti keluhan Anda pada servis {$booking->no_svc} ({$booking->keluhan}), bengkel kami menyampaikan:"
+            ."\n{$booking->tanggapan}"
             ."\n".self::tutup($booking->branch);
     }
 

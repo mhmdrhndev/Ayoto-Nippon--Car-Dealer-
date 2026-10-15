@@ -1,33 +1,42 @@
 <x-site-layout>
     <x-site-header />
 
-    <section class="relative bg-[#16181D] overflow-hidden"
+    <section class="relative bg-[#16181D] overflow-hidden" aria-label="Sorotan"
         x-data="{
             active: 0,
-            total: 3,
+            total: {{ $slides->count() }},
             timer: null,
+            jalan: true,
             init() {
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { this.jalan = false; return; }
+                this.mulai();
+            },
+            mulai() {
                 this.timer = setInterval(() => { this.active = (this.active + 1) % this.total; }, 7000);
+            },
+            jeda() {
+                clearInterval(this.timer);
+                this.timer = null;
+                this.jalan = false;
+            },
+            putar() {
+                this.jalan = true;
+                this.mulai();
             }
         }">
         <div class="absolute inset-0 pointer-events-none">
-            <img src="{{ asset('images/unit/foto-8.jpg') }}" alt=""
-                class="absolute inset-0 h-full w-full object-cover"
-                style="transition: opacity 1.6s cubic-bezier(0.4, 0, 0.2, 1), transform 8s ease-out;"
-                :class="active === 0 ? 'opacity-40 scale-105' : 'opacity-0 scale-100'">
-            <img src="{{ asset('images/unit/foto-7.jpg') }}" alt=""
-                class="absolute inset-0 h-full w-full object-cover"
-                style="transition: opacity 1.6s cubic-bezier(0.4, 0, 0.2, 1), transform 8s ease-out;"
-                :class="active === 1 ? 'opacity-40 scale-105' : 'opacity-0 scale-100'">
-            <img src="{{ asset('images/unit/foto-9.jpg') }}" alt=""
-                class="absolute inset-0 h-full w-full object-cover"
-                style="transition: opacity 1.6s cubic-bezier(0.4, 0, 0.2, 1), transform 8s ease-out;"
-                :class="active === 2 ? 'opacity-40 scale-105' : 'opacity-0 scale-100'">
+            @foreach ($slides as $i => $slide)
+                <img src="{{ asset($slide->foto) }}" alt=""
+                    class="absolute inset-0 h-full w-full object-cover"
+                    style="transition: opacity 1.6s cubic-bezier(0.4, 0, 0.2, 1), transform 8s ease-out;"
+                    :class="active === {{ $i }} ? 'opacity-40 scale-105' : 'opacity-0 scale-100'">
+            @endforeach
             <div class="absolute inset-0 bg-[#16181D]/60"></div>
         </div>
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-24">
-            <h1 class="text-3xl sm:text-5xl font-bold text-white max-w-2xl">Mobil baru dengan harga OTR jelas per cabang</h1>
-            <p class="mt-3 text-base sm:text-lg text-gray-200 max-w-xl">Stok dihitung per unit. Saat ini ada {{ $totalUnit }} unit tersedia di Jakarta dan Bandung.</p>
+            <p class="inline-flex items-center text-xs sm:text-sm font-semibold text-white bg-[#C1121F] rounded-md px-3 py-1.5">Dealer Jakarta dan Bandung</p>
+            <h1 class="mt-3 text-3xl sm:text-5xl font-bold text-white max-w-2xl">Mobil baru dengan harga OTR jelas per cabang</h1>
+            <p class="mt-3 text-base sm:text-lg text-gray-200 max-w-xl tabular-nums">{{ number_format($totalUnit, 0, ',', '.') }} unit tersedia, {{ $brands->count() }} merek, {{ $branches->count() }} cabang.</p>
             <form action="{{ route('katalog.index') }}" method="GET" class="mt-6 max-w-2xl bg-white rounded-2xl p-3 flex flex-col sm:flex-row gap-3">
                 <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari model atau varian, contoh: Avanza"
                     aria-label="Cari model atau varian" class="flex-1 rounded-xl border-gray-300 min-h-[44px]">
@@ -40,24 +49,23 @@
                 <button type="submit" class="px-6 py-2 font-semibold text-white bg-[#C1121F] rounded-xl min-h-[44px]">Cari Mobil</button>
             </form>
             <div class="mt-4 flex flex-wrap gap-2">
+                <a href="{{ route('test-drive.create') }}" class="px-4 py-2 text-sm font-semibold text-white bg-[#C1121F] rounded-lg min-h-[44px] inline-flex items-center">Booking Test Drive</a>
                 <a href="{{ route('simulasi.form') }}" class="px-4 py-2 text-sm font-semibold text-white border border-white/60 rounded-lg min-h-[44px] inline-flex items-center">Simulasi Kredit</a>
                 <a href="{{ route('lacak.form') }}" class="px-4 py-2 text-sm font-semibold text-white border border-white/60 rounded-lg min-h-[44px] inline-flex items-center">Lacak SPK</a>
             </div>
         </div>
 
-        <div class="absolute bottom-4 right-4 sm:right-8 flex gap-2 z-10">
-            <button type="button" @click="active = 0; clearInterval(timer)"
-                :class="active === 0 ? 'bg-white w-7' : 'bg-white/40 w-2.5 hover:bg-white/70'"
-                class="h-2.5 rounded-full transition-all duration-300 min-h-[20px] flex items-center justify-center"
-                aria-label="Slide 1"></button>
-            <button type="button" @click="active = 1; clearInterval(timer)"
-                :class="active === 1 ? 'bg-white w-7' : 'bg-white/40 w-2.5 hover:bg-white/70'"
-                class="h-2.5 rounded-full transition-all duration-300 min-h-[20px] flex items-center justify-center"
-                aria-label="Slide 2"></button>
-            <button type="button" @click="active = 2; clearInterval(timer)"
-                :class="active === 2 ? 'bg-white w-7' : 'bg-white/40 w-2.5 hover:bg-white/70'"
-                class="h-2.5 rounded-full transition-all duration-300 min-h-[20px] flex items-center justify-center"
-                aria-label="Slide 3"></button>
+        <div class="absolute bottom-4 right-4 sm:right-8 flex items-center gap-1 z-10">
+            @foreach ($slides as $i => $slide)
+                <button type="button" @click="active = {{ $i }}; jeda()"
+                    class="min-h-[44px] min-w-[44px] inline-flex items-center justify-center" aria-label="Slide {{ $i + 1 }}: {{ $slide->nama }}">
+                    <span class="h-2.5 rounded-full transition-all duration-300" :class="active === {{ $i }} ? 'bg-white w-7' : 'bg-white/40 w-2.5'"></span>
+                </button>
+            @endforeach
+            <button type="button" @click="jalan ? jeda() : putar()" :aria-pressed="jalan"
+                class="min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-xs font-semibold text-white" aria-label="Jeda atau putar slider">
+                <span x-text="jalan ? 'Jeda' : 'Putar'"></span>
+            </button>
         </div>
     </section>
 
@@ -107,6 +115,17 @@
                 @endforeach
             </div>
         @endif
+
+        <h2 class="mt-10 text-xl font-bold text-[#16181D]">Cara membeli mobil</h2>
+        <ol class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            @foreach ([['1', 'Pilih unit', 'Buka katalog, bandingkan OTR per cabang, lalu ajukan SPK.', 'katalog.index'], ['2', 'Transfer booking fee', 'Ikuti instruksi di halaman SPK sebelum batas bayar.', 'lacak.form'], ['3', 'Verifikasi admin', 'Upload bukti, admin memverifikasi dan menerbitkan invoice.', 'lacak.form'], ['4', 'Pelunasan dan ambil unit', 'Selesaikan pembayaran di dealer, serahkan dengan BAST.', 'cabang.index']] as [$no, $judul, $desc, $route])
+                <li class="border-t-4 border-[#C1121F] bg-gray-50 rounded-b-xl p-5">
+                    <span class="text-3xl font-bold text-[#C1121F] tabular-nums">{{ $no }}</span>
+                    <a href="{{ route($route) }}" class="mt-1 block font-bold text-[#16181D] hover:underline">{{ $judul }}</a>
+                    <span class="mt-1 block text-sm text-[#4B5563]">{{ $desc }}</span>
+                </li>
+            @endforeach
+        </ol>
 
         <h2 class="mt-10 text-xl font-bold text-[#16181D]">Layanan kami</h2>
         <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">

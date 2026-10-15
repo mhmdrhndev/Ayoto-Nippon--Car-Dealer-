@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ServiceBooking extends Model
 {
-    protected $fillable = ['no_svc', 'customer_id', 'branch_id', 'nopol', 'vin', 'km', 'keluhan', 'jadwal', 'status', 'estimasi_biaya', 'mekanik_id'];
+    protected $fillable = ['no_svc', 'customer_id', 'branch_id', 'nopol', 'vin', 'km', 'keluhan', 'tanggapan', 'jadwal', 'status', 'estimasi_biaya', 'metode_bayar', 'mekanik_id'];
 
     protected function casts(): array
     {

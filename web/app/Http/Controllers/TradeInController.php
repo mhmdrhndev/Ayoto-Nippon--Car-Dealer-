@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendMailJob;
 use App\Models\Customer;
 use App\Models\Lead;
 use App\Models\Order;
 use App\Models\TradeIn;
+use App\Models\User;
+use App\Support\Notifikasi;
 use Illuminate\Http\Request;
 
 class TradeInController extends Controller
@@ -72,6 +75,20 @@ class TradeInController extends Controller
             'kebutuhan_text' => "Trade-in {$tradeIn->merk_tipe} tahun {$tradeIn->tahun}, KM {$tradeIn->km}",
         ]);
 
+        $tradeIn->load('customer');
+        foreach (User::role('admin-cabang')->whereNotNull('email')->get() as $admin) {
+            if (! ($ke = Notifikasi::emailStaf($admin->email))) {
+                continue;
+            }
+            SendMailJob::dispatch($ke, 'Pengajuan trade-in baru',
+                view('emails.notifikasi', [
+                    'judul' => 'Pengajuan trade-in baru',
+                    'baris' => explode("\n", Notifikasi::tradeInBaruUntukAdmin($tradeIn)),
+                    'tombol' => null,
+                    'kontak' => null,
+                ])->render(), [], true);
+        }
+
         return redirect()->route('home')->with('sukses', 'Pengajuan trade-in diterima. Tim kami akan menghubungi untuk inspeksi.');
     }
 
@@ -83,6 +100,17 @@ class TradeInController extends Controller
         ]);
 
         $tradeIn->update($data);
+
+        $fresh = $tradeIn->fresh();
+        if ($email = $fresh->customer->user?->email) {
+            SendMailJob::dispatch($email, "Status trade-in: {$fresh->status}",
+                view('emails.notifikasi', [
+                    'judul' => "Status trade-in: {$fresh->status}",
+                    'baris' => explode("\n", Notifikasi::tradeInStatusUntukCustomer($fresh)),
+                    'tombol' => null,
+                    'kontak' => null,
+                ])->render(), [], true);
+        }
 
         return back()->with('sukses', 'Status trade-in diperbarui.');
     }

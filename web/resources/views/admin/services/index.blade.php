@@ -2,6 +2,9 @@
     <x-slot name="header"><h2 class="font-semibold text-xl text-gray-800 leading-tight">Booking Servis</h2></x-slot>
     <div class="py-6 max-w-7xl mx-auto sm:px-6 lg:px-8">
         @if (session('sukses'))<p class="mb-4 p-3 text-sm bg-green-50 border border-green-200 rounded-lg">{{ session('sukses') }}</p>@endif
+        @if (auth()->user()->hasRole('mekanik'))
+            <p class="mb-4 p-3 text-sm text-[#16181D] bg-blue-50 border border-blue-200 rounded-lg">Menampilkan tugas servis Anda.</p>
+        @endif
         <form method="GET" class="mb-4 flex gap-3">
             <select name="status" class="rounded-lg border-gray-300 min-h-[44px]">
                 <option value="">Semua status</option>

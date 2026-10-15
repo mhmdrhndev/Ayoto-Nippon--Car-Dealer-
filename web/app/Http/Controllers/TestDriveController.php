@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendMailJob;
 use App\Jobs\SendWaJob;
 use App\Support\Notifikasi;
 use App\Models\Branch;
+use App\Models\User;
 use App\Models\Customer;
 use App\Models\Lead;
 use App\Models\TestDrive;
@@ -63,6 +65,20 @@ class TestDriveController extends Controller
             'kebutuhan_text' => "Test drive {$testDrive->variant->carModel->nama} {$testDrive->variant->nama} di {$testDrive->branch->nama}, jadwal {$testDrive->jadwal->format('d M Y H:i')}",
         ]);
 
+        $testDrive->load(['customer', 'branch', 'variant.carModel.brand']);
+        foreach (User::role('sales')->where('branch_id', $testDrive->branch_id)->whereNotNull('email')->get() as $sales) {
+            if (! ($ke = Notifikasi::emailStaf($sales->email))) {
+                continue;
+            }
+            SendMailJob::dispatch($ke, "Pengajuan test drive baru di {$testDrive->branch->nama}",
+                view('emails.notifikasi', [
+                    'judul' => 'Pengajuan test drive baru',
+                    'baris' => explode("\n", Notifikasi::testDriveBaruUntukSales($testDrive)),
+                    'tombol' => null,
+                    'kontak' => null,
+                ])->render(), [], true);
+        }
+
         return redirect()->route('home')->with('sukses', 'Pengajuan test drive diterima. Sales kami akan mengonfirmasi jadwal.');
     }
 
@@ -73,6 +89,19 @@ class TestDriveController extends Controller
 
         if ($data['status'] === 'Dikonfirmasi') {
             SendWaJob::dispatch($testDrive->customer->telp, Notifikasi::testDriveDikonfirmasi($testDrive));
+        }
+
+        $email = $testDrive->customer->user?->email;
+        if ($email && in_array($data['status'], ['Dikonfirmasi', 'Batal'])) {
+            $dikonfirmasi = $data['status'] === 'Dikonfirmasi';
+            $pesan = $dikonfirmasi ? Notifikasi::testDriveDikonfirmasi($testDrive) : Notifikasi::testDriveBatalUntukCustomer($testDrive);
+            SendMailJob::dispatch($email, $dikonfirmasi ? 'Test drive dikonfirmasi' : 'Pengajuan test drive dibatalkan',
+                view('emails.notifikasi', [
+                    'judul' => $dikonfirmasi ? 'Test drive dikonfirmasi' : 'Pengajuan test drive dibatalkan',
+                    'baris' => explode("\n", $pesan),
+                    'tombol' => null,
+                    'kontak' => null,
+                ])->render(), [], true);
         }
 
         return back()->with('sukses', 'Status test drive diperbarui.');

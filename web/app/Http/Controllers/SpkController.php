@@ -164,6 +164,25 @@ class SpkController extends Controller
             SendMailJob::dispatch($request->user()->email, "SPK {$order->no_spk} dibuat", $isi, [], true);
         }
 
+        $order->load(['customer', 'unit.variant.carModel.brand', 'branch']);
+        $salesTujuan = ($data['sales_id'] ?? null) ? User::find($data['sales_id']) : null;
+        $staf = User::role('admin-cabang')->where('branch_id', $order->branch_id)->whereNotNull('email')->get();
+        if ($salesTujuan && $salesTujuan->email && ! $staf->contains('id', $salesTujuan->id)) {
+            $staf->push($salesTujuan);
+        }
+        foreach ($staf as $orang) {
+            if (! ($ke = Notifikasi::emailStaf($orang->email))) {
+                continue;
+            }
+            SendMailJob::dispatch($ke, "SPK baru {$order->no_spk}",
+                view('emails.notifikasi', [
+                    'judul' => "SPK baru {$order->no_spk}",
+                    'baris' => explode("\n", Notifikasi::spkBaruUntukStaf($order, $salesTujuan?->name)),
+                    'tombol' => null,
+                    'kontak' => null,
+                ])->render(), [], true);
+        }
+
         return redirect()->route('spk.show', $order->no_spk)->with('sukses', 'SPK berhasil dibuat. Segera transfer booking fee sebelum deadline.');
     }
 
