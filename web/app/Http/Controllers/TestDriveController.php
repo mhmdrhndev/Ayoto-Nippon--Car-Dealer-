@@ -6,6 +6,7 @@ use App\Jobs\SendMailJob;
 use App\Jobs\SendWaJob;
 use App\Support\Notifikasi;
 use App\Models\Branch;
+use App\Models\Color;
 use App\Models\User;
 use App\Models\Customer;
 use App\Models\Lead;
@@ -17,18 +18,27 @@ class TestDriveController extends Controller
 {
     public function index()
     {
-        $drives = TestDrive::with(['customer', 'branch', 'variant.carModel'])
+        $drives = TestDrive::with(['customer', 'branch', 'variant.carModel', 'color'])
             ->latest()->paginate(15);
 
         return view('admin.test-drives.index', compact('drives'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $branches = Branch::where('aktif', true)->orderBy('nama')->get();
         $variants = Variant::with('carModel.brand')->where('aktif', true)->orderBy('nama')->get();
+        $colors = Color::where('aktif', true)->orderBy('nama')->get();
+        $variantId = $request->query('variant_id');
+        if ($variantId && ! $variants->contains('id', (int) $variantId)) {
+            $variantId = null;
+        }
+        $colorId = $request->query('color_id');
+        if ($colorId && ! $colors->contains('id', (int) $colorId)) {
+            $colorId = null;
+        }
 
-        return view('test-drive.create', compact('branches', 'variants'));
+        return view('test-drive.create', compact('branches', 'variants', 'colors', 'variantId', 'colorId'));
     }
 
     public function store(Request $request)
@@ -40,6 +50,7 @@ class TestDriveController extends Controller
             'alamat' => ['required', 'string'],
             'branch_id' => ['required', 'exists:branches,id'],
             'variant_id' => ['required', 'exists:variants,id'],
+            'color_id' => ['nullable', 'exists:colors,id'],
             'jadwal' => ['required', 'date', 'after:now'],
             'catatan' => ['nullable', 'string'],
         ]);
@@ -53,19 +64,22 @@ class TestDriveController extends Controller
             'customer_id' => $customer->id,
             'branch_id' => $data['branch_id'],
             'variant_id' => $data['variant_id'],
+            'color_id' => $data['color_id'] ?? null,
             'jadwal' => $data['jadwal'],
             'status' => 'Menunggu',
             'catatan' => $data['catatan'] ?? null,
         ]);
 
+        $testDrive->load(['variant.carModel.brand', 'branch', 'color']);
+        $warna = $testDrive->color ? ", warna {$testDrive->color->nama}" : '';
         Lead::create([
             'customer_id' => $customer->id,
             'sumber' => 'Web',
             'status' => 'TestDrive',
-            'kebutuhan_text' => "Test drive {$testDrive->variant->carModel->nama} {$testDrive->variant->nama} di {$testDrive->branch->nama}, jadwal {$testDrive->jadwal->format('d M Y H:i')}",
+            'kebutuhan_text' => "Test drive {$testDrive->variant->carModel->nama} {$testDrive->variant->nama}{$warna} di {$testDrive->branch->nama}, jadwal {$testDrive->jadwal->format('d M Y H:i')}",
         ]);
 
-        $testDrive->load(['customer', 'branch', 'variant.carModel.brand']);
+        $testDrive->load(['customer', 'branch', 'variant.carModel.brand', 'color']);
         foreach (User::role('sales')->where('branch_id', $testDrive->branch_id)->whereNotNull('email')->get() as $sales) {
             if (! ($ke = Notifikasi::emailStaf($sales->email))) {
                 continue;

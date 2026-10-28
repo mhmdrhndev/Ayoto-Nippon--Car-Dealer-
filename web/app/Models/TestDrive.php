@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TestDrive extends Model
 {
-    protected $fillable = ['customer_id', 'branch_id', 'variant_id', 'jadwal', 'status', 'catatan'];
+    protected $fillable = ['customer_id', 'branch_id', 'variant_id', 'color_id', 'jadwal', 'status', 'catatan'];
 
     protected function casts(): array
     {
@@ -27,5 +27,10 @@ class TestDrive extends Model
     public function variant(): BelongsTo
     {
         return $this->belongsTo(Variant::class);
+    }
+
+    public function color(): BelongsTo
+    {
+        return $this->belongsTo(Color::class);
     }
 }

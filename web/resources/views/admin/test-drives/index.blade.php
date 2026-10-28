@@ -15,7 +15,7 @@
                         @foreach ($drives as $drive)
                             <tr class="border-b last:border-0">
                                 <td class="px-4 py-3">{{ $drive->customer->nama }}<br><span class="text-gray-500">{{ $drive->customer->telp }}</span></td>
-                                <td class="px-4 py-3">{{ $drive->variant ? $drive->variant->carModel->nama.' '.$drive->variant->nama : '-' }}</td>
+                                <td class="px-4 py-3">{{ $drive->variant ? $drive->variant->carModel->nama.' '.$drive->variant->nama : '-' }}<br><span class="text-gray-500">{{ $drive->color->nama ?? 'Warna bebas' }}</span></td>
                                 <td class="px-4 py-3">{{ $drive->jadwal->format('d M Y H:i') }}<br><span class="text-gray-500">{{ $drive->branch->nama }}</span></td>
                                 <td class="px-4 py-3">{{ $drive->status }}</td>
                                 <td class="px-4 py-3">

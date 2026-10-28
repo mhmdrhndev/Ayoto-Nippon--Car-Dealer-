@@ -148,8 +148,10 @@ class Notifikasi
     {
         $v = $testDrive->variant;
 
+        $warna = $testDrive->color ? ", warna {$testDrive->color->nama}" : '';
+
         return "Yth. tim sales {$testDrive->branch->nama},\nPengajuan test drive baru dari {$testDrive->customer->nama} ({$testDrive->customer->telp})."
-            ."\nUnit: {$v->carModel->brand->nama} {$v->carModel->nama} {$v->nama}, jadwal {$testDrive->jadwal->format('d M Y H:i')} di {$testDrive->branch->nama}."
+            ."\nUnit: {$v->carModel->brand->nama} {$v->carModel->nama} {$v->nama}{$warna}, jadwal {$testDrive->jadwal->format('d M Y H:i')} di {$testDrive->branch->nama}."
             ."\nMohon segera hubungi customer untuk konfirmasi."
             ."\n".self::tutup(null);
     }

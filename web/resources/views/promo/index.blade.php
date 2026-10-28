@@ -24,7 +24,7 @@
         @else
             <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach ($promos as $promo)
-                    <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-shadow flex flex-col">
+                    <div id="promo-{{ $promo->id }}" class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-shadow flex flex-col scroll-mt-20">
                         @if ($promo->banner)
                             <div class="relative w-full h-48 bg-gray-100 overflow-hidden">
                                 <img src="{{ asset($promo->banner) }}" alt="{{ $promo->judul }}" class="w-full h-full object-cover">

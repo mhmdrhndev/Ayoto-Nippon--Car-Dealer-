@@ -12,7 +12,7 @@
         <h1 class="text-2xl font-bold text-[#16181D]">Pengajuan SPK</h1>
         <div class="mt-4">
             <label for="variant_id" class="block text-sm font-medium text-[#16181D]">Model & Varian Mobil</label>
-            <select id="variant_id" class="mt-1 w-full rounded-lg border-gray-300 min-h-[44px]" onchange="location.href='{{ route('spk.create') }}?variant_id=' + this.value">
+            <select id="variant_id" class="mt-1 w-full rounded-lg border-gray-300 min-h-[44px]" onchange="location.href='{{ route('spk.create') }}?variant_id=' + this.value + '&color_id=' + document.getElementById('color_id').value">
                 @foreach ($variants as $v)
                     <option value="{{ $v->id }}" @selected((string) $variant_id === (string) $v->id)>
                         {{ $v->carModel->brand->nama }} {{ $v->carModel->nama }} - {{ $v->nama }}
@@ -79,7 +79,7 @@
                 <div>
                     <label for="metode" class="block text-sm font-medium text-[#16181D]">Metode bayar</label>
                     <select id="metode" name="metode" required class="mt-1 w-full rounded-lg border-gray-300 min-h-[44px]">
-                        @foreach (['Cash', 'Kredit', 'TradeIn'] as $m)
+                        @foreach (['Cash', 'Kredit', 'TradeIn', 'Transfer'] as $m)
                             <option value="{{ $m }}" @selected(old('metode') === $m)>{{ $m }}</option>
                         @endforeach
                     </select>
@@ -104,7 +104,7 @@
                     <select id="leasing_id" name="leasing_id" class="mt-1 w-full rounded-lg border-gray-300 min-h-[44px]">
                         <option value="">Tanpa leasing</option>
                         @foreach ($leasings as $leasing)
-                            <option value="{{ $leasing->id }}" @selected(old('leasing_id') == $leasing->id)>{{ $leasing->nama }}</option>
+                            <option value="{{ $leasing->id }}" @selected((string) old('leasing_id', $prefill['leasing_id'] ?? '') === (string) $leasing->id)>{{ $leasing->nama }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -113,13 +113,13 @@
                     <select id="tenor" name="tenor" class="mt-1 w-full rounded-lg border-gray-300 min-h-[44px]">
                         <option value="">Pilih</option>
                         @foreach ([12, 24, 36, 48] as $t)
-                            <option value="{{ $t }}" @selected(old('tenor') == $t)>{{ $t }} bulan</option>
+                            <option value="{{ $t }}" @selected((string) old('tenor', $prefill['tenor'] ?? '') === (string) $t)>{{ $t }} bulan</option>
                         @endforeach
                     </select>
                 </div>
                 <div>
                     <label for="dp_rencana" class="block text-sm font-medium text-[#16181D]">DP rencana (Rp)</label>
-                    <input id="dp_rencana" type="number" name="dp_rencana" value="{{ old('dp_rencana', 0) }}" min="0" class="mt-1 w-full rounded-lg border-gray-300 min-h-[44px]">
+                    <input id="dp_rencana" type="number" name="dp_rencana" value="{{ old('dp_rencana', $prefill['dp'] ?? 0) }}" min="0" class="mt-1 w-full rounded-lg border-gray-300 min-h-[44px]">
                 </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">

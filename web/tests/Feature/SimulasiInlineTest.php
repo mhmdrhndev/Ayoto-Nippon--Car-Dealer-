@@ -41,9 +41,25 @@ class SimulasiInlineTest extends TestCase
         $respon->assertOk();
         $respon->assertSee('id="simulasi"', false);
         $respon->assertSee('name="variant_id" value="'.$variant->id.'"', false);
+        $respon->assertSee('Performa utama sekilas');
+        $respon->assertSee('Kalkulator Simulasi Kredit');
+        $respon->assertSee('OTR dan Alokasi Stok Cabang');
+        $respon->assertSee('Pilihan warna tersedia');
     }
 
-    public function test_hitung_json_menyimpan_lead_dan_mengembalikan_html(): void
+    public function test_form_simulasi_mulai_kosong(): void
+    {
+        $this->buatVarian();
+
+        $respon = $this->get(route('simulasi.form'));
+
+        $respon->assertOk();
+        $respon->assertSee('<option value="" selected>Pilih varian</option>', false);
+        $respon->assertSee('<option value="" selected>Pilih cabang</option>', false);
+        $respon->assertSee('id="dp" type="number" name="dp" value=""', false);
+    }
+
+    public function test_hitung_json_tidak_menyimpan_apa_pun(): void
     {
         [$branch, $variant, $leasing] = $this->buatVarian();
 
@@ -55,8 +71,8 @@ class SimulasiInlineTest extends TestCase
             'leasing_id' => $leasing->id,
         ]);
 
-        $respon->assertOk()->assertJsonStructure(['html']);
-        $this->assertSame(1, Lead::count());
+        $respon->assertOk()->assertJsonStructure(['otr', 'dp', 'pokok', 'angsuran', 'tenor', 'bunga', 'leasing']);
+        $this->assertSame(0, Lead::count());
     }
 
     public function test_model_menampilkan_ringkasan_profesional(): void
@@ -70,5 +86,7 @@ class SimulasiInlineTest extends TestCase
         $respon->assertSee('5 kursi');
         $respon->assertSee('Mulai Rp 200.000.000');
         $respon->assertSee('1 varian (AT; Bensin).');
+        $respon->assertSee('Tersedia Di');
+        $respon->assertDontSee('Ready:');
     }
 }

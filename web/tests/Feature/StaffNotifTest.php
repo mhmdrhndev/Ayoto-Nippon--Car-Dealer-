@@ -94,6 +94,56 @@ class StaffNotifTest extends TestCase
             && str_contains($job->subject, 'Order sparepart baru'));
     }
 
+    public function test_warna_diteruskan_ke_test_drive_dan_spk(): void
+    {
+        Queue::fake();
+        config()->set('mail.workshop_to', null);
+        $this->seed(RoleSeeder::class);
+        $branch = $this->buatCabang();
+        $variant = $this->buatVarian();
+        $warna = Color::create(['nama' => 'Merah', 'aktif' => true]);
+        $sales = User::factory()->create(['branch_id' => $branch->id, 'email' => 'sales@ayotonippon.com']);
+        $sales->assignRole('sales');
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->get(route('test-drive.create', ['variant_id' => $variant->id, 'color_id' => $warna->id]))
+            ->assertOk()
+            ->assertSee('<option value="" selected>Pilih cabang</option>', false)
+            ->assertSee('value="'.$variant->id.'" selected', false)
+            ->assertSee('value="'.$warna->id.'" selected', false);
+
+        $this->actingAs($user)->post(route('test-drive.store'), [
+            'nama' => 'Cust', 'nik' => '1234567890123456', 'telp' => '081200000001', 'alamat' => 'Jl. A',
+            'branch_id' => $branch->id, 'variant_id' => $variant->id, 'color_id' => $warna->id,
+            'jadwal' => now()->addDays(2)->format('Y-m-d H:i:s'),
+        ])->assertRedirect();
+
+        $this->assertDatabaseHas('test_drives', ['variant_id' => $variant->id, 'color_id' => $warna->id]);
+        Queue::assertPushed(SendMailJob::class, fn ($job) => $job->to === 'sales@ayotonippon.com');
+
+        $this->get(route('spk.create', ['variant_id' => $variant->id, 'color_id' => $warna->id]))
+            ->assertOk()
+            ->assertSee('value="'.$warna->id.'" selected', false);
+    }
+
+    public function test_spk_prefill_dari_simulasi(): void
+    {
+        $this->seed(RoleSeeder::class);
+        $branch = $this->buatCabang();
+        $variant = $this->buatVarian();
+        $leasing = \App\Models\LeasingPartner::create(['nama' => 'Leasing', 'bunga_dasar' => 10, 'dp_min_persen' => 20, 'aktif' => true]);
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->get(route('spk.create', [
+                'variant_id' => $variant->id, 'branch_id' => $branch->id,
+                'dp_rencana' => 40000000, 'tenor' => 24, 'leasing_id' => $leasing->id,
+            ]))
+            ->assertOk()
+            ->assertSee('value="40000000"', false)
+            ->assertSee('value="24" selected', false)
+            ->assertSee('value="'.$leasing->id.'" selected', false);
+    }
+
     public function test_spk_baru_mengirim_email_ke_sales_dan_admin(): void
     {
         Queue::fake();

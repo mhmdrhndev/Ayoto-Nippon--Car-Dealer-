@@ -1,6 +1,6 @@
 @props(['items', 'skala', 'klik' => false])
 @php
-    $lebar = 600; $tinggi = 260; $kiri = 70; $kanan = 12; $atas = 22; $bawah = 44;
+    $lebar = 600; $tinggi = 260; $kiri = 64; $kanan = 12; $atas = 28; $bawah = 44;
     $plotL = $lebar - $kiri - $kanan; $plotT = $tinggi - $atas - $bawah;
     $n = count($items);
     $titik = [];

@@ -990,10 +990,13 @@ class MasterSeeder extends Seeder
             }
         });
 
-        foreach (['Mandiri Tunas', 'BCA Finance', 'Adira'] as $nama) {
-            LeasingPartner::firstOrCreate(['nama' => $nama], [
-                'dp_min_persen' => 20, 'tenor_list' => '12,24,36,48', 'bunga_dasar' => 5.5, 'aktif' => true,
+        foreach (['Mandiri Tunas' => 5.5, 'BCA Finance' => 4.5, 'Adira' => 6.5] as $nama => $bunga) {
+            $leasing = LeasingPartner::firstOrCreate(['nama' => $nama], [
+                'dp_min_persen' => 20, 'tenor_list' => '12,24,36,48', 'bunga_dasar' => $bunga, 'aktif' => true,
             ]);
+            if ((float) $leasing->bunga_dasar !== (float) $bunga) {
+                $leasing->update(['bunga_dasar' => $bunga]);
+            }
         }
 
         foreach ([$jakarta, $bandung] as $branch) {

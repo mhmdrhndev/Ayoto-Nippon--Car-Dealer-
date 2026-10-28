@@ -38,6 +38,25 @@ class SpkController extends Controller
                 $unitId = null;
             }
         }
+        if (! $colorId) {
+            $warnaQuery = $request->query('color_id');
+            if ($warnaQuery && Color::where('aktif', true)->whereKey($warnaQuery)->exists()) {
+                $colorId = (string) $warnaQuery;
+            }
+        }
+        if (! $branchId) {
+            $cabangQuery = $request->query('branch_id');
+            if ($cabangQuery && Branch::where('aktif', true)->whereKey($cabangQuery)->exists()) {
+                $branchId = (string) $cabangQuery;
+            }
+        }
+        $tenorQuery = $request->query('tenor');
+        $leasingQuery = $request->query('leasing_id');
+        $prefill = [
+            'dp' => max(0, (int) $request->query('dp_rencana', 0)),
+            'tenor' => in_array($tenorQuery, ['12', '24', '36', '48'], true) ? $tenorQuery : null,
+            'leasing_id' => $leasingQuery && LeasingPartner::where('aktif', true)->whereKey($leasingQuery)->exists() ? (string) $leasingQuery : null,
+        ];
 
         $variants = Variant::with('carModel.brand')
             ->where('aktif', true)
@@ -72,6 +91,7 @@ class SpkController extends Controller
             'variant_id' => $variantId,
             'branch_id' => $branchId,
             'color_id' => $colorId,
+            'prefill' => $prefill,
         ]);
     }
 
@@ -83,7 +103,7 @@ class SpkController extends Controller
             'nik' => ['required', 'digits:16'],
             'telp' => ['required', 'regex:/^[0-9]{10,15}$/'],
             'alamat' => ['required', 'string'],
-            'metode' => ['required', 'in:Cash,Kredit,TradeIn'],
+            'metode' => ['required', 'in:Cash,Kredit,TradeIn,Transfer'],
             'leasing_id' => ['required_if:metode,Kredit', 'nullable', 'exists:leasing_partners,id'],
             'tenor' => ['required_if:metode,Kredit', 'nullable', 'integer', 'in:12,24,36,48'],
             'dp_rencana' => ['nullable', 'integer', 'min:0'],

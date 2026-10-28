@@ -20,9 +20,9 @@ Tenang, resmi, dan dapat dipercaya seperti showroom fisik. Tidak ramai, tidak ag
 
 ## 3. Dial dan tuas liveliness
 
-Dial: ENERGY 1 / RHYTHM 2 / MOTION 1.
+Dial: ENERGY 1 / RHYTHM 2 / MOTION 2 (halaman publik; area admin tetap 1).
 
-Alasan satu baris per dial: ENERGY 1 karena pembeli mobil butuh rasa aman, bukan sensasi. RHYTHM 2 karena katalog butuh variasi (galeri, spesifikasi, simulasi) tanpa kehilangan keteraturan. MOTION 1 karena animasi hanya umpan balik hover dan perubahan status, tidak ada gerakan dekoratif.
+Alasan satu baris per dial: ENERGY 1 karena pembeli mobil butuh rasa aman, bukan sensasi. RHYTHM 2 karena katalog butuh variasi (galeri, spesifikasi, simulasi) tanpa kehilangan keteraturan. MOTION 2 karena halaman publik memakai scroll-reveal sekali tampil pada momen keputusan; admin tetap 1 agar fokus kerja.
 
 Tuas yang dipakai:
 

@@ -7,6 +7,7 @@ use App\Models\Brand;
 use App\Models\CarModel;
 use App\Models\HeroSlide;
 use App\Models\LeasingPartner;
+use App\Models\PriceList;
 use App\Models\Promo;
 use App\Models\Unit;
 use App\Models\Variant;
@@ -20,13 +21,17 @@ class CatalogController extends Controller
         $branches = Branch::where('aktif', true)->orderBy('nama')->get();
         $totalUnit = Unit::tersedia()->count();
         $promos = Promo::berjalan()->orderBy('selesai')->limit(3)->get();
+        $unggulanSlugs = ['avanza-1-5-g-cvt', 'brio-rs-cvt', 'rush-s-at', 'xpander-sport-at'];
+        $unggulan = Variant::with(['carModel.brand', 'priceLists', 'units'])
+            ->whereIn('slug', $unggulanSlugs)->where('aktif', true)->get()
+            ->sortBy(fn ($v) => array_search($v->slug, $unggulanSlugs))->values();
         $slides = HeroSlide::aktif()->terurut()->get();
         if ($slides->isEmpty()) {
             $slides = collect(['foto-8.jpg', 'foto-7.jpg', 'foto-9.jpg'])
                 ->map(fn ($foto, $i) => new HeroSlide(['nama' => 'Default '.($i + 1), 'foto' => 'images/unit/'.$foto]));
         }
 
-        return view('home', compact('brands', 'branches', 'totalUnit', 'promos', 'slides'));
+        return view('home', compact('brands', 'branches', 'totalUnit', 'promos', 'slides', 'unggulan'));
     }
 
     public function index(Request $request)
@@ -39,25 +44,31 @@ class CatalogController extends Controller
             'cabang' => ['nullable', 'string', 'max:20'],
             'harga_min' => ['nullable', 'integer', 'min:0'],
             'harga_maks' => ['nullable', 'integer', 'min:0'],
+            'urut' => ['nullable', 'in:termurah,termahal'],
         ]);
 
         $vFilter = function ($q) use ($validated) {
             $q->where('aktif', true)
                 ->when($validated['transmisi'] ?? null, fn ($qq, $t) => $qq->where('transmisi', $t))
                 ->when($validated['bbm'] ?? null, fn ($qq, $b) => $qq->where('bbm', $b))
-                ->when($validated['q'] ?? null, fn ($qq, $s) => $qq->where('nama', 'like', "%{$s}%"))
                 ->when($validated['cabang'] ?? null, fn ($qq, $kode) => $qq->whereHas('priceLists.branch', fn ($qqq) => $qqq->where('kode', $kode)))
                 ->when($validated['harga_min'] ?? null, fn ($qq, $min) => $qq->whereHas('priceLists', fn ($qqq) => $qqq->where('otr', '>=', $min)))
-                ->when($validated['harga_maks'] ?? null, fn ($qq, $maks) => $qq->whereHas('priceLists', fn ($qqq) => $qqq->where('otr', '<=', $maks)));
+                ->when($validated['harga_maks'] ?? null, fn ($qq, $s) => $qq->whereHas('priceLists', fn ($qqq) => $qqq->where('otr', '<=', $s)));
         };
 
         $models = CarModel::with(['brand', 'variants' => $vFilter, 'variants.priceLists.branch', 'variants.units'])
             ->where('aktif', true)
             ->when($validated['brand'] ?? null, fn ($q, $slug) => $q->whereHas('brand', fn ($qq) => $qq->where('slug', $slug)))
-            ->when($validated['q'] ?? null, fn ($q, $s) => $q->where('nama', 'like', "%{$s}%")
-                ->orWhereHas('brand', fn ($qq) => $qq->where('nama', 'like', "%{$s}%"))
-                ->orWhereHas('variants', fn ($qq) => $qq->where('nama', 'like', "%{$s}%")))
+            ->when($validated['q'] ?? null, fn ($q, $s) => $q->where(fn ($qq) => $qq->where('nama', 'like', "%{$s}%")
+                ->orWhereHas('brand', fn ($qqq) => $qqq->where('nama', 'like', "%{$s}%"))
+                ->orWhereHas('variants', fn ($qqq) => $qqq->where('nama', 'like', "%{$s}%"))))
             ->whereHas('variants', $vFilter)
+            ->when($validated['urut'] ?? null, fn ($q, $u) => $q->orderBy(
+                PriceList::selectRaw('MIN(otr)')
+                    ->join('variants', 'variants.id', '=', 'price_lists.variant_id')
+                    ->whereColumn('variants.car_model_id', 'car_models.id'),
+                $u === 'termahal' ? 'desc' : 'asc'
+            ))
             ->orderBy('nama')
             ->paginate(12)
             ->withQueryString();
@@ -73,7 +84,7 @@ class CatalogController extends Controller
 
     public function model(string $brand, string $model)
     {
-        $m = CarModel::with(['brand', 'variants' => fn ($q) => $q->where('aktif', true)->orderBy('nama'), 'variants.priceLists.branch', 'variants.units'])
+        $m = CarModel::with(['brand', 'variants' => fn ($q) => $q->where('aktif', true)->orderBy('nama'), 'variants.priceLists.branch', 'variants.units.branch', 'variants.units.color'])
             ->where('slug', $model)
             ->where('aktif', true)
             ->whereHas('brand', fn ($q) => $q->where('slug', $brand))
@@ -82,8 +93,10 @@ class CatalogController extends Controller
         $ringkasan = $this->ringkasanModel($m);
         $kategori = $this->kategoriModel($m);
         $mulai = $m->variants->flatMap->priceLists->pluck('otr')->filter()->min();
+        $cabangStok = $m->variants->flatMap->units->where('status', 'Tersedia')->map(fn ($u) => $u->branch->nama)->unique()->values();
+        $bungaMin = LeasingPartner::where('aktif', true)->min('bunga_dasar');
 
-        return view('katalog.model', compact('m', 'ringkasan', 'kategori', 'mulai'));
+        return view('katalog.model', compact('m', 'ringkasan', 'kategori', 'mulai', 'cabangStok', 'bungaMin'));
     }
 
     public function show(string $slug)

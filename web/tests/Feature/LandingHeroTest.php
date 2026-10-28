@@ -26,6 +26,27 @@ class LandingHeroTest extends TestCase
         $respon->assertDontSee('images/unit/foto-9.jpg');
     }
 
+    public function test_home_menampilkan_unit_unggulan_dan_stok_merek(): void
+    {
+        $brand = \App\Models\Brand::create(['nama' => 'Merek', 'slug' => 'merek']);
+        $model = \App\Models\CarModel::create(['brand_id' => $brand->id, 'nama' => 'Model', 'slug' => 'model']);
+        $branch = \App\Models\Branch::create(['kode' => 'JKT', 'nama' => 'Jakarta', 'booking_fee' => 5000000, 'aktif' => true]);
+        $warna = \App\Models\Color::create(['nama' => 'Hitam', 'aktif' => true]);
+        foreach (['avanza-1-5-g-cvt', 'brio-rs-cvt', 'rush-s-at', 'xpander-sport-at'] as $i => $slug) {
+            $variant = \App\Models\Variant::create(['car_model_id' => $model->id, 'nama' => 'Varian '.$i, 'slug' => $slug, 'transmisi' => 'AT', 'bbm' => 'Bensin', 'aktif' => true]);
+            \App\Models\PriceList::create(['variant_id' => $variant->id, 'branch_id' => $branch->id, 'otr' => 200000000, 'bbn' => 0, 'diskon' => 0]);
+            \App\Models\Unit::create(['vin' => 'VINHERO'.$i, 'variant_id' => $variant->id, 'color_id' => $warna->id, 'branch_id' => $branch->id, 'status' => 'Tersedia', 'tahun_rakit' => 2026, 'harga' => 200000000]);
+        }
+
+        $respon = $this->get(route('home'));
+
+        $respon->assertOk();
+        $respon->assertSee('Katalog Unit Siap Kirim');
+        $respon->assertSee('Mulai Rp');
+        $respon->assertSee('unit tersedia');
+        $respon->assertDontSee('Ready Stock');
+    }
+
     public function test_admin_dapat_menambah_foto_hero(): void
     {
         Storage::fake('public');

@@ -3,3 +3,24 @@
 @tailwind utilities;
 
 [x-cloak] { display: none !important; }
+
+button:not(:disabled), a[href], summary, select, label[for] { cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+
+/* Sidebar admin: scrollbar samar, muncul saat hover atau fokus. */
+.sidebar-track { scrollbar-width: thin; scrollbar-color: transparent transparent; }
+.sidebar-track:hover, .sidebar-track:focus-within { scrollbar-color: rgba(255,255,255,.25) transparent; }
+.sidebar-track::-webkit-scrollbar { width: 6px; }
+.sidebar-track::-webkit-scrollbar-track { background: transparent; }
+.sidebar-track::-webkit-scrollbar-thumb { background: transparent; border-radius: 9999px; }
+.sidebar-track:hover::-webkit-scrollbar-thumb, .sidebar-track:focus-within::-webkit-scrollbar-thumb { background: rgba(255,255,255,.25); }
+.sidebar-track::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.4); }
+.sidebar-shell { height: 100dvh; }
+
+/* Scroll-reveal sekali tampil untuk halaman publik. */
+.js .reveal { opacity: 0; transform: translateY(12px); transition: opacity .5s ease, transform .5s ease; }
+.js .reveal.is-visible { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+    .js .reveal { opacity: 1; transform: none; transition: none; }
+}
+

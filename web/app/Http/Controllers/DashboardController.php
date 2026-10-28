@@ -38,7 +38,16 @@ class DashboardController extends Controller
             $data['grafikOmzet'] = $this->omzetGrafik();
         }
 
-        $data['spkTerbaru'] = Order::with(['customer', 'unit.variant'])->latest()->limit(5)->get();
+        if ($user->hasAnyRole(['sales', 'admin-cabang', 'pimpinan', 'superadmin', 'owner'])) {
+            $data['antreanSpk'] = Order::with(['customer', 'unit.variant.carModel', 'branch'])
+                ->where('status', 'MenungguVerifikasi')->latest()->limit(5)->get();
+            $data['followups'] = Lead::with('customer')
+                ->whereNotIn('status', ['Deal', 'Lunas', 'Batal'])
+                ->whereNotNull('followup_at')
+                ->where('followup_at', '<=', now()->addDay())
+                ->when($user->hasRole('sales'), fn ($q) => $q->where('sales_id', $user->id))
+                ->orderBy('followup_at')->limit(5)->get();
+        }
 
         return view('dashboard', $data);
     }

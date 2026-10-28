@@ -1,4 +1,4 @@
-<header x-data="{ menu: false }" class="bg-white border-b border-gray-200 sticky top-0 z-40">
+<header x-data="{ menu: false }" @keydown.escape.window="menu = false" class="bg-white border-b border-gray-200 sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-2">
         <a href="{{ route('home') }}" class="flex items-center gap-2 min-h-[44px]">
             <img src="{{ asset('images/logo-an.png') }}" alt="Logo Ayoto Nippon" class="h-10 w-10 object-contain">
@@ -21,9 +21,13 @@
                 <a href="{{ route('register') }}" class="px-4 py-2 text-sm font-semibold text-white bg-[#C1121F] rounded-lg min-h-[44px] inline-flex items-center">Daftar</a>
             @endauth
         </div>
-        <button @click="menu = !menu" :aria-expanded="menu" class="lg:hidden px-3 py-2 text-sm font-semibold text-[#16181D] border border-gray-300 rounded-lg min-h-[44px]">Menu</button>
+        <button type="button" @click="menu = !menu" aria-label="Menu" :aria-expanded="menu" class="lg:hidden p-2 rounded-lg text-[#16181D] border border-gray-300 min-w-[44px] min-h-[44px] inline-flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
     </div>
-    <nav x-show="menu" x-cloak class="lg:hidden border-t border-gray-200 px-4 py-2" aria-label="Navigasi seluler">
+    <nav x-show="menu" x-cloak class="lg:hidden absolute inset-x-0 top-full z-50 bg-white border-b border-gray-200 shadow-lg max-h-[70vh] overflow-y-auto px-4 py-2" aria-label="Navigasi seluler">
         @foreach ([['katalog.index', 'Katalog'], ['simulasi.form', 'Simulasi Kredit'], ['test-drive.create', 'Test Drive'], ['servis.create', 'Booking Servis'], ['promo.index', 'Promo'], ['cabang.index', 'Cabang'], ['lacak.form', 'Lacak SPK']] as [$route, $label])
             <a href="{{ route($route) }}" class="block px-2 py-3 text-sm font-medium text-[#16181D] border-b border-gray-100 last:border-0 min-h-[44px]">{{ $label }}</a>
         @endforeach

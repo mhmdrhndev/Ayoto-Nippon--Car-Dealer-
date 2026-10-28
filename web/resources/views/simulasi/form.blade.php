@@ -16,6 +16,7 @@
             <div>
                 <label for="variant_id" class="block text-sm font-medium text-[#16181D]">Varian</label>
                 <select id="variant_id" name="variant_id" required class="mt-1 w-full rounded-lg border-gray-300 min-h-[44px]">
+                    <option value="" @selected(! old('variant_id', $variantId ?? null))>Pilih varian</option>
                     @foreach ($variants as $variant)
                         <option value="{{ $variant->id }}" @selected((string) old('variant_id', $variantId ?? '') === (string) $variant->id)>{{ $variant->carModel->brand->nama }} {{ $variant->carModel->nama }} {{ $variant->nama }}</option>
                     @endforeach
@@ -24,15 +25,16 @@
             <div>
                 <label for="branch_id" class="block text-sm font-medium text-[#16181D]">Cabang (harga OTR)</label>
                 <select id="branch_id" name="branch_id" required class="mt-1 w-full rounded-lg border-gray-300 min-h-[44px]">
+                    <option value="" @selected(! old('branch_id'))>Pilih cabang</option>
                     @foreach ($branches as $branch)
-                        <option value="{{ $branch->id }}">{{ $branch->nama }}</option>
+                        <option value="{{ $branch->id }}" @selected((string) old('branch_id') === (string) $branch->id)>{{ $branch->nama }}</option>
                     @endforeach
                 </select>
             </div>
             <div>
                 <label for="dp" class="block text-sm font-medium text-[#16181D]">Uang muka (DP, Rp)</label>
-                <input id="dp" type="number" name="dp" min="0" required class="mt-1 w-full rounded-lg border-gray-300 min-h-[44px]">
-                <p id="dp-hint" class="mt-1 text-sm text-[#4B5563]"></p>
+                <input id="dp" type="number" name="dp" value="{{ old('dp') }}" min="0" required class="mt-1 w-full rounded-lg border-gray-300 min-h-[44px]">
+                <p id="dp-hint" class="mt-1 text-sm text-[#4B5563]">Pilih varian dan cabang dulu untuk melihat DP minimum.</p>
             </div>
             <div>
                 <label for="tenor" class="block text-sm font-medium text-[#16181D]">Tenor (bulan)</label>
@@ -64,6 +66,11 @@
             const l = document.getElementById('leasing_id').value;
             const dp = document.getElementById('dp');
             const hint = document.getElementById('dp-hint');
+            if (!v || !b) {
+                dp.min = 0;
+                hint.textContent = 'Pilih varian dan cabang dulu untuk melihat DP minimum.';
+                return;
+            }
             const row = prices.find((p) => String(p.variant_id) === String(v) && String(p.branch_id) === String(b));
             if (!row) {
                 dp.min = 0;
@@ -72,7 +79,6 @@
             }
             const min = Math.ceil(row.otr * (leasings[l] ?? 0) / 100);
             dp.min = min;
-            if (!dp.value || Number(dp.value) < min) dp.value = min;
             hint.textContent = 'DP minimal ' + rupiah(min) + ' (' + (leasings[l] ?? 0) + '% dari OTR ' + rupiah(row.otr) + '). Tidak bisa kurang dari itu.';
         }
         ['variant_id', 'branch_id', 'leasing_id'].forEach((id) => document.getElementById(id).addEventListener('change', syncDp));

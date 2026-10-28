@@ -38,17 +38,27 @@
                 <div>
                     <label for="branch_id" class="block text-sm font-medium text-[#16181D]">Cabang</label>
                     <select id="branch_id" name="branch_id" required class="mt-1 w-full rounded-lg border-gray-300 min-h-[44px]">
+                        <option value="" @selected(! old('branch_id'))>Pilih cabang</option>
                         @foreach ($branches as $branch)
-                            <option value="{{ $branch->id }}">{{ $branch->nama }}</option>
+                            <option value="{{ $branch->id }}" @selected((string) old('branch_id') === (string) $branch->id)>{{ $branch->nama }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div>
                     <label for="variant_id" class="block text-sm font-medium text-[#16181D]">Varian</label>
                     <select id="variant_id" name="variant_id" required class="mt-1 w-full rounded-lg border-gray-300 min-h-[44px]">
-                        <option value="" @selected(!old('variant_id'))>Pilih mobil</option>
+                        <option value="" @selected(!old('variant_id', $variantId ?? null))>Pilih mobil</option>
                         @foreach ($variants as $variant)
-                            <option value="{{ $variant->id }}">{{ $variant->carModel->brand->nama }} {{ $variant->carModel->nama }} {{ $variant->nama }}</option>
+                            <option value="{{ $variant->id }}" @selected((string) old('variant_id', $variantId ?? '') === (string) $variant->id)>{{ $variant->carModel->brand->nama }} {{ $variant->carModel->nama }} {{ $variant->nama }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label for="color_id" class="block text-sm font-medium text-[#16181D]">Warna diinginkan (opsional)</label>
+                    <select id="color_id" name="color_id" class="mt-1 w-full rounded-lg border-gray-300 min-h-[44px]">
+                        <option value="">Pilih warna</option>
+                        @foreach ($colors as $color)
+                            <option value="{{ $color->id }}" @selected((string) old('color_id', $colorId ?? '') === (string) $color->id)>{{ $color->nama }}</option>
                         @endforeach
                     </select>
                 </div>

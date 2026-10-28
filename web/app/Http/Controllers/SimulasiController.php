@@ -44,16 +44,24 @@ class SimulasiController extends Controller
 
         $pokok = $otr - $data['dp'];
         $angsuran = (int) round(($pokok + $pokok * $leasing->bunga_dasar / 100 * $data['tenor'] / 12) / $data['tenor']);
+        $ringkas = [
+            'otr' => $otr, 'dp' => $data['dp'], 'pokok' => $pokok, 'angsuran' => $angsuran,
+            'tenor' => $data['tenor'], 'bunga' => $leasing->bunga_dasar, 'leasing' => $leasing->nama,
+        ];
 
-        Lead::create([
-            'sumber' => 'Web',
-            'status' => 'Baru',
-            'kebutuhan_text' => "Simulasi: {$variant->carModel->brand->nama} {$variant->carModel->nama} {$variant->nama}, OTR Rp ".number_format($otr, 0, ',', '.').", DP Rp ".number_format($data['dp'], 0, ',', '.').", tenor {$data['tenor']} bln, {$leasing->nama}, estimasi Rp ".number_format($angsuran, 0, ',', '.').'/bln',
-        ]);
+        // Pratinjau JSON (panel inline) tidak menyimpan apa pun. Leads hanya
+        // terbentuk saat SPK benar-benar diajukan di SpkController@store.
+        if (! $request->expectsJson()) {
+            Lead::create([
+                'sumber' => 'Web',
+                'status' => 'Baru',
+                'kebutuhan_text' => "Simulasi: {$variant->carModel->brand->nama} {$variant->carModel->nama} {$variant->nama}, OTR Rp ".number_format($otr, 0, ',', '.').", DP Rp ".number_format($data['dp'], 0, ',', '.').", tenor {$data['tenor']} bln, {$leasing->nama}, estimasi Rp ".number_format($angsuran, 0, ',', '.').'/bln',
+            ]);
+        }
 
         $hasil = compact('variant', 'leasing', 'otr', 'angsuran') + $data;
         if ($request->expectsJson()) {
-            return response()->json(['html' => view('simulasi.hasil-inline', $hasil)->render()]);
+            return response()->json($ringkas);
         }
 
         return view('simulasi.hasil', $hasil);
