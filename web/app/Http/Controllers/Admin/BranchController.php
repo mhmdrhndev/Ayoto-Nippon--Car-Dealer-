@@ -46,6 +46,7 @@ class BranchController extends Controller
             'nama' => ['required', 'string', 'max:100'],
             'alamat' => ['nullable', 'string'],
             'telp' => ['nullable', 'string', 'max:20'],
+            'jam_operasional' => ['nullable', 'string', 'max:100'],
             'maps_url' => ['nullable', 'string'],
             'booking_fee' => ['required', 'integer', 'min:0'],
             'aktif' => ['nullable', 'boolean'],

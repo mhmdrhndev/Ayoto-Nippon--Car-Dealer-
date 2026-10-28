@@ -11,7 +11,7 @@
                     $warnaTersedia = $variant->units->where('status', 'Tersedia')->map(fn ($u) => $u->color)->filter()->unique('id')->values();
                 @endphp
                 @if ($galeri->isNotEmpty())
-                    <img id="galeri-utama" src="{{ asset($galeri[0]) }}" alt="{{ $variant->carModel->brand->nama }} {{ $variant->carModel->nama }} {{ $variant->nama }}" class="w-full aspect-video object-cover rounded-2xl">
+                    <img id="galeri-utama" src="{{ asset($galeri[0]) }}" alt="{{ $variant->carModel->brand->nama }} {{ $variant->carModel->nama }} {{ $variant->nama }}" fetchpriority="high" class="w-full aspect-video object-cover rounded-2xl">
                     @if ($galeri->count() > 1)
                         <div class="mt-2 grid grid-cols-4 gap-2">
                             @foreach ($galeri->take(4) as $i => $foto)

@@ -4,9 +4,8 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-end">
             <div class="lg:col-span-2">
-                <p class="inline-flex items-center text-xs font-semibold text-[#16181D] bg-gray-100 rounded-md px-3 py-1.5">UNIT RESMI DUA CABANG</p>
                 <h1 class="mt-2 text-2xl sm:text-3xl font-bold text-[#16181D]">Katalog Mobil</h1>
-                <p class="mt-1 text-sm text-[#4B5563] tabular-nums">{{ $models->total() }} model dan {{ number_format($totalUnit, 0, ',', '.') }} unit tersedia di jaringan dealer Ayoto Nippon.</p>
+                <p class="mt-1 text-sm text-[#4B5563] tabular-nums">{{ $models->total() }} model dan {{ number_format($totalUnit, 0, ',', '.') }} unit tersedia di {{ $branches->count() }} cabang jaringan dealer Ayoto Nippon.</p>
             </div>
             <div class="grid grid-cols-3 gap-3">
                 <div class="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-center">
@@ -28,25 +27,25 @@
             <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari nama model" aria-label="Cari nama model"
                 class="rounded-lg border-gray-300 min-h-[44px]">
             <select name="brand" aria-label="Merek" class="rounded-lg border-gray-300 min-h-[44px]">
-                <option value="">Semua merek</option>
+                <option value="">Merek</option>
                 @foreach ($brands as $brand)
                     <option value="{{ $brand->slug }}" @selected(request('brand') === $brand->slug)>{{ $brand->nama }}</option>
                 @endforeach
             </select>
             <select name="transmisi" aria-label="Transmisi" class="rounded-lg border-gray-300 min-h-[44px]">
-                <option value="">Semua transmisi</option>
+                <option value="">Transmisi</option>
                 @foreach (['MT', 'AT', 'CVT'] as $t)
                     <option value="{{ $t }}" @selected(request('transmisi') === $t)>{{ $t }}</option>
                 @endforeach
             </select>
             <select name="bbm" aria-label="BBM" class="rounded-lg border-gray-300 min-h-[44px]">
-                <option value="">Semua BBM</option>
+                <option value="">BBM</option>
                 @foreach ($bbms as $b)
                     <option value="{{ $b }}" @selected(request('bbm') === $b)>{{ $b }}</option>
                 @endforeach
             </select>
             <select name="cabang" aria-label="Cabang" class="rounded-lg border-gray-300 min-h-[44px]">
-                <option value="">Semua cabang</option>
+                <option value="">Cabang</option>
                 @foreach ($branches as $branch)
                     <option value="{{ $branch->kode }}" @selected(request('cabang') === $branch->kode)>{{ $branch->nama }}</option>
                 @endforeach
@@ -58,17 +57,12 @@
         </form>
 
         @php
-            $chipMerek = $brands->firstWhere('slug', request('brand'))?->nama;
             $chipCabang = $branches->firstWhere('kode', request('cabang'))?->nama;
             $adaFilter = request('q') || request('brand') || request('transmisi') || request('bbm') || request('cabang');
         @endphp
         <div class="mt-3 flex flex-col sm:flex-row sm:items-center gap-3">
             <div class="flex flex-wrap items-center gap-2 text-xs flex-1">
-                <span class="font-semibold text-[#4B5563]">FILTER AKTIF:</span>
-                <span class="px-2 py-1 bg-gray-100 rounded-md text-[#16181D]">Merek: {{ $chipMerek ?? 'Semua' }}</span>
-                <span class="px-2 py-1 bg-gray-100 rounded-md text-[#16181D]">Transmisi: {{ request('transmisi') ?: 'Semua' }}</span>
-                <span class="px-2 py-1 bg-gray-100 rounded-md text-[#16181D]">BBM: {{ request('bbm') ?: 'Semua' }}</span>
-                <span class="px-2 py-1 bg-gray-100 rounded-md text-[#16181D]">Cabang: {{ $chipCabang ?? 'Semua cabang' }}</span>
+                <span class="font-semibold text-[#16181D] tabular-nums">{{ $models->total() }} model ditemukan</span>
                 @if ($adaFilter)
                     <a href="{{ route('katalog.index') }}" class="font-semibold text-[#C1121F] hover:underline min-h-[44px] inline-flex items-center">Atur Ulang Semua</a>
                 @endif

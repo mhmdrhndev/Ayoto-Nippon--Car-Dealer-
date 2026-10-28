@@ -17,6 +17,10 @@
                     <input id="telp" name="telp" value="{{ old('telp', $branch->telp) }}" class="mt-1 w-full rounded-lg border-gray-300 min-h-[44px]">
                 </div>
                 <div>
+                    <label for="jam_operasional" class="block text-sm font-medium">Jam operasional</label>
+                    <input id="jam_operasional" name="jam_operasional" value="{{ old('jam_operasional', $branch->jam_operasional) }}" placeholder="Senin–Sabtu 08.00–17.00" class="mt-1 w-full rounded-lg border-gray-300 min-h-[44px]">
+                </div>
+                <div>
                     <label for="booking_fee" class="block text-sm font-medium">Booking fee (Rp)</label>
                     <input id="booking_fee" type="number" name="booking_fee" value="{{ old('booking_fee', $branch->booking_fee ?? 5000000) }}" required min="0" class="mt-1 w-full rounded-lg border-gray-300 min-h-[44px]">
                 </div>

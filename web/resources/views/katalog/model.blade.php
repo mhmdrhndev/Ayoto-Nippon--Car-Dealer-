@@ -26,7 +26,7 @@
         <div class="mt-2 grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div class="relative">
                 @if ($fotoUtama)
-                    <img src="{{ asset($fotoUtama) }}" alt="{{ $m->brand->nama }} {{ $m->nama }}" class="w-full aspect-video object-cover rounded-2xl">
+                    <img src="{{ asset($fotoUtama) }}" alt="{{ $m->brand->nama }} {{ $m->nama }}" fetchpriority="high" class="w-full aspect-video object-cover rounded-2xl">
                 @else
                     <div class="w-full aspect-video bg-gray-100 rounded-2xl flex items-center justify-center text-sm text-[#4B5563]">Foto menyusul</div>
                 @endif
@@ -88,9 +88,8 @@
                     $mulai = $variant->priceLists->min('otr');
                     $cabangVarian = $unitSiapVarian->map(fn ($u) => $u->branch->nama)->unique()->values();
                     $tahunVarian = $unitSiapVarian->max('tahun_rakit');
-                    $lengkap = $variant->spekLengkap();
                 @endphp
-                <div class="border border-gray-200 rounded-2xl overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus-within:-translate-y-1 focus-within:shadow-lg">
+                <a href="{{ route('katalog.show', $variant->slug) }}" class="border border-gray-200 rounded-2xl overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus-visible:-translate-y-1 focus-visible:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#16181D]">
                     <div class="relative">
                         @if ($foto)
                             <img src="{{ asset($foto) }}" alt="{{ $variant->nama }}" class="h-44 w-full object-cover" loading="lazy">
@@ -111,20 +110,8 @@
                             <span class="px-2 py-1 bg-gray-100 rounded-md text-[#16181D]">{{ $variant->bbm }}</span>
                         </p>
                         <dl class="mt-3 text-xs border-t border-gray-100">
-                            <div class="flex justify-between gap-2 py-1.5 border-b border-gray-100">
-                                <dt class="text-[#4B5563]">Mesin</dt>
-                                <dd class="font-semibold text-right text-[#16181D]">{{ $variant->spesifikasi['mesin'] ?? '-' }}</dd>
-                            </div>
-                            <div class="flex justify-between gap-2 py-1.5 border-b border-gray-100">
-                                <dt class="text-[#4B5563]">Tenaga dan Torsi</dt>
-                                <dd class="font-semibold text-right text-[#16181D]">{{ $lengkap['Mesin dan performa']['Tenaga maksimum'] ?? '-' }} / {{ $lengkap['Mesin dan performa']['Torsi maksimum'] ?? '-' }}</dd>
-                            </div>
-                            <div class="flex justify-between gap-2 py-1.5 border-b border-gray-100">
-                                <dt class="text-[#4B5563]">Transmisi</dt>
-                                <dd class="font-semibold text-right text-[#16181D]">{{ $lengkap['Mesin dan performa']['Transmisi'] ?? $variant->transmisi }}</dd>
-                            </div>
                             <div class="flex justify-between gap-2 py-1.5">
-                                <dt class="text-[#4B5563]">Tersedia Di</dt>
+                                <dt class="text-[#4B5563]">Tersedia di</dt>
                                 <dd class="font-semibold text-right text-[#16181D]">{{ $cabangVarian->isNotEmpty() ? $cabangVarian->join(' dan ') : '-' }}</dd>
                             </div>
                         </dl>
@@ -132,9 +119,9 @@
                         <p class="text-lg font-bold text-[#16181D] tabular-nums">
                             {{ $mulai ? 'Rp '.number_format($mulai, 0, ',', '.') : 'Harga belum tersedia' }}
                         </p>
-                        <a href="{{ route('katalog.show', $variant->slug) }}" class="mt-4 px-4 py-2 inline-flex items-center justify-center text-sm font-semibold text-white bg-[#16181D] rounded-lg min-h-[44px]">Lihat Detail</a>
+                        <span class="mt-4 px-4 py-2 inline-flex items-center justify-center text-sm font-semibold text-white bg-[#16181D] rounded-lg min-h-[44px]">Lihat Detail</span>
                     </div>
-                </div>
+                </a>
             @endforeach
         </div>
     </div>

@@ -14,7 +14,7 @@ class KatalogIndexTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_urut_termurah_dan_chip_filter_tampil(): void
+    public function test_urut_termurah_dan_hasil_filter_tampil(): void
     {
         $branch = Branch::create(['kode' => 'JKT', 'nama' => 'Jakarta', 'booking_fee' => 5000000, 'aktif' => true]);
         $brand = Brand::create(['nama' => 'Merek', 'slug' => 'merek']);
@@ -28,8 +28,8 @@ class KatalogIndexTest extends TestCase
         $respon = $this->get(route('katalog.index', ['urut' => 'termurah', 'transmisi' => 'MT']));
 
         $respon->assertOk();
-        $respon->assertSee('FILTER AKTIF:');
-        $respon->assertSee('Transmisi: MT');
+        $respon->assertSee('1 model ditemukan');
+        $respon->assertSee('Atur Ulang Semua');
         $respon->assertSee('Amodel');
         $respon->assertDontSee('Zmodel');
     }

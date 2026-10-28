@@ -46,7 +46,6 @@
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-24">
             <p class="inline-flex items-center text-xs sm:text-sm font-semibold text-white border border-white/60 rounded-full px-4 py-1.5">Dealer Jakarta dan Bandung</p>
             <h1 class="mt-3 text-3xl sm:text-5xl font-bold text-white max-w-2xl">Mobil baru dengan harga OTR jelas per cabang</h1>
-            <p class="mt-3 text-base sm:text-lg text-gray-200 max-w-xl tabular-nums">{{ number_format($totalUnit, 0, ',', '.') }} unit tersedia, {{ $brands->count() }} merek, {{ $branches->count() }} cabang.</p>
             <form action="{{ route('katalog.index') }}" method="GET" class="mt-6 max-w-2xl flex flex-col sm:flex-row gap-3">
                 <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari model atau varian, contoh: Avanza"
                     aria-label="Cari model atau varian" class="flex-1 rounded-xl border-gray-300 min-h-[44px]">
@@ -59,10 +58,11 @@
                 <button type="submit" class="px-6 py-2 font-semibold text-white bg-[#C1121F] rounded-xl min-h-[44px]">Cari Mobil</button>
             </form>
             <div class="mt-4 flex flex-wrap gap-2">
-                <a href="{{ route('test-drive.create') }}" class="px-4 py-2 text-sm font-semibold text-white border border-white/60 rounded-lg min-h-[44px] inline-flex items-center">Booking Test Drive</a>
-                <a href="{{ route('simulasi.form') }}" class="px-4 py-2 text-sm font-semibold text-white border border-white/60 rounded-lg min-h-[44px] inline-flex items-center">Simulasi Kredit</a>
-                <a href="{{ route('lacak.form') }}" class="px-4 py-2 text-sm font-semibold text-white border border-white/60 rounded-lg min-h-[44px] inline-flex items-center">Lacak SPK</a>
+                <a href="{{ route('test-drive.create') }}" class="px-3 py-1.5 text-xs font-medium text-gray-200 border border-white/40 rounded-lg min-h-[44px] inline-flex items-center hover:text-white hover:border-white/70">Booking Test Drive</a>
+                <a href="{{ route('simulasi.form') }}" class="px-3 py-1.5 text-xs font-medium text-gray-200 border border-white/40 rounded-lg min-h-[44px] inline-flex items-center hover:text-white hover:border-white/70">Simulasi Kredit</a>
+                <a href="{{ route('lacak.form') }}" class="px-3 py-1.5 text-xs font-medium text-gray-200 border border-white/40 rounded-lg min-h-[44px] inline-flex items-center hover:text-white hover:border-white/70">Lacak SPK</a>
             </div>
+            <p class="mt-4 text-sm sm:text-base font-medium text-gray-200 max-w-xl tabular-nums">{{ number_format($totalUnit, 0, ',', '.') }} unit tersedia, {{ $brands->count() }} merek, {{ $branches->count() }} cabang.</p>
         </div>
 
         <div class="absolute bottom-4 right-4 sm:right-8 flex items-center gap-1 z-10" x-show="total > 1">
@@ -170,13 +170,16 @@
 
         <p class="mt-10 text-xs font-semibold tracking-widest text-[#C1121F]">STANDAR OPERASIONAL PEMBELIAN</p>
         <h2 class="mt-1 text-xl sm:text-2xl font-bold text-[#16181D]">4 Langkah Transparan Kepemilikan Unit</h2>
-        <ol class="reveal mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <ol class="reveal mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-0">
             @foreach ([['01', 'Pilih Unit dan Cek Ketersediaan', 'Tentukan varian, warna, dan cabang dari stok nyata per VIN.', 'Stok per VIN', 'katalog.index'], ['02', 'Transfer Booking Fee Resmi', 'Bayar tanda jadi ke rekening cabang sebelum batas bayar.', 'Batas bayar 24 jam', 'lacak.form'], ['03', 'Verifikasi Admin dan SPK', 'Upload bukti, admin memverifikasi dan menerbitkan invoice.', 'Invoice otomatis', 'lacak.form'], ['04', 'Pelunasan dan Serah Terima', 'Selesaikan pembayaran di dealer, unit diserahkan dengan BAST.', 'Serah terima BAST', 'cabang.index']] as [$no, $judul, $desc, $catatan, $route])
-                <li class="bg-gray-50 rounded-xl p-5 flex flex-col">
-                    <span class="flex items-center justify-between">
-                        <span class="text-2xl font-bold text-[#16181D] tabular-nums">{{ $no }}</span>
+                <li class="relative bg-gray-50 rounded-xl p-5 flex flex-col lg:bg-transparent lg:rounded-none lg:py-0 lg:px-6 {{ $loop->first ? 'lg:pl-0' : '' }} {{ $loop->last ? 'lg:pr-0' : '' }}">
+                    <span class="flex items-center gap-3" aria-hidden="true">
+                        <span class="relative z-10 inline-flex items-center justify-center w-9 h-9 rounded-full bg-[#16181D] text-white text-sm font-bold tabular-nums shrink-0">{{ $no }}</span>
+                        @if (!$loop->last)
+                            <span class="hidden lg:block h-0.5 flex-1 -mr-6 bg-gray-200"></span>
+                        @endif
                     </span>
-                    <a href="{{ route($route) }}" class="mt-2 block font-bold text-[#16181D] hover:underline">{{ $judul }}</a>
+                    <a href="{{ route($route) }}" class="mt-3 block font-bold text-[#16181D] hover:underline">{{ $judul }}</a>
                     <span class="mt-1 block text-sm text-[#4B5563] flex-1">{{ $desc }}</span>
                     <span class="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-[#16181D]"><span class="w-1.5 h-1.5 rounded-full bg-[#C1121F]"></span>{{ $catatan }}</span>
                 </li>
@@ -185,14 +188,15 @@
 
         <div class="mt-10 flex items-end justify-between gap-4">
             <div>
-                <p class="text-xs font-semibold tracking-widest text-[#C1121F]">EKOSISTEM PURNA JUAL</p>
-                <h2 class="mt-1 text-xl sm:text-2xl font-bold text-[#16181D]">Layanan Resmi Terakreditasi</h2>
+                <h2 class="text-xl sm:text-2xl font-bold text-[#16181D]">Layanan Resmi Terakreditasi</h2>
+                <p class="mt-1 text-xs sm:text-sm text-[#4B5563]">Servis, test drive, trade-in, dan sparepart resmi.</p>
             </div>
         </div>
         <div class="reveal mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            @foreach ([['servis.create', 'Booking Servis', 'Jadwal servis terjadwal per cabang'], ['test-drive.create', 'Test Drive', 'Coba unit sebelum membeli'], ['trade-in.create', 'Trade-In', 'Tukar tambah mobil lama'], ['sparepart.index', 'Sparepart', 'Suku cadang per cabang']] as [$route, $label, $desc])
+            @foreach ([['servis.create', 'Booking Servis', 'Jadwal servis terjadwal per cabang', 'wrench'], ['test-drive.create', 'Test Drive', 'Coba unit sebelum membeli', 'car'], ['trade-in.create', 'Trade-In', 'Tukar tambah mobil lama', 'swap'], ['sparepart.index', 'Sparepart', 'Suku cadang per cabang', 'box']] as [$route, $label, $desc, $ikon])
                 <a href="{{ route($route) }}" class="block p-5 bg-gray-50 rounded-xl border border-transparent transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-[#16181D] focus-visible:-translate-y-1 focus-visible:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#16181D]">
-                    <span class="block font-bold text-[#16181D]">{{ $label }}</span>
+                    <span class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-[#C1121F]/10 text-[#C1121F]" aria-hidden="true"><x-nav-icon name="{{ $ikon }}" /></span>
+                    <span class="mt-3 block font-bold text-[#16181D]">{{ $label }}</span>
                     <span class="mt-1 block text-sm text-[#4B5563]">{{ $desc }}</span>
                     <span class="mt-3 block text-sm font-semibold text-[#C1121F]">Buka layanan</span>
                 </a>

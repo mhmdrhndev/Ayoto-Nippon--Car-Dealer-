@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Branch extends Model
 {
-    protected $fillable = ['kode', 'nama', 'alamat', 'telp', 'maps_url', 'booking_fee', 'aktif'];
+    protected $fillable = ['kode', 'nama', 'alamat', 'telp', 'jam_operasional', 'maps_url', 'booking_fee', 'aktif'];
 
     protected function casts(): array
     {

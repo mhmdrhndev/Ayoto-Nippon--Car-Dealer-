@@ -32,6 +32,9 @@ class MasterSeeder extends Seeder
             'telp' => '0220000002',
             'aktif' => true,
         ]);
+        foreach (['JKT-01' => 'Senin–Sabtu 08.00–17.00', 'BDG-01' => 'Senin–Sabtu 08.00–17.00'] as $kode => $jam) {
+            Branch::where('kode', $kode)->whereNull('jam_operasional')->update(['jam_operasional' => $jam]);
+        }
 
         foreach ([$jakarta, $bandung] as $i => $branch) {
             BankAccount::firstOrCreate(

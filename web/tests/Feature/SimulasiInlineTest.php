@@ -86,7 +86,7 @@ class SimulasiInlineTest extends TestCase
         $respon->assertSee('5 kursi');
         $respon->assertSee('Mulai Rp 200.000.000');
         $respon->assertSee('1 varian (AT; Bensin).');
-        $respon->assertSee('Tersedia Di');
+        $respon->assertSee('Tersedia di');
         $respon->assertDontSee('Ready:');
     }
 }
