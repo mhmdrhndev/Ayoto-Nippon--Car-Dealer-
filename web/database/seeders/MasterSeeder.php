@@ -1003,12 +1003,26 @@ class MasterSeeder extends Seeder
         }
 
         foreach ([$jakarta, $bandung] as $branch) {
-            Sparepart::firstOrCreate(['branch_id' => $branch->id, 'nama' => 'Oli Mesin 10W-40'], [
-                'kode' => 'OLI-10W40', 'harga' => 185000, 'stok' => 24, 'aktif' => true,
-            ]);
-            Sparepart::firstOrCreate(['branch_id' => $branch->id, 'nama' => 'Filter Oli'], [
-                'kode' => 'FLT-OLI', 'harga' => 75000, 'stok' => 40, 'aktif' => true,
-            ]);
+            foreach ([
+                ['Oli Mesin 10W-40', 'OLI-10W40', 185000, 24],
+                ['Filter Oli', 'FLT-OLI', 75000, 40],
+                ['Filter Udara', 'FLT-UDR', 120000, 30],
+                ['Filter AC', 'FLT-AC', 95000, 30],
+                ['Busi Iridium', 'BSI-IRD', 85000, 48],
+                ['Kampas Rem Depan', 'KMP-DPN', 450000, 16],
+                ['Kampas Rem Belakang', 'KMP-BLK', 380000, 16],
+                ['Aki 12V 45Ah', 'AKI-45', 950000, 10],
+                ['Wiper Blade 22in', 'WPR-22', 110000, 25],
+                ['Air Coolant 4L', 'CLN-4L', 140000, 20],
+                ['Minyak Rem DOT4', 'MNY-DOT4', 90000, 22],
+                ['V-Belt Set', 'VBL-SET', 275000, 12],
+                ['Bohlam LED H4', 'BLB-H4', 150000, 28],
+                ['Shockbreaker Depan', 'SHK-DPN', 1250000, 8],
+            ] as [$nama, $kode, $harga, $stok]) {
+                Sparepart::firstOrCreate(['branch_id' => $branch->id, 'nama' => $nama], [
+                    'kode' => $kode, 'harga' => $harga, 'stok' => $stok, 'aktif' => true,
+                ]);
+            }
         }
 
         Promo::firstOrCreate(['slug' => 'dp-ringan-oktober-2026'], [

@@ -53,6 +53,10 @@ class LeadController extends Controller
             'next_reminder' => ['nullable', 'date', 'after:now'],
         ]);
 
+        $final = in_array($lead->status, ['Lunas', 'Batal'], true);
+        $mintaUbah = ($data['status'] ?? null) !== null && $data['status'] !== $lead->status;
+        abort_if($final && $mintaUbah, 422, 'Status lead yang sudah final tidak bisa diubah.');
+
         $lead->followups()->create([
             'sales_id' => $request->user()->id,
             'catatan' => $data['catatan'],

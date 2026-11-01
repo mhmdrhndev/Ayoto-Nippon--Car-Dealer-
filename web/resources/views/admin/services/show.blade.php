@@ -9,6 +9,9 @@
             <p>Jadwal: {{ $service->jadwal->format('d M Y H:i') }} di {{ $service->branch->nama }}</p>
             <p>Keluhan: {{ $service->keluhan }}</p>
             <p>Status: <span class="font-semibold">{{ $service->status }}</span>, Estimasi: Rp {{ number_format($service->estimasi_biaya, 0, ',', '.') }}, Mekanik: {{ $service->mekanik->name ?? '-' }}, Bayar: {{ $service->metode_bayar ?? '-' }}</p>
+            @if ($service->status === 'Selesai')
+                <p class="mt-2"><a href="{{ route('servis.invoice', $service) }}" class="inline-flex items-center px-4 py-2 text-sm font-semibold text-white bg-[#16181D] rounded-lg min-h-[44px]">Unduh Invoice</a></p>
+            @endif
             @php
                 $pengguna = auth()->user();
                 $kelola = $pengguna->hasAnyRole(['service-advisor', 'admin-cabang', 'pimpinan', 'superadmin', 'owner']);

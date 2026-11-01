@@ -11,7 +11,12 @@
         </nav>
         <div class="hidden lg:flex items-center gap-2">
             @auth
-                <a href="{{ route('dashboard') }}" class="px-3 py-2 text-sm font-medium text-[#16181D] hover:underline min-h-[44px] inline-flex items-center">{{ Auth::user()->name }}</a>
+                <a href="{{ route('pesanan.index') }}" class="px-3 py-2 text-sm font-medium text-[#16181D] hover:underline min-h-[44px] inline-flex items-center">Pesanan Saya</a>
+                <span class="text-gray-300" aria-hidden="true">|</span>
+                <a href="{{ route('dashboard') }}" class="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-gray-100 min-h-[44px]" aria-label="Dashboard {{ Auth::user()->name }}">
+                    <span class="w-9 h-9 rounded-full bg-[#C1121F] text-white font-bold text-sm inline-flex items-center justify-center shrink-0" aria-hidden="true">{{ strtoupper(collect(explode(' ', Auth::user()->name ?? ''))->map(fn ($p) => mb_substr($p, 0, 1))->take(2)->implode('')) }}</span>
+                    <span class="px-1 py-2 text-sm font-medium text-[#16181D]">{{ Auth::user()->name }}</span>
+                </a>
                 <form method="POST" action="{{ route('logout') }}" class="inline">
                     @csrf
                     <button type="submit" class="px-3 py-2 text-sm font-medium text-[#4B5563] hover:underline min-h-[44px]">Keluar</button>
@@ -32,7 +37,11 @@
             <a href="{{ route($route) }}" class="block px-2 py-3 text-sm font-medium text-[#16181D] border-b border-gray-100 last:border-0 min-h-[44px]">{{ $label }}</a>
         @endforeach
         @auth
-            <a href="{{ route('dashboard') }}" class="block px-2 py-3 text-sm font-medium text-[#16181D] border-b border-gray-100 min-h-[44px]">{{ Auth::user()->name }} (Dashboard)</a>
+            <a href="{{ route('pesanan.index') }}" class="block px-2 py-3 text-sm font-medium text-[#16181D] border-b border-gray-100 min-h-[44px]">Pesanan Saya</a>
+            <a href="{{ route('dashboard') }}" class="flex items-center gap-2 px-2 py-2 min-h-[44px]">
+                <span class="w-9 h-9 rounded-full bg-[#C1121F] text-white font-bold text-sm inline-flex items-center justify-center shrink-0" aria-hidden="true">{{ strtoupper(collect(explode(' ', Auth::user()->name ?? ''))->map(fn ($p) => mb_substr($p, 0, 1))->take(2)->implode('')) }}</span>
+                <span class="text-sm font-medium text-[#16181D]">{{ Auth::user()->name }} (Dashboard)</span>
+            </a>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="block w-full text-left px-2 py-3 text-sm font-medium text-[#4B5563] min-h-[44px]">Keluar</button>

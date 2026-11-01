@@ -1,4 +1,4 @@
-<x-site-layout>
+<x-site-layout judul="{{ $variant->carModel->brand->nama }} {{ $variant->carModel->nama }} {{ $variant->nama }}" deskripsi="Spesifikasi, harga OTR, stok cabang, dan simulasi kredit {{ $variant->nama }} di Ayoto Nippon.">
     <x-site-header />
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -7,16 +7,16 @@
         <div class="mt-2 grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div>
                 @php
-                    $galeri = $variant->units->pluck('foto_utama')->filter()->unique()->values();
+                    $galeri = $variant->units->filter(fn ($u) => $u->foto_utama)->unique('foto_utama')->map(fn ($u) => ['foto' => $u->foto_utama, 'warna' => $u->color_id])->values();
                     $warnaTersedia = $variant->units->where('status', 'Tersedia')->map(fn ($u) => $u->color)->filter()->unique('id')->values();
                 @endphp
                 @if ($galeri->isNotEmpty())
-                    <img id="galeri-utama" src="{{ asset($galeri[0]) }}" alt="{{ $variant->carModel->brand->nama }} {{ $variant->carModel->nama }} {{ $variant->nama }}" fetchpriority="high" class="w-full aspect-video object-cover rounded-2xl">
+                    <img id="galeri-utama" src="{{ asset($galeri[0]['foto']) }}" alt="{{ $variant->carModel->brand->nama }} {{ $variant->carModel->nama }} {{ $variant->nama }}" fetchpriority="high" class="w-full aspect-video object-cover rounded-2xl">
                     @if ($galeri->count() > 1)
                         <div class="mt-2 grid grid-cols-4 gap-2">
-                            @foreach ($galeri->take(4) as $i => $foto)
-                                <button type="button" data-galeri="{{ asset($foto) }}" aria-label="Lihat foto {{ $i + 1 }}" class="rounded-xl overflow-hidden border-2 border-transparent focus:border-[#C1121F] min-h-[44px]">
-                                    <img src="{{ asset($foto) }}" alt="" loading="lazy" class="w-full aspect-video object-cover">
+                            @foreach ($galeri->take(8) as $i => $item)
+                                <button type="button" data-galeri="{{ asset($item['foto']) }}" data-foto-warna="{{ $item['warna'] }}" aria-label="Lihat foto {{ $i + 1 }}" class="rounded-xl overflow-hidden border-2 border-transparent focus:border-[#C1121F] min-h-[44px] min-w-[44px]">
+                                    <img src="{{ asset($item['foto']) }}" alt="" loading="lazy" class="w-full aspect-video object-cover">
                                 </button>
                             @endforeach
                         </div>
@@ -281,6 +281,11 @@
             }
             toggles.forEach((t) => t.addEventListener('click', () => buka(panel.hidden)));
             const utama = document.getElementById('galeri-utama');
+            const thumbBtns = Array.from(document.querySelectorAll('[data-galeri]'));
+            function fotoWarna(idWarna) {
+                const btn = thumbBtns.find((b) => String(b.dataset.fotoWarna) === String(idWarna));
+                return btn ? btn.dataset.galeri : null;
+            }
             document.querySelectorAll('[data-galeri]').forEach((btn) => {
                 btn.addEventListener('click', () => {
                     if (utama) utama.src = btn.dataset.galeri;
@@ -289,18 +294,39 @@
             const spkBase = "{{ route('spk.create') }}";
             const tdBase = "{{ route('test-drive.create') }}";
             const varianId = "{{ $variant->id }}";
+            const unitPerWarna = @json($variant->units->where('status', 'Tersedia')->groupBy('color_id')->map(fn ($g) => ['unit_id' => $g->first()->id, 'branch_id' => $g->first()->branch_id]));
             const warnaBtns = Array.from(document.querySelectorAll('[data-warna]'));
             const spkCtas = Array.from(document.querySelectorAll('[data-cta-spk]'));
             const tdCtas = Array.from(document.querySelectorAll('[data-cta-testdrive]'));
             const spkAwal = new Map(spkCtas.map((a) => [a, a.getAttribute('href')]));
             const infoWarna = document.getElementById('warna-pilihan');
             let warna = null;
+            function unitWarna(idWarna) {
+                return (typeof unitPerWarna !== 'undefined' && unitPerWarna[idWarna]) ? unitPerWarna[idWarna] : null;
+            }
             function syncCta() {
                 spkCtas.forEach((a) => {
-                    a.setAttribute('href', warna ? spkBase + '?variant_id=' + varianId + '&color_id=' + warna : spkAwal.get(a));
+                    if (!warna) {
+                        a.setAttribute('href', spkAwal.get(a));
+                        return;
+                    }
+                    let href = spkBase + '?variant_id=' + varianId + '&color_id=' + warna;
+                    const u = unitWarna(warna);
+                    if (u) {
+                        href += '&unit_id=' + u.unit_id + '&branch_id=' + u.branch_id;
+                    }
+                    a.setAttribute('href', href);
                 });
                 tdCtas.forEach((a) => {
-                    a.setAttribute('href', tdBase + '?variant_id=' + varianId + (warna ? '&color_id=' + warna : ''));
+                    let href = tdBase + '?variant_id=' + varianId;
+                    if (warna) {
+                        const u = unitWarna(warna);
+                        href += '&color_id=' + warna;
+                        if (u) {
+                            href += '&branch_id=' + u.branch_id;
+                        }
+                    }
+                    a.setAttribute('href', href);
                 });
                 warnaBtns.forEach((b) => {
                     const aktif = b.dataset.warna === warna;
@@ -310,6 +336,17 @@
                         swatch.style.outline = aktif ? '2px solid #C1121F' : '';
                         swatch.style.outlineOffset = aktif ? '2px' : '';
                     }
+                });
+                if (utama && thumbBtns.length) {
+                    if (warna) {
+                        const cocok = fotoWarna(warna);
+                        if (cocok) utama.src = cocok;
+                    } else {
+                        utama.src = thumbBtns[0].dataset.galeri;
+                    }
+                }
+                thumbBtns.forEach((b) => {
+                    b.classList.toggle('opacity-40', !!(warna && String(b.dataset.fotoWarna) !== String(warna)));
                 });
                 if (infoWarna) {
                     if (warna) {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\SendMailJob;
+use App\Jobs\SendWaJob;
 use App\Models\Customer;
 use App\Models\Lead;
 use App\Models\Order;
@@ -102,6 +103,7 @@ class TradeInController extends Controller
         $tradeIn->update($data);
 
         $fresh = $tradeIn->fresh();
+        SendWaJob::dispatch($fresh->customer->telp, Notifikasi::tradeInStatusUntukCustomer($fresh));
         if ($email = $fresh->customer->user?->email) {
             SendMailJob::dispatch($email, "Status trade-in: {$fresh->status}",
                 view('emails.notifikasi', [

@@ -91,11 +91,11 @@
                     <svg class="w-4 h-4 transition-transform duration-200" :class="{ 'rotate-180': showAll }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </button>
             </div>
-            <div class="mt-5 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 sm:gap-4">
+            <div class="mt-5 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 sm:gap-4" data-reveal-stagger>
                 @foreach ($brands as $index => $brand)
                     <a href="{{ route('katalog.index', ['brand' => $brand->slug]) }}"
                         x-show="showAll || {{ $index }} < 16"
-                        class="bg-white border border-gray-200 rounded-xl sm:rounded-2xl p-3 sm:p-4 flex flex-col justify-center shadow-xs hover:border-[#C1121F] hover:shadow-md hover:-translate-y-1 transition-all group min-h-[105px]">
+                        class="reveal bg-white border border-gray-200 rounded-xl sm:rounded-2xl p-3 sm:p-4 flex flex-col justify-center shadow-xs hover:border-[#C1121F] hover:shadow-md hover:-translate-y-1 transition-all group min-h-[105px]">
                         <span class="h-10 w-full flex items-center justify-center">
                             <img src="{{ $brand->logo_url }}" alt="" aria-hidden="true" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-200" loading="lazy">
                         </span>
@@ -115,14 +115,14 @@
                     </div>
                     <a href="{{ route('katalog.index') }}" class="text-xs sm:text-sm font-semibold text-[#C1121F] hover:underline flex-shrink-0 min-h-[44px] inline-flex items-center">Semua Unit</a>
                 </div>
-                <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" data-reveal-stagger>
                     @foreach ($unggulan as $top)
                         @php
                             $fotoTop = $top->units->where('status', 'Tersedia')->first()?->foto_utama ?? $top->units->first()?->foto_utama;
                             $mulaiTop = $top->priceLists->min('otr');
                             $stokTop = $top->units->where('status', 'Tersedia')->count();
                         @endphp
-                        <a href="{{ route('katalog.show', $top->slug) }}" class="border border-gray-200 rounded-2xl overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus-visible:-translate-y-1 focus-visible:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#16181D]">
+                        <a href="{{ route('katalog.show', $top->slug) }}" class="reveal border border-gray-200 rounded-2xl overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus-visible:-translate-y-1 focus-visible:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#16181D]">
                             @if ($fotoTop)
                                 <img src="{{ asset($fotoTop) }}" alt="{{ $top->carModel->brand->nama }} {{ $top->carModel->nama }} {{ $top->nama }}" class="h-44 w-full object-cover" loading="lazy">
                             @else
@@ -151,9 +151,9 @@
                 </div>
                 <a href="{{ route('promo.index') }}" class="text-xs sm:text-sm font-semibold text-[#C1121F] hover:underline flex-shrink-0 min-h-[44px] inline-flex items-center">Semua promo</a>
             </div>
-            <div class="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-4" data-reveal-stagger>
                 @foreach ($promos as $promo)
-                    <a href="{{ route('promo.index') }}#promo-{{ $promo->id }}" class="relative block rounded-2xl overflow-hidden min-h-[180px] flex items-end">
+                    <a href="{{ route('promo.index') }}#promo-{{ $promo->id }}" class="reveal relative block rounded-2xl overflow-hidden min-h-[180px] flex items-end">
                         @if ($promo->banner)
                             <img src="{{ asset($promo->banner) }}" alt="{{ $promo->judul }}" loading="lazy" class="absolute inset-0 h-full w-full object-cover">
                         @endif
@@ -170,9 +170,9 @@
 
         <p class="mt-10 text-xs font-semibold tracking-widest text-[#C1121F]">STANDAR OPERASIONAL PEMBELIAN</p>
         <h2 class="mt-1 text-xl sm:text-2xl font-bold text-[#16181D]">4 Langkah Transparan Kepemilikan Unit</h2>
-        <ol class="reveal mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-0">
+        <ol class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-0" data-reveal-stagger>
             @foreach ([['01', 'Pilih Unit dan Cek Ketersediaan', 'Tentukan varian, warna, dan cabang dari stok nyata per VIN.', 'Stok per VIN', 'katalog.index'], ['02', 'Transfer Booking Fee Resmi', 'Bayar tanda jadi ke rekening cabang sebelum batas bayar.', 'Batas bayar 24 jam', 'lacak.form'], ['03', 'Verifikasi Admin dan SPK', 'Upload bukti, admin memverifikasi dan menerbitkan invoice.', 'Invoice otomatis', 'lacak.form'], ['04', 'Pelunasan dan Serah Terima', 'Selesaikan pembayaran di dealer, unit diserahkan dengan BAST.', 'Serah terima BAST', 'cabang.index']] as [$no, $judul, $desc, $catatan, $route])
-                <li class="relative bg-gray-50 rounded-xl p-5 flex flex-col lg:bg-transparent lg:rounded-none lg:py-0 lg:px-6 {{ $loop->first ? 'lg:pl-0' : '' }} {{ $loop->last ? 'lg:pr-0' : '' }}">
+                <li class="reveal relative bg-gray-50 rounded-xl p-5 flex flex-col lg:bg-transparent lg:rounded-none lg:py-0 lg:px-6 {{ $loop->first ? 'lg:pl-0' : '' }} {{ $loop->last ? 'lg:pr-0' : '' }}" data-reveal="left">
                     <span class="flex items-center gap-3" aria-hidden="true">
                         <span class="relative z-10 inline-flex items-center justify-center w-9 h-9 rounded-full bg-[#16181D] text-white text-sm font-bold tabular-nums shrink-0">{{ $no }}</span>
                         @if (!$loop->last)
@@ -192,9 +192,9 @@
                 <p class="mt-1 text-xs sm:text-sm text-[#4B5563]">Servis, test drive, trade-in, dan sparepart resmi.</p>
             </div>
         </div>
-        <div class="reveal mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3" data-reveal-stagger>
             @foreach ([['servis.create', 'Booking Servis', 'Jadwal servis terjadwal per cabang', 'wrench'], ['test-drive.create', 'Test Drive', 'Coba unit sebelum membeli', 'car'], ['trade-in.create', 'Trade-In', 'Tukar tambah mobil lama', 'swap'], ['sparepart.index', 'Sparepart', 'Suku cadang per cabang', 'box']] as [$route, $label, $desc, $ikon])
-                <a href="{{ route($route) }}" class="block p-5 bg-gray-50 rounded-xl border border-transparent transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-[#16181D] focus-visible:-translate-y-1 focus-visible:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#16181D]">
+                <a href="{{ route($route) }}" class="reveal block p-5 bg-gray-50 rounded-xl border border-transparent transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-[#16181D] focus-visible:-translate-y-1 focus-visible:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#16181D]">
                     <span class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-[#C1121F]/10 text-[#C1121F]" aria-hidden="true"><x-nav-icon name="{{ $ikon }}" /></span>
                     <span class="mt-3 block font-bold text-[#16181D]">{{ $label }}</span>
                     <span class="mt-1 block text-sm text-[#4B5563]">{{ $desc }}</span>

@@ -1,4 +1,4 @@
-<x-site-layout judul="Lacak SPK" deskripsi="Pantau status surat pemesanan kendaraan Anda di Ayoto Nippon.">
+<x-site-layout judul="Lacak SPK" robots="noindex, nofollow" deskripsi="Pantau status surat pemesanan kendaraan Anda di Ayoto Nippon.">
     <x-site-header />
     <div class="max-w-xl mx-auto px-4 sm:px-6 py-8">
         <h1 class="text-2xl font-bold text-[#16181D]">Lacak SPK</h1>

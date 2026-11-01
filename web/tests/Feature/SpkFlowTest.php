@@ -2,16 +2,44 @@
 
 namespace Tests\Feature;
 
+use App\Models\Branch;
+use App\Models\Brand;
+use App\Models\CarModel;
+use App\Models\Color;
 use App\Models\Unit;
 use App\Models\User;
 use App\Models\Variant;
+use Database\Seeders\RoleSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class SpkFlowTest extends TestCase
 {
+    use RefreshDatabase;
+
+    private function buatUnit(): Unit
+    {
+        $this->seed(RoleSeeder::class);
+        $branch = Branch::create(['kode' => 'JKT', 'nama' => 'Jakarta', 'booking_fee' => 5000000, 'aktif' => true]);
+        $brand = Brand::create(['nama' => 'Merek', 'slug' => 'merek']);
+        $model = CarModel::create(['brand_id' => $brand->id, 'nama' => 'Model', 'slug' => 'model']);
+        $variant = Variant::create(['car_model_id' => $model->id, 'nama' => 'Varian', 'slug' => 'varian', 'transmisi' => 'AT', 'bbm' => 'Bensin', 'aktif' => true]);
+        $warna = Color::create(['nama' => 'Hitam', 'kode_hex' => '#16181D', 'aktif' => true]);
+
+        return Unit::create([
+            'vin' => 'VINSPK0000000001',
+            'variant_id' => $variant->id,
+            'color_id' => $warna->id,
+            'branch_id' => $branch->id,
+            'status' => 'Tersedia',
+            'tahun_rakit' => 2026,
+            'harga' => 200000000,
+        ]);
+    }
     public function test_spk_create_page_renders_successfully_for_authenticated_user(): void
     {
-        $user = User::first() ?? User::factory()->create();
+        $this->buatUnit();
+        $user = User::factory()->create();
 
         $response = $this->actingAs($user)->get(route('spk.create'));
 
@@ -22,8 +50,8 @@ class SpkFlowTest extends TestCase
 
     public function test_spk_create_with_unit_id_scopes_units_and_does_not_render_entire_inventory(): void
     {
-        $user = User::first() ?? User::factory()->create();
-        $unit = Unit::tersedia()->whereHas('variant', fn ($q) => $q->where('aktif', true))->firstOrFail();
+        $user = User::factory()->create();
+        $unit = $this->buatUnit();
 
         $response = $this->actingAs($user)->get(route('spk.create', ['unit_id' => $unit->id]));
 
@@ -42,8 +70,8 @@ class SpkFlowTest extends TestCase
 
     public function test_spk_create_unit_options_do_not_contain_vin_in_option_text(): void
     {
-        $user = User::first() ?? User::factory()->create();
-        $unit = Unit::tersedia()->whereHas('variant', fn ($q) => $q->where('aktif', true))->firstOrFail();
+        $user = User::factory()->create();
+        $unit = $this->buatUnit();
 
         $response = $this->actingAs($user)->get(route('spk.create', ['unit_id' => $unit->id]));
 

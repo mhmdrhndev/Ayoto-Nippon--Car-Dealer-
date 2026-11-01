@@ -1,4 +1,4 @@
-<x-site-layout>
+<x-site-layout judul="{{ $m->brand->nama }} {{ $m->nama }}" deskripsi="Pilih varian {{ $m->nama }} dengan harga OTR dan estimasi cicilan di Ayoto Nippon.">
     <x-site-header />
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

@@ -18,7 +18,12 @@ button:disabled { cursor: not-allowed; }
 .sidebar-shell { height: 100dvh; }
 
 /* Scroll-reveal sekali tampil untuk halaman publik. */
-.js .reveal { opacity: 0; transform: translateY(12px); transition: opacity .5s ease, transform .5s ease; }
+.js .reveal { opacity: 0; transition: opacity .5s ease, transform .5s ease; }
+.js .reveal:not([data-reveal]),
+.js .reveal[data-reveal="up"] { transform: translateY(12px); }
+.js .reveal[data-reveal="fade"] { transform: none; }
+.js .reveal[data-reveal="scale"] { transform: scale(.96); }
+.js .reveal[data-reveal="left"] { transform: translateX(24px); }
 .js .reveal.is-visible { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) {
     .js .reveal { opacity: 1; transform: none; transition: none; }

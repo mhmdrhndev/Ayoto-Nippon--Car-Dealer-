@@ -165,7 +165,7 @@ class SpkController extends Controller
                 'sales_id' => $data['sales_id'] ?? null,
                 'sumber' => 'Web',
                 'status' => 'SPK',
-                'kebutuhan_text' => "SPK {$order->no_spk} untuk {$unit->variant->carModel->brand->nama} {$unit->variant->carModel->nama} {$unit->variant->nama} ({$unit->vin})",
+                'kebutuhan_text' => "{$order->no_spk} untuk {$unit->variant->carModel->brand->nama} {$unit->variant->carModel->nama} {$unit->variant->nama} ({$unit->vin})",
             ]);
 
             return $order;
@@ -206,10 +206,17 @@ class SpkController extends Controller
         return redirect()->route('spk.show', $order->no_spk)->with('sukses', 'SPK berhasil dibuat. Segera transfer booking fee sebelum deadline.');
     }
 
-    public function show(string $no_spk)
+    public function show(Request $request, string $no_spk)
     {
         $order = Order::with(['customer', 'unit.variant.carModel.brand', 'unit.color', 'branch.bankAccounts', 'leasing', 'invoice'])
             ->where('no_spk', $no_spk)->firstOrFail();
+
+        $milik = $order->customer->user_id !== null && $order->customer->user_id === $request->user()->id;
+        $manajemen = $request->user()->hasAnyRole(['pimpinan', 'superadmin', 'owner']);
+        $stafCabang = $request->user()->hasAnyRole(['sales', 'admin-cabang'])
+            && $request->user()->branch_id !== null
+            && $order->branch_id === $request->user()->branch_id;
+        abort_if(! $milik && ! $manajemen && ! $stafCabang, 403, 'SPK ini milik akun lain atau di luar cabang Anda.');
 
         return view('spk.show', compact('order'));
     }
@@ -219,9 +226,7 @@ class SpkController extends Controller
         $order = Order::where('no_spk', $no_spk)->firstOrFail();
 
         abort_if($order->status !== 'MenungguBayar', 422, 'Bukti hanya bisa diunggah saat status MenungguBayar.');
-        if ($order->customer->user_id === null) {
-            $order->customer->update(['user_id' => $request->user()->id]);
-        }
+        abort_if($order->customer->user_id === null, 403, 'SPK ini belum tertaut akun. Hubungi admin cabang untuk verifikasi manual.');
         abort_if($order->customer->user_id !== $request->user()->id, 403, 'SPK ini milik akun lain. Masuk dengan akun yang membuat SPK.');
 
         $data = $request->validate([

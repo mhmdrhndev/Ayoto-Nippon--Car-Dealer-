@@ -57,7 +57,7 @@ class UnitController extends Controller
 
     private function validated(Request $request, ?int $ignore = null): array
     {
-        return $request->validate([
+        $data = $request->validate([
             'vin' => ['required', 'string', 'max:30', 'unique:units,vin'.($ignore ? ",{$ignore}" : '')],
             'variant_id' => ['required', 'exists:variants,id'],
             'color_id' => ['required', 'exists:colors,id'],
@@ -65,7 +65,14 @@ class UnitController extends Controller
             'status' => ['required', 'in:Tersedia,Dipesan,Terjual'],
             'tahun_rakit' => ['required', 'integer', 'min:2000', 'max:2100'],
             'harga' => ['required', 'integer', 'min:0'],
-            'foto_utama' => ['nullable', 'string', 'max:255'],
+            'foto_utama' => ['nullable', 'image', 'max:2048'],
         ]);
+        if ($request->hasFile('foto_utama')) {
+            $data['foto_utama'] = 'storage/'.$request->file('foto_utama')->store('unit', 'public');
+        } else {
+            unset($data['foto_utama']);
+        }
+
+        return $data;
     }
 }

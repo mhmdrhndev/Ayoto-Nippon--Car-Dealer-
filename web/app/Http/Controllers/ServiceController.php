@@ -11,8 +11,10 @@ use App\Models\ServiceBooking;
 use App\Models\Sparepart;
 use App\Models\User;
 use App\Models\Variant;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class ServiceController extends Controller
@@ -224,13 +226,16 @@ class ServiceController extends Controller
                     $baris[] = "[{$detail->jenis}] {$detail->deskripsi} x {$detail->qty}: Rp ".number_format($detail->subtotal, 0, ',', '.');
                 }
             }
+            $pdf = Pdf::loadView('invoice.servis', ['service' => $fresh->load(['customer', 'branch', 'mekanik', 'details'])]);
+            $pdfPath = "invoices/{$fresh->no_svc}.pdf";
+            Storage::disk('local')->put($pdfPath, $pdf->output());
             SendMailJob::dispatch($emailCustomer, "Servis {$fresh->no_svc} selesai, total Rp ".number_format($fresh->total(), 0, ',', '.'),
                 view('emails.notifikasi', [
                     'judul' => "Servis {$fresh->no_svc} selesai",
                     'baris' => $baris,
                     'tombol' => null,
                     'kontak' => "Ambil unit di {$fresh->branch->nama}".($fresh->branch->telp ? " ({$fresh->branch->telp})" : '').'.',
-                ])->render(), [], true);
+                ])->render(), [$pdfPath], true);
         }
 
         return back()->with('sukses', 'Status servis diperbarui.');
@@ -275,6 +280,18 @@ class ServiceController extends Controller
                 'tombol' => null,
                 'kontak' => null,
             ])->render(), [], true);
+    }
+
+    public function invoice(Request $request, ServiceBooking $service)
+    {
+        abort_unless($service->status === 'Selesai', 404);
+        $milik = $service->customer->user_id !== null && $service->customer->user_id === $request->user()->id;
+        $staf = $request->user()->hasAnyRole(['service-advisor', 'mekanik', 'admin-cabang', 'pimpinan', 'superadmin', 'owner']);
+        abort_if(! $milik && ! $staf, 403, 'Invoice ini bukan milik Anda.');
+
+        $service->load(['customer', 'branch', 'mekanik', 'details']);
+
+        return Pdf::loadView('invoice.servis', ['service' => $service])->download($service->no_svc.'.pdf');
     }
 
     public function addDetail(Request $request, ServiceBooking $service)

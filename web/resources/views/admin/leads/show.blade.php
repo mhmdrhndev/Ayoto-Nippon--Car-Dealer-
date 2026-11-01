@@ -19,18 +19,30 @@
         </div>
         <div class="bg-white p-5 rounded-xl shadow-sm">
             <h3 class="font-bold">Tambah follow-up</h3>
+            @if (in_array($lead->status, ['Lunas', 'Batal'], true))
+                <p class="mt-2 text-sm text-gray-500">Lead ini sudah final ({{ $lead->status }}). Status dikunci, catatan masih bisa ditambah sebagai arsip.</p>
+            @endif
             <form action="{{ route('admin.leads.followup', $lead) }}" method="POST" class="mt-2 space-y-3">
                 @csrf
-                <textarea name="catatan" required rows="2" placeholder="Hasil menghubungi customer" class="w-full rounded-lg border-gray-300 text-sm"></textarea>
+                <label for="catatan" class="block text-sm font-medium text-gray-700">Catatan hasil</label>
+                <textarea id="catatan" name="catatan" required rows="2" placeholder="Hasil menghubungi customer" class="mt-1 w-full rounded-lg border-gray-300 text-sm"></textarea>
                 <div class="flex flex-col sm:flex-row gap-3">
-                    <select name="status" class="rounded-lg border-gray-300 text-sm min-h-[44px]">
-                        <option value="">Status tetap {{ $lead->status }}</option>
+                    <div>
+                        <label for="status" class="block text-sm font-medium text-gray-700">Ubah status</label>
+                        <select id="status" name="status" @disabled(in_array($lead->status, ['Deal', 'Lunas', 'Batal'], true)) class="mt-1 rounded-lg border-gray-300 text-sm min-h-[44px] disabled:bg-gray-100">
+                            <option value="">Jangan ubah status</option>
                         @foreach (['Baru', 'Dihubungi', 'TestDrive', 'SPK', 'Deal', 'Lunas', 'Batal'] as $s)
                             <option value="{{ $s }}">{{ $s }}</option>
                         @endforeach
                     </select>
-                    <input type="datetime-local" name="next_reminder" class="rounded-lg border-gray-300 text-sm min-h-[44px]">
-                    <button class="px-4 py-2 text-sm font-semibold text-white bg-[#C1121F] rounded-lg min-h-[44px]">Simpan</button>
+                    </div>
+                    <div>
+                        <label for="next_reminder" class="block text-sm font-medium text-gray-700">Ingatkan kembali</label>
+                        <input id="next_reminder" type="datetime-local" name="next_reminder" class="mt-1 rounded-lg border-gray-300 text-sm min-h-[44px]">
+                    </div>
+                    <div class="flex items-end">
+                        <button class="px-4 py-2 text-sm font-semibold text-white bg-[#C1121F] rounded-lg min-h-[44px]">Simpan</button>
+                    </div>
                 </div>
             </form>
         </div>

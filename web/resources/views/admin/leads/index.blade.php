@@ -2,13 +2,13 @@
     <x-slot name="header"><h2 class="font-semibold text-xl text-gray-800 leading-tight">Leads</h2></x-slot>
     <div class="py-6 max-w-7xl mx-auto sm:px-6 lg:px-8">
         <form method="GET" class="mb-4 flex flex-col sm:flex-row gap-3">
-            <select name="status" class="rounded-lg border-gray-300 min-h-[44px]">
+            <select name="status" aria-label="Filter status" class="rounded-lg border-gray-300 min-h-[44px]">
                 <option value="">Semua status</option>
                 @foreach (['Baru', 'Dihubungi', 'TestDrive', 'SPK', 'Deal', 'Lunas', 'Batal'] as $s)
                     <option value="{{ $s }}" @selected(request('status') === $s)>{{ $s }}</option>
                 @endforeach
             </select>
-            <select name="sales" class="rounded-lg border-gray-300 min-h-[44px]">
+            <select name="sales" aria-label="Filter sales" class="rounded-lg border-gray-300 min-h-[44px]">
                 <option value="">Semua sales</option>
                 @foreach ($salesList as $sales)
                     <option value="{{ $sales->id }}" @selected((string) request('sales') === (string) $sales->id)>{{ $sales->name }}</option>

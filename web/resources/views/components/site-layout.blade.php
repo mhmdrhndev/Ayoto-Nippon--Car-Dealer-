@@ -1,4 +1,4 @@
-@props(['judul' => null, 'deskripsi' => null])
+@props(['judul' => null, 'deskripsi' => null, 'robots' => null])
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -7,8 +7,9 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <script>document.documentElement.classList.add('js');</script>
 
-        <title>{{ $judul ? $judul.' | '.config('app.name', 'Ayoto Nippon') : config('app.name', 'Ayoto Nippon') }}</title>
+        <title>{{ config('app.name', 'Ayoto Nippon') }}{{ $judul ? ' | '.$judul : '' }}</title>
         @if ($deskripsi)<meta name="description" content="{{ $deskripsi }}">@endif
+        @if ($robots)<meta name="robots" content="{{ $robots }}">@endif
         <link rel="icon" type="image/png" href="{{ asset('images/logo-an.png') }}">
 
         <link rel="preconnect" href="https://fonts.bunny.net">

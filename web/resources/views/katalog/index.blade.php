@@ -1,4 +1,4 @@
-<x-site-layout>
+<x-site-layout judul="Katalog Mobil" deskripsi="Katalog mobil baru dengan harga OTR per cabang dan stok nyata per varian di Ayoto Nippon.">
     <x-site-header />
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

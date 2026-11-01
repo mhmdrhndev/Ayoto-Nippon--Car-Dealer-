@@ -39,10 +39,11 @@
                 </div>
             @endif
             @if (isset($spkSaya))
-                <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                <a href="{{ route('pesanan.index') }}" class="block bg-white p-5 rounded-xl border border-gray-200 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#16181D]">
                     <p class="text-sm font-medium text-gray-500">SPK saya</p>
                     <p class="mt-1 text-2xl font-bold tabular-nums text-[#16181D]">{{ $spkSaya }}</p>
-                </div>
+                    <p class="mt-1 text-xs font-semibold text-[#C1121F]">Lihat pesanan saya</p>
+                </a>
             @endif
         </div>
 

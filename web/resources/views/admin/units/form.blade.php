@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header"><h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ $unit->exists ? 'Ubah Unit' : 'Tambah Unit' }}</h2></x-slot>
     <div class="py-6 max-w-2xl mx-auto sm:px-6 lg:px-8">
-        <form action="{{ $unit->exists ? route('admin.units.update', $unit) : route('admin.units.store') }}" method="POST" class="bg-white p-5 rounded-xl shadow-sm space-y-4">
+        <form action="{{ $unit->exists ? route('admin.units.update', $unit) : route('admin.units.store') }}" method="POST" enctype="multipart/form-data" class="bg-white p-5 rounded-xl shadow-sm space-y-4">
             @csrf @if ($unit->exists) @method('PUT') @endif
             <div>
                 <label for="vin" class="block text-sm font-medium">VIN (unik)</label>
@@ -48,6 +48,13 @@
                     <label for="harga" class="block text-sm font-medium">Harga (Rp)</label>
                     <input id="harga" type="number" name="harga" value="{{ old('harga', $unit->harga) }}" required min="0" class="mt-1 w-full rounded-lg border-gray-300 min-h-[44px]">
                 </div>
+            </div>
+            <div>
+                <label for="foto_utama" class="block text-sm font-medium">Foto unit (JPG/PNG, maks 2 MB, landscape)</label>
+                @if ($unit->foto_utama)
+                    <img src="{{ asset($unit->foto_utama) }}" alt="" class="mt-2 h-24 w-auto object-cover rounded-lg">
+                @endif
+                <input id="foto_utama" type="file" name="foto_utama" accept=".jpg,.jpeg,.png" class="mt-1 w-full min-h-[44px]">
             </div>
             <x-input-error :messages="$errors->all()" />
             <button class="w-full px-6 py-3 font-semibold text-white bg-[#C1121F] rounded-lg min-h-[44px]">Simpan</button>

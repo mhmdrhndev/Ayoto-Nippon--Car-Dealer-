@@ -18,7 +18,7 @@
         <nav aria-label="Bantuan">
             <p class="font-semibold">Bantuan</p>
             <div class="mt-2 flex flex-col gap-1 text-sm">
-                @foreach ([['promo.index', 'Promo'], ['cabang.index', 'Cabang Kami'], ['lacak.form', 'Lacak SPK'], ['login', 'Masuk'], ['register', 'Daftar']] as [$route, $label])
+                @foreach ([['promo.index', 'Promo'], ['cabang.index', 'Cabang Kami'], ['lacak.form', 'Lacak SPK'], ['faq.index', 'Pertanyaan Umum'], ['login', 'Masuk'], ['register', 'Daftar']] as [$route, $label])
                     <a href="{{ route($route) }}" class="text-gray-300 hover:underline py-1">{{ $label }}</a>
                 @endforeach
             </div>

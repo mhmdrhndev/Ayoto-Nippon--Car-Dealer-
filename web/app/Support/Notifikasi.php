@@ -223,6 +223,20 @@ class Notifikasi
             ."\n".self::tutup($testDrive->branch);
     }
 
+    public static function testDriveMandiri($testDrive, string $aksi): string
+    {
+        $v = $testDrive->variant;
+
+        return "Pelanggan {$testDrive->customer->nama} {$aksi} test drive {$v->carModel->nama} {$v->nama} ({$testDrive->branch->nama})."
+            ."\nJadwal tercatat: {$testDrive->jadwal->format('d M Y H:i')}. Mohon tindak lanjut.";
+    }
+
+    public static function servisMandiri($booking, string $aksi): string
+    {
+        return "Pelanggan {$booking->customer->nama} {$aksi} servis {$booking->no_svc} ({$booking->nopol}, {$booking->branch->nama})."
+            ."\nJadwal tercatat: {$booking->jadwal->format('d M Y H:i')}. Mohon tindak lanjut.";
+    }
+
     public static function spoDibuat($order): string
     {
         return self::sapa($order->customer->nama)."\nOrder sparepart {$order->no_spo} telah dibuat dengan total Rp ".self::rp($order->total).'.'
