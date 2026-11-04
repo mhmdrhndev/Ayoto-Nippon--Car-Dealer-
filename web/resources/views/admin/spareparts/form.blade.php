@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header"><h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ $part->exists ? 'Ubah Sparepart' : 'Tambah Sparepart' }}</h2></x-slot>
-    <div class="py-6 max-w-2xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-6 w-full sm:px-6 lg:px-8">
         <form action="{{ $part->exists ? route('admin.spareparts.update', $part) : route('admin.spareparts.store') }}" method="POST" class="bg-white p-5 rounded-xl shadow-sm space-y-4">
             @csrf @if ($part->exists) @method('PUT') @endif
             <div>

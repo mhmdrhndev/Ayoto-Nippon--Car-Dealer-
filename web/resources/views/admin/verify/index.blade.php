@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header"><h2 class="font-semibold text-xl text-gray-800 leading-tight">Antrean Verifikasi SPK</h2></x-slot>
-    <div class="py-6 max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-6 w-full sm:px-6 lg:px-8">
         @if (session('sukses'))<p class="mb-4 p-3 text-sm bg-green-50 border border-green-200 rounded-lg">{{ session('sukses') }}</p>@endif
         @if ($orders->isEmpty())
             <div class="bg-white p-6 rounded-xl shadow-sm"><p class="font-semibold">Antrean kosong.</p><p class="text-sm text-gray-500">Tidak ada SPK yang menunggu verifikasi.</p></div>

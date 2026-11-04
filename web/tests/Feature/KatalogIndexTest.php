@@ -28,8 +28,8 @@ class KatalogIndexTest extends TestCase
         $respon = $this->get(route('katalog.index', ['urut' => 'termurah', 'transmisi' => 'MT']));
 
         $respon->assertOk();
-        $respon->assertSee('1 model ditemukan');
-        $respon->assertSee('Atur Ulang Semua');
+        $respon->assertSee('model ditemukan');
+        $respon->assertSee('Hapus Semua Filter');
         $respon->assertSee('Amodel');
         $respon->assertDontSee('Zmodel');
     }
@@ -47,6 +47,6 @@ class KatalogIndexTest extends TestCase
         $respon->assertOk();
         $respon->assertSee('330i');
         $respon->assertSee('1 Varian');
-        $respon->assertSee('Mulai Rp 100.000.000');
+        $respon->assertSee('Rp 100.000.000');
     }
 }

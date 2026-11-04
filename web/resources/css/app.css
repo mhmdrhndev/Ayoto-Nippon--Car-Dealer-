@@ -29,3 +29,14 @@ button:disabled { cursor: not-allowed; }
     .js .reveal { opacity: 1; transform: none; transition: none; }
 }
 
+/* Selection highlight */
+::selection { background: rgba(193, 18, 31, .18); color: #16181D; }
+
+/* Scrollbar halaman publik */
+@supports (scrollbar-color: auto) {
+    body { scrollbar-color: #D1D5DB #FFFFFF; }
+}
+body::-webkit-scrollbar { width: 8px; }
+body::-webkit-scrollbar-track { background: #FFFFFF; }
+body::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 9999px; }
+body::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }

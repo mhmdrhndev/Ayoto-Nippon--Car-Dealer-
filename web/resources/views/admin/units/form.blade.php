@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header"><h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ $unit->exists ? 'Ubah Unit' : 'Tambah Unit' }}</h2></x-slot>
-    <div class="py-6 max-w-2xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-6 w-full sm:px-6 lg:px-8">
         <form action="{{ $unit->exists ? route('admin.units.update', $unit) : route('admin.units.store') }}" method="POST" enctype="multipart/form-data" class="bg-white p-5 rounded-xl shadow-sm space-y-4">
             @csrf @if ($unit->exists) @method('PUT') @endif
             <div>

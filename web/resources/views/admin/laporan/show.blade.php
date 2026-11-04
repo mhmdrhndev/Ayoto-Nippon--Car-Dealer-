@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header"><h2 class="font-semibold text-xl text-gray-800 leading-tight capitalize">Laporan {{ $jenis }}</h2></x-slot>
-    <div class="py-6 max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-6 w-full sm:px-6 lg:px-8">
         <div class="flex flex-col sm:flex-row gap-3 mb-4">
             <form method="GET" class="flex flex-col sm:flex-row gap-3 flex-1">
                 <input type="date" name="dari" value="{{ request('dari') }}" class="rounded-lg border-gray-300 text-sm min-h-[44px]">

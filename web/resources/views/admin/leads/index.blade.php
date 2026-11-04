@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header"><h2 class="font-semibold text-xl text-gray-800 leading-tight">Leads</h2></x-slot>
-    <div class="py-6 max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-6 w-full sm:px-6 lg:px-8">
         <form method="GET" class="mb-4 flex flex-col sm:flex-row gap-3">
             <select name="status" aria-label="Filter status" class="rounded-lg border-gray-300 min-h-[44px]">
                 <option value="">Semua status</option>

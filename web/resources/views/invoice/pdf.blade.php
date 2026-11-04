@@ -24,7 +24,7 @@
     .info .lbl { color: #6B7280; width: 130px; font-size: 9pt; }
     .info .val { font-weight: bold; color: #111827; }
     table.rincian { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    table.rincian th { background: #F3F4F6; color: #374151; font-size: 9pt; text-transform: uppercase; letter-spacing: 1px; text-align: left; padding: 8px 10px; border-bottom: 2px solid #C1121F; }
+    table.rincian th { background: #16181D; color: #374151; font-size: 9pt; text-transform: uppercase; letter-spacing: 1px; text-align: left; padding: 8px 10px; border-bottom: 2px solid #C1121F; }
     table.rincian td { padding: 9px 10px; border-bottom: 1px solid #E5E7EB; font-size: 10pt; vertical-align: top; }
     table.rincian .kanan { text-align: right; white-space: nowrap; }
     table.total { width: 100%; border-collapse: collapse; margin-top: 6px; }
@@ -35,7 +35,7 @@
     .ket { font-size: 8pt; color: #6B7280; margin-top: 4px; }
     .ttd { margin-top: 34px; width: 100%; }
     .ttd td { width: 50%; vertical-align: top; text-align: center; font-size: 9.5pt; }
-    .ttd .nama { border-top: 1px solid #9CA3AF; margin: 54px auto 2px; width: 200px; padding-top: 4px; font-weight: bold; }
+    .ttd .nama { border-top: 1px solid #4B5563; margin: 54px auto 2px; width: 200px; padding-top: 4px; font-weight: bold; }
     .footer { margin-top: 26px; border-top: 3px solid #C1121F; padding-top: 8px; font-size: 8.5pt; color: #6B7280; }
 </style>
 </head>

@@ -36,10 +36,10 @@ class SpkShowTest extends TestCase
         $respon = $this->actingAs($user)->get(route('spk.show', $order->no_spk));
 
         $respon->assertOk();
-        $respon->assertSee('Perjalanan SPK');
-        $respon->assertSee('Transfer booking fee');
+        $respon->assertSee('Tahapan Proses Pemesanan');
+        $respon->assertSee('Transfer Tanda Jadi');
         $respon->assertSee('Salin');
-        $respon->assertSee('Konfirmasi bukti transfer');
+        $respon->assertSee('Unggah Bukti Transfer');
         $respon->assertSee('VINSHOW01');
     }
 

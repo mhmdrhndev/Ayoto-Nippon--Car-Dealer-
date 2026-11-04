@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header"><h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ $account->exists ? 'Ubah Rekening' : 'Tambah Rekening' }}</h2></x-slot>
-    <div class="py-6 max-w-2xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-6 w-full sm:px-6 lg:px-8">
         <form action="{{ $account->exists ? route('admin.bank-accounts.update', $account) : route('admin.bank-accounts.store') }}" method="POST" class="bg-white p-5 rounded-xl shadow-sm space-y-4">
             @csrf @if ($account->exists) @method('PUT') @endif
             <div>

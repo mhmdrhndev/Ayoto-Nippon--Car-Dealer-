@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header"><h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ $color->exists ? 'Ubah Warna' : 'Tambah Warna' }}</h2></x-slot>
-    <div class="py-6 max-w-2xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-6 w-full sm:px-6 lg:px-8">
         <form action="{{ $color->exists ? route('admin.colors.update', $color) : route('admin.colors.store') }}" method="POST" class="bg-white p-5 rounded-xl shadow-sm space-y-4">
             @csrf @if ($color->exists) @method('PUT') @endif
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">

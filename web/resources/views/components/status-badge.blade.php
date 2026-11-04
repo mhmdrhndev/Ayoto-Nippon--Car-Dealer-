@@ -1,24 +1,24 @@
 @props(['status'])
 @php
 $map = [
-    'Tersedia' => 'bg-green-100 text-green-900',
-    'MenungguBayar' => 'bg-amber-100 text-amber-900',
-    'Menunggu' => 'bg-amber-100 text-amber-900',
-    'Diajukan' => 'bg-amber-100 text-amber-900',
-    'MenungguVerifikasi' => 'bg-blue-100 text-blue-900',
-    'Dikonfirmasi' => 'bg-blue-100 text-blue-900',
-    'Dikerjakan' => 'bg-blue-100 text-blue-900',
-    'Inspeksi' => 'bg-blue-100 text-blue-900',
-    'Ditawar' => 'bg-blue-100 text-blue-900',
-    'Deal' => 'bg-green-100 text-green-900',
-    'Selesai' => 'bg-green-100 text-green-900',
-    'Hadir' => 'bg-green-100 text-green-900',
-    'Ditolak' => 'bg-red-100 text-red-900',
-    'Batal' => 'bg-red-100 text-red-900',
-    'Expired' => 'bg-red-100 text-red-900',
-    'Dipesan' => 'bg-gray-200 text-gray-800',
-    'Terjual' => 'bg-gray-200 text-gray-800',
+    'Tersedia' => 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
+    'MenungguBayar' => 'bg-amber-50 text-amber-700 ring-1 ring-amber-200',
+    'Menunggu' => 'bg-amber-50 text-amber-700 ring-1 ring-amber-200',
+    'Diajukan' => 'bg-amber-50 text-amber-700 ring-1 ring-amber-200',
+    'MenungguVerifikasi' => 'bg-blue-50 text-blue-700 ring-1 ring-blue-200',
+    'Dikonfirmasi' => 'bg-blue-50 text-blue-700 ring-1 ring-blue-200',
+    'Dikerjakan' => 'bg-blue-50 text-blue-700 ring-1 ring-blue-200',
+    'Inspeksi' => 'bg-blue-50 text-blue-700 ring-1 ring-blue-200',
+    'Ditawar' => 'bg-blue-50 text-blue-700 ring-1 ring-blue-200',
+    'Deal' => 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
+    'Selesai' => 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
+    'Hadir' => 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
+    'Ditolak' => 'bg-red-50 text-red-700 ring-1 ring-red-200',
+    'Batal' => 'bg-red-50 text-red-700 ring-1 ring-red-200',
+    'Expired' => 'bg-red-50 text-red-700 ring-1 ring-red-200',
+    'Dipesan' => 'bg-[#F3F4F6] text-[#4B5563] ring-1 ring-[#E5E7EB]',
+    'Terjual' => 'bg-[#F3F4F6] text-[#4B5563] ring-1 ring-[#E5E7EB]',
 ];
-$kelas = $map[$status] ?? 'bg-gray-200 text-gray-800';
+$kelas = $map[$status] ?? 'bg-[#F3F4F6] text-[#4B5563] ring-1 ring-[#E5E7EB]';
 @endphp
 <span {{ $attributes->merge(['class' => "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold $kelas"]) }}>{{ $status }}</span>

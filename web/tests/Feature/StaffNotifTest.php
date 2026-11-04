@@ -108,7 +108,7 @@ class StaffNotifTest extends TestCase
 
         $this->actingAs($user)->get(route('test-drive.create', ['variant_id' => $variant->id, 'color_id' => $warna->id]))
             ->assertOk()
-            ->assertSee('<option value="" selected>Pilih cabang</option>', false)
+            ->assertSee('<option value="" selected>Pilih Cabang</option>', false)
             ->assertSee('value="'.$variant->id.'" selected', false)
             ->assertSee('value="'.$warna->id.'" selected', false);
 

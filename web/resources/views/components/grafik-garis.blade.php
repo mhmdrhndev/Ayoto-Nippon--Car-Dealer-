@@ -39,6 +39,6 @@
         @endif
         <text x="{{ $titik[$i][0] }}" y="{{ $titik[$i][1] - 9 }}" text-anchor="{{ $i === 0 ? 'start' : ($i === count($items) - 1 ? 'end' : 'middle') }}" font-size="11" font-weight="bold" fill="#16181D">{{ $ringkas($bar['nominal']) }}</text>
         <text x="{{ $titik[$i][0] }}" y="{{ $tinggi - 26 }}" text-anchor="middle" font-size="11" fill="#6B7280">{{ $bar['label'] }}</text>
-        <text x="{{ $titik[$i][0] }}" y="{{ $tinggi - 11 }}" text-anchor="middle" font-size="10" fill="#9CA3AF">{{ $bar['unit'] }} unit</text>
+        <text x="{{ $titik[$i][0] }}" y="{{ $tinggi - 11 }}" text-anchor="middle" font-size="10" fill="#4B5563">{{ $bar['unit'] }} unit</text>
     @endforeach
 </svg>

@@ -1,31 +1,52 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>{{ config('app.name', 'Ayoto Nippon') }}{{ isset($judul) ? ' | '.$judul : '' }}</title>
         <link rel="icon" type="image/png" href="{{ asset('images/logo-an.png') }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800&display=swap" rel="stylesheet" />
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
-            </div>
+    <body class="font-sans text-[#16181D] antialiased bg-[#FFFFFF] selection:bg-[#C1121F] selection:text-white min-h-screen flex flex-col">
+        <div class="min-h-screen w-full flex flex-col justify-between">
+            <header class="bg-[#FFFFFF]/90 backdrop-blur-md border-b border-[#E5E7EB] w-full">
+                <div class="w-full px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-4">
+                    <a href="{{ route('home') }}" class="flex items-center gap-3 min-h-[44px] group">
+                        <img src="{{ asset('images/logo-an.png') }}" alt="Logo Ayoto Nippon" class="h-9 w-9 object-contain drop-shadow-[0_0_12px_rgba(225,29,72,0.35)] transition-transform group-hover:scale-105">
+                        <div class="flex flex-col">
+                            <span class="text-base sm:text-lg font-bold tracking-tight text-[#16181D] flex items-center gap-1.5">
+                                Ayoto Nippon
+                                <span class="w-1.5 h-1.5 rounded-full bg-[#C1121F]"></span>
+                            </span>
+                            <span class="text-[10px] tracking-widest uppercase text-[#4B5563] font-medium -mt-0.5">Official Dealer</span>
+                        </div>
+                    </a>
+                    <a href="{{ route('home') }}" class="text-xs sm:text-sm font-medium text-[#4B5563] hover:text-[#16181D] min-h-[44px] inline-flex items-center gap-1.5 transition-colors">
+                        <span>Kembali ke Beranda</span>
+                    </a>
+                </div>
+            </header>
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-                {{ $slot }}
-            </div>
+            <main class="flex-1 w-full px-4 sm:px-6 lg:px-8 py-10 sm:py-16 flex items-center justify-center">
+                <div class="w-full max-w-xl bg-[#FFFFFF] border border-[#E5E7EB] rounded-3xl shadow-2xl shadow-black/5 p-6 sm:p-10 relative overflow-hidden">
+                    <div class="absolute -top-24 -right-24 w-48 h-48 bg-[#C1121F]/10 rounded-full blur-2xl pointer-events-none"></div>
+                    <div class="relative">
+                        {{ $slot }}
+                    </div>
+                </div>
+            </main>
+
+            <footer class="w-full px-4 sm:px-6 lg:px-8 py-5 border-t border-[#FFFFFF] text-center">
+                <p class="text-xs text-gray-500">&copy; {{ date('Y') }} PT Ayoto Nippon. Seluruh hak cipta dilindungi undang-undang.</p>
+            </footer>
         </div>
     </body>
 </html>

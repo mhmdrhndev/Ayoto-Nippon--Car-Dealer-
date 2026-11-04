@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header"><h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ $user->exists ? 'Ubah User' : 'Tambah User' }}</h2></x-slot>
-    <div class="py-6 max-w-2xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-6 w-full sm:px-6 lg:px-8">
         <form action="{{ $user->exists ? route('admin.users.update', $user) : route('admin.users.store') }}" method="POST" class="bg-white p-5 rounded-xl shadow-sm space-y-4">
             @csrf @if ($user->exists) @method('PUT') @endif
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">

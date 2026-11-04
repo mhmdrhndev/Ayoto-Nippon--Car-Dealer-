@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header"><h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ $model->exists ? 'Ubah Model' : 'Tambah Model' }}</h2></x-slot>
-    <div class="py-6 max-w-2xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-6 w-full sm:px-6 lg:px-8">
         <form action="{{ $model->exists ? route('admin.models.update', $model) : route('admin.models.store') }}" method="POST" class="bg-white p-5 rounded-xl shadow-sm space-y-4">
             @csrf @if ($model->exists) @method('PUT') @endif
             <div>

@@ -42,8 +42,8 @@ class LandingHeroTest extends TestCase
 
         $respon->assertOk();
         $respon->assertSee('Katalog Unit Siap Kirim');
-        $respon->assertSee('Mulai Rp');
-        $respon->assertSee('unit tersedia');
+        $respon->assertSee('Harga OTR Mulai');
+        $respon->assertSee('unit ready stock');
         $respon->assertDontSee('Ready Stock');
     }
 

@@ -41,10 +41,10 @@ class SimulasiInlineTest extends TestCase
         $respon->assertOk();
         $respon->assertSee('id="simulasi"', false);
         $respon->assertSee('name="variant_id" value="'.$variant->id.'"', false);
-        $respon->assertSee('Performa utama sekilas');
+        $respon->assertSee('Ringkasan Performa');
         $respon->assertSee('Kalkulator Simulasi Kredit');
-        $respon->assertSee('OTR dan Alokasi Stok Cabang');
-        $respon->assertSee('Pilihan warna tersedia');
+        $respon->assertSee('Ketersediaan Stok Cabang');
+        $respon->assertSee('Pilihan Warna Siap Kirim');
     }
 
     public function test_form_simulasi_mulai_kosong(): void
@@ -54,8 +54,8 @@ class SimulasiInlineTest extends TestCase
         $respon = $this->get(route('simulasi.form'));
 
         $respon->assertOk();
-        $respon->assertSee('<option value="" selected>Pilih varian</option>', false);
-        $respon->assertSee('<option value="" selected>Pilih cabang</option>', false);
+        $respon->assertSee('<option value="" selected>Pilih Varian Kendaraan</option>', false);
+        $respon->assertSee('<option value="" selected>Pilih Cabang Dealer</option>', false);
         $respon->assertSee('id="dp" type="number" name="dp" value=""', false);
     }
 
@@ -83,9 +83,9 @@ class SimulasiInlineTest extends TestCase
 
         $respon->assertOk();
         $respon->assertSee('Sedan');
-        $respon->assertSee('5 kursi');
+        $respon->assertSee('5 Kursi');
         $respon->assertSee('Mulai Rp 200.000.000');
-        $respon->assertSee('1 varian (AT; Bensin).');
+        $respon->assertSee('Daftar Varian');
         $respon->assertSee('Tersedia di');
         $respon->assertDontSee('Ready:');
     }

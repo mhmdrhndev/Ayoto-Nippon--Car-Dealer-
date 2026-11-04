@@ -3,7 +3,7 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
     </x-slot>
 
-    <div class="py-6 max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-4">
+    <div class="py-6 w-full sm:px-6 lg:px-8 space-y-4">
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
             @hasanyrole('sales|admin-cabang|pimpinan|superadmin|owner')
                 <a href="{{ route('admin.verify.index') }}" class="block bg-white p-5 rounded-xl border border-gray-200 border-l-4 border-l-[#C1121F] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C1121F]">

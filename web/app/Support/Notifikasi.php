@@ -207,6 +207,12 @@ class Notifikasi
             ."\n".self::tutup(null);
     }
 
+    public static function servisChat($booking): string
+    {
+        return self::sapa($booking->customer->nama)."\nMenghubungi terkait servis {$booking->no_svc} untuk unit {$booking->nopol}."
+            ."\n".self::tutup($booking->branch);
+    }
+
     public static function tanggapanServis($booking): string
     {
         return self::sapa($booking->customer->nama)."\nMenindaklanjuti keluhan Anda pada servis {$booking->no_svc} ({$booking->keluhan}), bengkel kami menyampaikan:"

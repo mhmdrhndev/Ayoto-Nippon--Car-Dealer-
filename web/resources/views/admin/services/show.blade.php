@@ -1,10 +1,10 @@
 <x-app-layout>
     <x-slot name="header"><h2 class="font-semibold text-xl text-gray-800 leading-tight font-mono">{{ $service->no_svc }}</h2></x-slot>
-    <div class="py-6 max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-4">
+    <div class="py-6 w-full sm:px-6 lg:px-8 space-y-4">
         @if (session('sukses'))<p class="p-3 text-sm bg-green-50 border border-green-200 rounded-lg">{{ session('sukses') }}</p>@endif
         @if ($errors->any())<p class="p-3 text-sm bg-red-50 border border-red-200 rounded-lg">{{ $errors->first() }}</p>@endif
         <div class="bg-white p-5 rounded-xl shadow-sm text-sm">
-            <p>Customer: <span class="font-semibold">{{ $service->customer->nama }} ({{ $service->customer->telp }})</span></p>
+            <p>Customer: <span class="font-semibold">{{ $service->customer->nama }} ({{ $service->customer->telp }})</span>@if ($service->customer?->telp) <a href="{{ \App\Support\Wa::chat($service->customer->telp, \App\Support\Notifikasi::servisChat($service)) }}" target="_blank" rel="noopener" class="underline font-medium text-gray-800 min-h-[44px] inline-flex items-center">Chat WA</a>@endif</p>
             <p>Nopol: <span class="font-semibold">{{ $service->nopol }}</span>, KM: {{ number_format($service->km, 0, ',', '.') }}, VIN: <span class="font-mono">{{ $service->vin ?? '-' }}</span></p>
             <p>Jadwal: {{ $service->jadwal->format('d M Y H:i') }} di {{ $service->branch->nama }}</p>
             <p>Keluhan: {{ $service->keluhan }}</p>

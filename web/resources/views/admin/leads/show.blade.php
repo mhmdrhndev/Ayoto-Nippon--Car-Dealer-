@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header"><h2 class="font-semibold text-xl text-gray-800 leading-tight">Lead #{{ $lead->id }}</h2></x-slot>
-    <div class="py-6 max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-4">
+    <div class="py-6 w-full sm:px-6 lg:px-8 space-y-4">
         @if (session('sukses'))<p class="p-3 text-sm bg-green-50 border border-green-200 rounded-lg">{{ session('sukses') }}</p>@endif
         <div class="bg-white p-5 rounded-xl shadow-sm">
             <p class="text-sm text-gray-500">Customer: <span class="font-semibold text-gray-800">{{ $lead->customer->nama ?? '-' }} ({{ $lead->customer->telp ?? '-' }})</span>@if ($lead->customer?->telp) <a href="{{ \App\Support\Wa::chat($lead->customer->telp, \App\Support\Notifikasi::followupLead($lead)) }}" target="_blank" rel="noopener" class="underline font-medium text-gray-800 min-h-[44px] inline-flex items-center">Chat WA</a>@endif</p>
@@ -19,8 +19,8 @@
         </div>
         <div class="bg-white p-5 rounded-xl shadow-sm">
             <h3 class="font-bold">Tambah follow-up</h3>
-            @if (in_array($lead->status, ['Lunas', 'Batal'], true))
-                <p class="mt-2 text-sm text-gray-500">Lead ini sudah final ({{ $lead->status }}). Status dikunci, catatan masih bisa ditambah sebagai arsip.</p>
+            @if ($lead->status === 'Lunas')
+                <p class="mt-2 text-sm text-gray-500">Status Lunas tidak bisa diubah lagi. Catatan follow-up masih bisa ditambah.</p>
             @endif
             <form action="{{ route('admin.leads.followup', $lead) }}" method="POST" class="mt-2 space-y-3">
                 @csrf
@@ -29,10 +29,11 @@
                 <div class="flex flex-col sm:flex-row gap-3">
                     <div>
                         <label for="status" class="block text-sm font-medium text-gray-700">Ubah status</label>
-                        <select id="status" name="status" @disabled(in_array($lead->status, ['Deal', 'Lunas', 'Batal'], true)) class="mt-1 rounded-lg border-gray-300 text-sm min-h-[44px] disabled:bg-gray-100">
-                            <option value="">Jangan ubah status</option>
+                        <select id="status" name="status" class="mt-1 rounded-lg border-gray-300 text-sm min-h-[44px]">
+                            <option value="">{{ $lead->status === 'Lunas' ? 'Lunas' : 'Jangan ubah status' }}</option>
                         @foreach (['Baru', 'Dihubungi', 'TestDrive', 'SPK', 'Deal', 'Lunas', 'Batal'] as $s)
-                            <option value="{{ $s }}">{{ $s }}</option>
+                            @continue($lead->status === 'Lunas' && $s === 'Lunas')
+                            <option value="{{ $s }}" @disabled($lead->status === 'Lunas')>{{ $s }}</option>
                         @endforeach
                     </select>
                     </div>
