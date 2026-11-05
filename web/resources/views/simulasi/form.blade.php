@@ -1,81 +1,158 @@
 <x-site-layout judul="Simulasi Kredit" deskripsi="Hitung angsuran mobil baru per varian, cabang, dan leasing. Hasil simulasi diteruskan ke sales Ayoto Nippon.">
     <x-site-header />
 
-    <div class="w-full px-4 sm:px-6 lg:px-8 py-10">
-        <div class="bg-[#FFFFFF] border border-[#E5E7EB] rounded-3xl p-6 sm:p-10 shadow-2xl shadow-black/5 w-full">
-            <div class="pb-6 border-b border-[#E5E7EB]">
-                <p class="text-xs font-semibold tracking-wider text-[#C1121F] uppercase">Kalkulator Pembiayaan</p>
-                <h1 class="mt-1 text-2xl sm:text-3xl font-extrabold text-[#16181D] tracking-tight">Simulasi Angsuran Kredit</h1>
-                <p class="mt-2 text-xs sm:text-sm text-[#4B5563] leading-relaxed">
-                    Hitung estimasi uang muka dan cicilan bulanan secara instan dengan mitra lembaga keuangan resmi.
-                </p>
+    <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-8 sm:py-12">
+        <div class="mb-8">
+            <nav class="flex items-center gap-2 text-xs text-[#4B5563] mb-2">
+                <a href="{{ route('home') }}" class="hover:text-[#C1121F] transition-colors">Beranda</a>
+                <span>/</span>
+                <span class="text-[#16181D] font-medium">Simulasi Kredit</span>
+            </nav>
+            <h1 class="text-2xl sm:text-4xl font-extrabold text-[#16181D] tracking-tight">Kalkulator Simulasi Kredit</h1>
+            <p class="mt-2 text-sm sm:text-base text-[#4B5563] max-w-3xl leading-relaxed">
+                Rencanakan pembelian kendaraan baru Anda dengan estimasi uang muka (DP) dan angsuran bulanan yang transparan bersama leasing resmi terpercaya.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <!-- Form Column -->
+            <div class="lg:col-span-7 xl:col-span-8 bg-[#FFFFFF] border border-[#E5E7EB] rounded-3xl p-6 sm:p-10 shadow-xl shadow-black/5">
+                <div class="pb-6 border-b border-[#E5E7EB] flex items-center justify-between flex-wrap gap-4">
+                    <div>
+                        <p class="text-xs font-semibold tracking-wider text-[#C1121F] uppercase">Formulir Pembiayaan</p>
+                        <h2 class="mt-1 text-xl sm:text-2xl font-bold text-[#16181D]">Hitung Rencana Angsuran</h2>
+                    </div>
+                    <span class="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-800 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-700 animate-pulse"></span>
+                        OTR Resmi Terupdate
+                    </span>
+                </div>
+
+                <form action="{{ route('simulasi.hitung') }}" method="POST" class="mt-8 space-y-6">
+                    @csrf
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label for="variant_id" class="block text-xs font-semibold uppercase tracking-wider text-[#4B5563]">Pilih Model & Varian Mobil</label>
+                            <select id="variant_id" name="variant_id" required 
+                                class="mt-1.5 w-full bg-[#FFFFFF] border border-[#E5E7EB] rounded-xl text-[#16181D] text-sm focus:border-[#C1121F] focus:ring-1 focus:ring-[#C1121F] min-h-[48px] px-3.5">
+                                <option value="" @selected(! old('variant_id', $variantId ?? null))>Pilih Varian Kendaraan</option>
+                                @foreach ($variants as $variant)
+                                    <option value="{{ $variant->id }}" @selected((string) old('variant_id', $variantId ?? '') === (string) $variant->id)>{{ $variant->carModel->brand->nama }} {{ $variant->carModel->nama }} {{ $variant->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="branch_id" class="block text-xs font-semibold uppercase tracking-wider text-[#4B5563]">Cabang Pengiriman (Harga OTR Wilayah)</label>
+                            <select id="branch_id" name="branch_id" required 
+                                class="mt-1.5 w-full bg-[#FFFFFF] border border-[#E5E7EB] rounded-xl text-[#16181D] text-sm focus:border-[#C1121F] focus:ring-1 focus:ring-[#C1121F] min-h-[48px] px-3.5">
+                                <option value="" @selected(! old('branch_id'))>Pilih Cabang Dealer</option>
+                                @foreach ($branches as $branch)
+                                    <option value="{{ $branch->id }}" @selected((string) old('branch_id') === (string) $branch->id)>{{ $branch->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="leasing_id" class="block text-xs font-semibold uppercase tracking-wider text-[#4B5563]">Lembaga Pembiayaan (Leasing Rekanan)</label>
+                        <select id="leasing_id" name="leasing_id" required 
+                            class="mt-1.5 w-full bg-[#FFFFFF] border border-[#E5E7EB] rounded-xl text-[#16181D] text-sm focus:border-[#C1121F] focus:ring-1 focus:ring-[#C1121F] min-h-[48px] px-3.5">
+                            @foreach ($leasings as $leasing)
+                                <option value="{{ $leasing->id }}">{{ $leasing->nama }} (Bunga {{ $leasing->bunga_dasar }}%, DP min {{ $leasing->dp_min_persen }}%)</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label for="dp" class="block text-xs font-semibold uppercase tracking-wider text-[#4B5563]">Rencana Uang Muka (DP, Nominal Rp)</label>
+                            <input id="dp" type="number" name="dp" value="{{ old('dp') }}" min="0" required 
+                                placeholder="Masukkan nominal DP..."
+                                class="mt-1.5 w-full bg-[#FFFFFF] border border-[#E5E7EB] rounded-xl text-[#16181D] text-sm focus:border-[#C1121F] focus:ring-1 focus:ring-[#C1121F] min-h-[48px] px-3.5 tabular-nums">
+                            <p id="dp-hint" class="mt-2 text-xs text-[#C1121F] font-medium leading-relaxed">Pilih varian dan cabang terlebih dahulu untuk melihat batas DP minimum.</p>
+                        </div>
+
+                        <div>
+                            <label for="tenor" class="block text-xs font-semibold uppercase tracking-wider text-[#4B5563]">Jangka Waktu Tenor</label>
+                            <select id="tenor" name="tenor" required 
+                                class="mt-1.5 w-full bg-[#FFFFFF] border border-[#E5E7EB] rounded-xl text-[#16181D] text-sm focus:border-[#C1121F] focus:ring-1 focus:ring-[#C1121F] min-h-[48px] px-3.5">
+                                @foreach ([12, 24, 36, 48] as $t)
+                                    <option value="{{ $t }}">{{ $t }} Bulan ({{ $t / 12 }} Tahun)</option>
+                                @endforeach
+                            </select>
+                            <p class="mt-2 text-xs text-[#4B5563]">Mendukung tenor fleksibel hingga 4 tahun.</p>
+                        </div>
+                    </div>
+
+                    <x-input-error :messages="$errors->all()" class="text-[#C1121F] text-xs" />
+
+                    <div class="pt-4 border-t border-[#E5E7EB]">
+                        <button type="submit" 
+                            class="w-full py-4 px-6 font-bold text-sm text-white bg-[#C1121F] hover:bg-[#9E0E19] rounded-xl min-h-[48px] shadow-lg shadow-[#C1121F]/25 transition-all flex items-center justify-center gap-2 active:scale-[0.99]">
+                            <span>Hitung Estimasi Angsuran</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                        </button>
+                        <p class="mt-3 text-center text-xs text-[#4B5563]">
+                            Hasil perhitungan diteruskan secara otomatis ke tim sales consultant untuk konfirmasi promo dan ketersediaan unit.
+                        </p>
+                    </div>
+                </form>
             </div>
 
-            <form action="{{ route('simulasi.hitung') }}" method="POST" class="mt-8 space-y-6">
-                @csrf
+            <!-- Sidebar Info Column -->
+            <div class="lg:col-span-5 xl:col-span-4 space-y-6 lg:sticky lg:top-24">
+                <div class="bg-[#FFFFFF] border border-[#E5E7EB] rounded-3xl p-6 sm:p-8 shadow-xl shadow-black/5">
+                    <div class="flex items-center gap-3 pb-5 border-b border-[#E5E7EB]">
+                        <div class="w-10 h-10 rounded-xl bg-[#C1121F]/10 text-[#C1121F] flex items-center justify-center shrink-0">
+                            <x-nav-icon name="clipboard" class="w-5 h-5" />
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-base text-[#16181D]">Ketentuan Kredit Resmi</h3>
+                            <p class="text-xs text-[#4B5563]">Standar Otoritas Jasa Keuangan (OJK)</p>
+                        </div>
+                    </div>
 
-                <div>
-                    <label for="variant_id" class="block text-xs font-semibold uppercase tracking-wider text-[#4B5563]">Pilih Model & Varian Mobil</label>
-                    <select id="variant_id" name="variant_id" required 
-                        class="mt-1.5 w-full bg-[#FFFFFF] border border-[#E5E7EB] rounded-xl text-[#16181D] text-sm focus:border-[#C1121F] focus:ring-1 focus:ring-[#C1121F] min-h-[48px] px-3.5">
-                        <option value="" @selected(! old('variant_id', $variantId ?? null))>Pilih Varian Kendaraan</option>
-                        @foreach ($variants as $variant)
-                            <option value="{{ $variant->id }}" @selected((string) old('variant_id', $variantId ?? '') === (string) $variant->id)>{{ $variant->carModel->brand->nama }} {{ $variant->carModel->nama }} {{ $variant->nama }}</option>
+                    <ul class="mt-5 space-y-4 text-xs text-[#4B5563] leading-relaxed">
+                        <li class="flex items-start gap-3">
+                            <span class="w-5 h-5 rounded-full bg-[#C1121F]/10 text-[#C1121F] flex items-center justify-center shrink-0 mt-0.5 font-bold text-[10px]">1</span>
+                            <div>
+                                <strong class="text-[#16181D] block">DP Minimum Sesuai Regulasi</strong>
+                                Besaran DP berkisar 15% - 20% tergantung pada paket pembiayaan dan lembaga keuangan rekanan yang dipilih.
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-5 h-5 rounded-full bg-[#C1121F]/10 text-[#C1121F] flex items-center justify-center shrink-0 mt-0.5 font-bold text-[10px]">2</span>
+                            <div>
+                                <strong class="text-[#16181D] block">Perlindungan Asuransi</strong>
+                                Sudah termasuk asuransi Comprehensive (All Risk) atau Total Loss Only (TLO) selama masa tenor kredit.
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-5 h-5 rounded-full bg-[#C1121F]/10 text-[#C1121F] flex items-center justify-center shrink-0 mt-0.5 font-bold text-[10px]">3</span>
+                            <div>
+                                <strong class="text-[#16181D] block">Proses Persetujuan Cepat</strong>
+                                Pengajuan berkas dibantu langsung oleh sales advisor dengan estimasi analisa 1x24 jam kerja.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-[#FFFFFF] border border-[#E5E7EB] rounded-3xl p-6 shadow-xl shadow-black/5">
+                    <h4 class="text-xs font-semibold uppercase tracking-wider text-[#4B5563] mb-3">Mitra Pembiayaan Terverifikasi</h4>
+                    <div class="flex flex-wrap gap-2">
+                        @foreach ($leasings as $l)
+                            <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#F9FAFB] border border-[#E5E7EB] text-[#16181D]">
+                                {{ $l->nama }}
+                            </span>
                         @endforeach
-                    </select>
-                </div>
-
-                <div>
-                    <label for="branch_id" class="block text-xs font-semibold uppercase tracking-wider text-[#4B5563]">Cabang Pengiriman (Harga OTR Wilayah)</label>
-                    <select id="branch_id" name="branch_id" required 
-                        class="mt-1.5 w-full bg-[#FFFFFF] border border-[#E5E7EB] rounded-xl text-[#16181D] text-sm focus:border-[#C1121F] focus:ring-1 focus:ring-[#C1121F] min-h-[48px] px-3.5">
-                        <option value="" @selected(! old('branch_id'))>Pilih Cabang Dealer</option>
-                        @foreach ($branches as $branch)
-                            <option value="{{ $branch->id }}" @selected((string) old('branch_id') === (string) $branch->id)>{{ $branch->nama }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div>
-                    <label for="leasing_id" class="block text-xs font-semibold uppercase tracking-wider text-[#4B5563]">Lembaga Pembiayaan (Leasing Rekanan)</label>
-                    <select id="leasing_id" name="leasing_id" required 
-                        class="mt-1.5 w-full bg-[#FFFFFF] border border-[#E5E7EB] rounded-xl text-[#16181D] text-sm focus:border-[#C1121F] focus:ring-1 focus:ring-[#C1121F] min-h-[48px] px-3.5">
-                        @foreach ($leasings as $leasing)
-                            <option value="{{ $leasing->id }}">{{ $leasing->nama }} (Bunga {{ $leasing->bunga_dasar }}%, DP min {{ $leasing->dp_min_persen }}%)</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div>
-                    <label for="dp" class="block text-xs font-semibold uppercase tracking-wider text-[#4B5563]">Rencana Uang Muka (DP, Nominal Rp)</label>
-                    <input id="dp" type="number" name="dp" value="{{ old('dp') }}" min="0" required 
-                        placeholder="Masukkan nominal DP..."
-                        class="mt-1.5 w-full bg-[#FFFFFF] border border-[#E5E7EB] rounded-xl text-[#16181D] text-sm focus:border-[#C1121F] focus:ring-1 focus:ring-[#C1121F] min-h-[48px] px-3.5 tabular-nums">
-                    <p id="dp-hint" class="mt-2 text-xs text-[#C1121F] font-medium">Pilih varian dan cabang terlebih dahulu untuk melihat batas DP minimum.</p>
-                </div>
-
-                <div>
-                    <label for="tenor" class="block text-xs font-semibold uppercase tracking-wider text-[#4B5563]">Jangka Waktu Tenor</label>
-                    <select id="tenor" name="tenor" required 
-                        class="mt-1.5 w-full bg-[#FFFFFF] border border-[#E5E7EB] rounded-xl text-[#16181D] text-sm focus:border-[#C1121F] focus:ring-1 focus:ring-[#C1121F] min-h-[48px] px-3.5">
-                        @foreach ([12, 24, 36, 48] as $t)
-                            <option value="{{ $t }}">{{ $t }} Bulan ({{ $t / 12 }} Tahun)</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <x-input-error :messages="$errors->all()" class="text-[#C1121F] text-xs" />
-
-                <div class="pt-2">
-                    <button type="submit" 
-                        class="w-full py-3.5 px-6 font-bold text-sm text-white bg-[#C1121F] hover:bg-[#9E0E19] rounded-xl min-h-[48px] shadow-lg shadow-[#C1121F]/25 transition-all flex items-center justify-center active:scale-[0.99]">
-                        Hitung Estimasi Angsuran
-                    </button>
-                    <p class="mt-3 text-center text-xs text-gray-500">
-                        Hasil perhitungan diteruskan secara otomatis ke tim sales untuk konfirmasi simulasi resmi.
+                    </div>
+                    <p class="mt-4 text-[11px] text-gray-400">
+                        Seluruh lembaga pembiayaan terdaftar dan diawasi oleh OJK. Suku bunga dan ketentuan dapat berubah sewaktu-waktu sesuai kebijakan berlaku.
                     </p>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 

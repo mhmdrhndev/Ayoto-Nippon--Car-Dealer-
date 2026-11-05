@@ -33,7 +33,7 @@
         <nav aria-label="Bantuan dan Akun">
             <p class="text-xs font-semibold tracking-wider text-[#C1121F] uppercase">Bantuan & Akun</p>
             <div class="mt-4 flex flex-col space-y-2.5 text-sm">
-                @foreach ([['promo.index', 'Promo Berjalan'], ['cabang.index', 'Lokasi Cabang'], ['lacak.form', 'Lacak Status SPK'], ['faq.index', 'Pertanyaan Umum'], ['login', 'Masuk Akun'], ['register', 'Pendaftaran Baru'], ['login.staf', 'Portal Staf Resmi']] as [$route, $label])
+                @foreach ([['promo.index', 'Promo Berjalan'], ['cabang.index', 'Lokasi Cabang'], ['lacak.form', 'Lacak Status SPK'], ['faq.index', 'Pertanyaan Umum'], ['login', 'Masuk Akun'], ['register', 'Pendaftaran Baru']] as [$route, $label])
                     <a href="{{ route($route) }}" class="text-[#4B5563] hover:text-[#16181D] transition-colors py-0.5 inline-block">{{ $label }}</a>
                 @endforeach
             </div>

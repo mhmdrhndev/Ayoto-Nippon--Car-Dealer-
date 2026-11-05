@@ -18,6 +18,7 @@ $map = [
     'Expired' => 'bg-red-50 text-red-700 ring-1 ring-red-200',
     'Dipesan' => 'bg-[#F3F4F6] text-[#4B5563] ring-1 ring-[#E5E7EB]',
     'Terjual' => 'bg-[#F3F4F6] text-[#4B5563] ring-1 ring-[#E5E7EB]',
+    'Lunas' => 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
 ];
 $kelas = $map[$status] ?? 'bg-[#F3F4F6] text-[#4B5563] ring-1 ring-[#E5E7EB]';
 @endphp

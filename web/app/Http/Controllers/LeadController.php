@@ -85,12 +85,17 @@ class LeadController extends Controller
             ->where('status', 'Deal')
             ->latest()
             ->first();
-        if (! $email || ! $order || ! $order->invoice) {
+        if (! $order || ! $order->invoice) {
             return;
         }
         $invoice = $order->invoice;
-        if (! $invoice->lunas_pdf_path) {
+        if (! $invoice->lunas_at) {
             $invoice->update(['lunas_at' => now()]);
+        }
+        if (! $email) {
+            return;
+        }
+        if (! $invoice->lunas_pdf_path) {
             $pdf = Pdf::loadView('invoice.lunas', ['invoice' => $invoice->fresh(), 'pencatat' => $pencatat]);
             $pdfPath = "invoices/{$invoice->no_inv}-lunas.pdf";
             Storage::disk('local')->put($pdfPath, $pdf->output());

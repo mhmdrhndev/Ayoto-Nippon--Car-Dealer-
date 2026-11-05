@@ -53,4 +53,10 @@ class Order extends Model
     {
         return $query->whereIn('status', ['MenungguBayar', 'MenungguVerifikasi']);
     }
+
+    // Status yang dilihat pelanggan: pelunasan yang dicatat admin menang atas status internal.
+    public function statusTampil(): string
+    {
+        return $this->invoice?->lunas_at ? 'Lunas' : $this->status;
+    }
 }

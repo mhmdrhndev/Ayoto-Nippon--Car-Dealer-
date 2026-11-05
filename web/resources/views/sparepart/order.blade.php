@@ -111,7 +111,7 @@
             </div>
         @elseif ($order->status === 'Lunas')
             <div class="p-6 bg-emerald-500/10 border border-emerald-500/20 rounded-3xl flex items-center gap-4">
-                <span class="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-700 font-bold text-lg">✓</span>
+                <span class="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-700"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg></span>
                 <div>
                     <h3 class="font-bold text-[#16181D] text-base">Pembayaran Terverifikasi (Lunas)</h3>
                     <p class="text-xs text-emerald-300/80 mt-0.5">Suku cadang sudah siap diambil. Tunjukkan nomor SPO <strong class="font-mono">{{ $order->no_spo }}</strong> ke bagian kasir/gudang cabang {{ $order->branch->nama }}.</p>

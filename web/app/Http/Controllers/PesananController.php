@@ -29,7 +29,7 @@ class PesananController extends Controller
         $ids = $this->idCustomerSaya($request);
 
         return view('pesanan.index', [
-            'spks' => $ids ? Order::with(['unit.variant.carModel.brand', 'branch'])->whereIn('customer_id', $ids)->latest()->get() : collect(),
+            'spks' => $ids ? Order::with(['unit.variant.carModel.brand', 'branch', 'invoice'])->whereIn('customer_id', $ids)->latest()->get() : collect(),
             'testDrives' => $ids ? TestDrive::with(['variant.carModel.brand', 'branch', 'color'])->whereIn('customer_id', $ids)->orderBy('jadwal')->get() : collect(),
             'servis' => $ids ? ServiceBooking::with('branch')->whereIn('customer_id', $ids)->orderBy('jadwal')->get() : collect(),
             'tradeIns' => $ids ? TradeIn::whereIn('customer_id', $ids)->latest()->get() : collect(),

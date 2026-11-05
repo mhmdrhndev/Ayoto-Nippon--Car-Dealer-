@@ -32,7 +32,7 @@
                             </span>
                         </div>
                         <div class="flex items-center gap-3">
-                            <x-status-badge :status="$order->status" />
+                            <x-status-badge :status="$order->statusTampil()" />
                             <a href="{{ route('spk.show', $order->no_spk) }}" class="text-xs font-semibold text-[#4B5563] hover:text-[#16181D] min-h-[44px] inline-flex items-center">
                                 Rincian &rarr;
                             </a>

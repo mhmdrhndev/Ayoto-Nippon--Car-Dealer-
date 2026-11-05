@@ -1,7 +1,7 @@
 <x-site-layout judul="Lacak {{ $order->no_spk }}" robots="noindex, nofollow">
     <x-site-header />
 
-    <div class="w-full px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <div class="w-full px-4 sm:px-6 lg:px-8 xl:px-12 py-8 sm:py-12 space-y-8">
         @if (session('sukses'))
             <div class="p-4 text-sm font-medium text-emerald-700 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl flex items-center gap-2">
                 <svg class="w-5 h-5 text-emerald-700 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
@@ -37,7 +37,7 @@
             </div>
             <div class="bg-[#FFFFFF] border border-[#E5E7EB] rounded-2xl p-4 flex flex-col justify-between">
                 <p class="text-[10px] uppercase tracking-wider text-[#4B5563] font-medium">Status Transaksi</p>
-                <div class="mt-1"><x-status-badge status="{{ $order->status }}" /></div>
+                <div class="mt-1"><x-status-badge status="{{ $order->statusTampil() }}" /></div>
             </div>
         </div>
 
@@ -77,16 +77,17 @@
 
         <!-- Progress Timeline -->
         @php
-            $alur = ['MenungguBayar' => 'SPK Diterbitkan', 'MenungguVerifikasi' => 'Bukti Diunggah', 'Deal' => 'Terverifikasi (Deal)'];
-            $posisi = array_search($order->status, array_keys($alur), true);
+            $alur = ['MenungguBayar' => 'SPK Diterbitkan', 'MenungguVerifikasi' => 'Bukti Diunggah', 'Deal' => 'Terverifikasi (Deal)', 'Lunas' => 'Pelunasan Diterima'];
+            $statusTampil = $order->statusTampil();
+            $posisi = array_search($statusTampil, array_keys($alur), true);
         @endphp
         <div class="space-y-4">
             <h2 class="text-xs font-semibold uppercase tracking-wider text-[#4B5563]">Tahapan Proses Pemesanan</h2>
-            <ol class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <ol class="grid grid-cols-1 sm:grid-cols-4 gap-3">
                 @foreach ($alur as $kode => $label)
                     @php
                         $lewat = $posisi !== false && array_search($kode, array_keys($alur), true) < $posisi;
-                        $aktif = $posisi !== false && $kode === $order->status;
+                        $aktif = $posisi !== false && $kode === $statusTampil;
                     @endphp
                     <li class="border rounded-2xl p-4 transition-all {{ $aktif ? 'border-[#C1121F] bg-[#C1121F]/10 shadow-lg shadow-[#C1121F]/5' : ($lewat ? 'border-emerald-500/30 bg-emerald-500/10' : 'border-[#E5E7EB] bg-[#FFFFFF]') }}">
                         <p class="text-sm font-bold {{ $aktif ? 'text-[#C1121F]' : ($lewat ? 'text-emerald-700' : 'text-[#4B5563]') }}">{{ $label }}</p>
@@ -184,7 +185,7 @@
         @if ($order->status === 'Deal')
             <div class="p-6 bg-emerald-500/10 border border-emerald-500/20 rounded-3xl space-y-3">
                 <div class="flex items-center gap-3">
-                    <span class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-700">✓</span>
+                    <span class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-700"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg></span>
                     <h2 class="text-lg font-bold text-[#16181D]">Status SPK Telah Dikonfirmasi (Deal)</h2>
                 </div>
                 <p class="text-xs sm:text-sm text-[#4B5563]">Unit fisik nomor rangka telah terkunci untuk pesanan Anda. Pelunasan sisa tagihan dilakukan di dealer resmi sebelum serah terima.</p>
@@ -203,7 +204,7 @@
             @if (auth()->user()?->hasAnyRole(['admin-cabang', 'sales', 'pimpinan', 'superadmin', 'owner']))
                 <div class="p-6 bg-[#FFFFFF] border border-[#E5E7EB] rounded-3xl">
                     @if ($order->bast_path)
-                        <p class="text-xs text-emerald-700 font-semibold">✓ Dokumen BAST serah terima unit sudah diunggah.</p>
+                        <p class="text-xs text-emerald-700 font-semibold flex items-center gap-1.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> Dokumen BAST serah terima unit sudah diunggah.</p>
                     @else
                         <form action="{{ route('admin.orders.bast', $order) }}" method="POST" enctype="multipart/form-data" class="space-y-3">
                             @csrf @method('PATCH')

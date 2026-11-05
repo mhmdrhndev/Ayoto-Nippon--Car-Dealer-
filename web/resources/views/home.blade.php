@@ -2,7 +2,7 @@
     <x-site-header />
 
     <!-- Hero Section -->
-    <section class="relative bg-[#FFFFFF] overflow-hidden border-b border-[#E5E7EB]" aria-label="Sorotan Utama"
+    <section class="relative bg-[#0B0C0E] overflow-hidden border-b border-[#E5E7EB]" aria-label="Sorotan Utama"
         x-data="{
             active: 0,
             total: {{ $slides->count() }},
@@ -62,28 +62,30 @@
                 Pilih unit siap kirim per cabang, hitung simulasi pembiayaan secara mandiri, dan pantau proses penerbitan SPK secara real-time.
             </p>
 
-            <!-- Search Form Card -->
-            <div class="mt-8 w-full max-w-4xl bg-[#FFFFFF] border border-white/20 rounded-2xl p-3 sm:p-4 shadow-2xl shadow-black/40">
+            <!-- Search Form Card (Liquid Glass) -->
+            <div class="mt-8 w-full max-w-4xl bg-white/10 backdrop-blur-2xl border border-white/25 rounded-2xl p-3 sm:p-4 shadow-2xl shadow-black/50 ring-1 ring-white/20">
                 <form action="{{ route('katalog.index') }}" method="GET" class="flex flex-col sm:flex-row gap-2.5">
                     <div class="relative flex-1">
-                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#4B5563]">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-white/70">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                         </span>
                         <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari model atau varian, misal: Avanza, CR-V"
                             aria-label="Cari model atau varian" 
-                            class="w-full pl-10 pr-4 py-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-xl text-[#16181D] placeholder-gray-500 text-sm focus:border-[#C1121F] focus:ring-1 focus:ring-[#C1121F] min-h-[48px]">
+                            style="outline: none !important; box-shadow: none !important;"
+                            class="w-full pl-10 pr-4 py-3 bg-white/10 hover:bg-white/15 focus:bg-white/20 border border-white/25 rounded-xl text-white placeholder-white/70 text-sm focus:outline-none focus:ring-0 focus:border-white/60 min-h-[48px] backdrop-blur-md transition-all">
                     </div>
 
                     <select name="cabang" aria-label="Pilih cabang" 
-                        class="bg-[#FFFFFF] border border-[#E5E7EB] rounded-xl text-[#16181D] text-sm focus:border-[#C1121F] focus:ring-1 focus:ring-[#C1121F] min-h-[48px] px-3.5 sm:w-64">
-                        <option value="">Semua Cabang</option>
+                        style="outline: none !important; box-shadow: none !important;"
+                        class="bg-white/10 hover:bg-white/15 focus:bg-white/20 border border-white/25 rounded-xl text-white text-sm focus:outline-none focus:ring-0 focus:border-white/60 min-h-[48px] px-3.5 sm:w-64 backdrop-blur-md transition-all">
+                        <option value="" class="bg-[#16181D] text-white">Semua Cabang</option>
                         @foreach ($branches as $branch)
-                            <option value="{{ $branch->kode }}">{{ $branch->nama }}</option>
+                            <option value="{{ $branch->kode }}" class="bg-[#16181D] text-white">{{ $branch->nama }}</option>
                         @endforeach
                     </select>
 
                     <button type="submit" 
-                        class="px-8 py-3 font-semibold text-sm text-white bg-[#C1121F] hover:bg-[#9E0E19] rounded-xl min-h-[48px] shadow-lg shadow-[#C1121F]/25 transition-all flex items-center justify-center gap-2 active:scale-[0.98]">
+                        class="px-8 py-3 font-semibold text-sm text-white bg-[#C1121F] hover:bg-[#9E0E19] rounded-xl min-h-[48px] shadow-lg shadow-[#C1121F]/30 border border-white/20 transition-all flex items-center justify-center gap-2 active:scale-[0.98]">
                         <span>Cari Unit</span>
                     </button>
                 </form>
@@ -97,18 +99,23 @@
                 <a href="{{ route('lacak.form') }}" class="px-3.5 py-1.5 text-xs font-medium text-gray-100 bg-[#0B0C0E]/55 backdrop-blur border border-white/25 rounded-lg min-h-[38px] inline-flex items-center hover:text-white hover:border-[#FF6B6B] hover:bg-[#0B0C0E]/75 transition-all">Lacak Status SPK</a>
             </div>
 
-            <div class="mt-8 flex items-center gap-6 pt-6 border-t border-white/20 text-xs sm:text-sm text-gray-300 tabular-nums">
+            <div class="mt-8 flex flex-wrap items-center gap-6 pt-6 border-t border-white/20 text-xs sm:text-sm text-gray-300">
                 <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                    <strong class="text-white">{{ number_format($totalUnit, 0, ',', '.') }}</strong> Unit Siap Kirim
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
+                    <div class="flex items-center gap-2">
+                        <strong class="text-white tabular-nums">{{ number_format($totalUnit, 0, ',', '.') }}</strong>
+                        <span>Unit Siap Kirim</span>
+                    </div>
                 </div>
                 <div class="text-white/30">•</div>
-                <div>
-                    <strong class="text-white">{{ $brands->count() }}</strong> Merek Resmi
+                <div class="flex items-center gap-2">
+                    <strong class="text-white tabular-nums">{{ $brands->count() }}</strong>
+                    <span>Merek Resmi</span>
                 </div>
                 <div class="text-white/30">•</div>
-                <div>
-                    <strong class="text-white">{{ $branches->count() }}</strong> Cabang Aktif
+                <div class="flex items-center gap-2">
+                    <strong class="text-white tabular-nums">{{ $branches->count() }}</strong>
+                    <span>Cabang Aktif</span>
                 </div>
             </div>
         </div>
