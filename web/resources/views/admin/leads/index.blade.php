@@ -1,25 +1,25 @@
 <x-app-layout>
-    <x-slot name="header"><h2 class="font-semibold text-xl text-gray-800 leading-tight">Leads</h2></x-slot>
+    <x-slot name="header"><h2 class="font-semibold text-xl text-ink leading-tight">Leads</h2></x-slot>
     <div class="py-6 w-full sm:px-6 lg:px-8">
         <form method="GET" class="mb-4 flex flex-col sm:flex-row gap-3">
-            <select name="status" aria-label="Filter status" class="rounded-lg border-gray-300 min-h-[44px]">
+            <select name="status" aria-label="Filter status" class="rounded-lg border-line min-h-[44px]">
                 <option value="">Semua status</option>
                 @foreach (['Baru', 'Dihubungi', 'TestDrive', 'SPK', 'Deal', 'Lunas', 'Batal'] as $s)
                     <option value="{{ $s }}" @selected(request('status') === $s)>{{ $s }}</option>
                 @endforeach
             </select>
-            <select name="sales" aria-label="Filter sales" class="rounded-lg border-gray-300 min-h-[44px]">
+            <select name="sales" aria-label="Filter sales" class="rounded-lg border-line min-h-[44px]">
                 <option value="">Semua sales</option>
                 @foreach ($salesList as $sales)
                     <option value="{{ $sales->id }}" @selected((string) request('sales') === (string) $sales->id)>{{ $sales->name }}</option>
                 @endforeach
             </select>
-            <button class="px-4 py-2 text-sm font-semibold text-white bg-[#C1121F] rounded-lg min-h-[44px]">Filter</button>
+            <button class="px-4 py-2 text-sm font-semibold text-white bg-accent-strong rounded-lg min-h-[44px]">Filter</button>
         </form>
         @if ($leads->isEmpty())
-            <div class="bg-white p-6 rounded-xl shadow-sm"><p class="font-semibold">Belum ada leads.</p><p class="text-sm text-gray-500">Leads terbentuk otomatis dari simulasi, SPK, dan test drive.</p></div>
+            <div class="bg-surface p-6 rounded-xl shadow-sm"><p class="font-semibold">Belum ada leads.</p><p class="text-sm text-muted">Leads terbentuk otomatis dari simulasi, SPK, dan test drive.</p></div>
         @else
-            <div class="bg-white rounded-xl shadow-sm overflow-x-auto">
+            <div class="bg-surface rounded-xl shadow-sm overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead><tr class="border-b">
                         <th class="text-left px-4 py-3">ID</th><th class="text-left px-4 py-3">Customer</th>
@@ -34,7 +34,7 @@
                                 <td class="px-4 py-3">{{ $lead->sumber }}</td>
                                 <td class="px-4 py-3">{{ $lead->status }}</td>
                                 <td class="px-4 py-3">{{ $lead->sales->name ?? 'Belum ditetapkan' }}</td>
-                                <td class="px-4 py-3 text-gray-500">{{ \Illuminate\Support\Str::limit($lead->kebutuhan_text, 60) }}</td>
+                                <td class="px-4 py-3 text-muted">{{ \Illuminate\Support\Str::limit($lead->kebutuhan_text, 60) }}</td>
                             </tr>
                         @endforeach
                     </tbody>

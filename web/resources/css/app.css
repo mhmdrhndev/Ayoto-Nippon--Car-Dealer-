@@ -2,10 +2,81 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Token tema: nilai RGB dipakai Tailwind lewat tailwind.config.js. */
+:root {
+    --surface: 255 255 255;
+    --surface-2: 243 244 246;
+    --ink: 22 24 29;
+    --muted: 75 85 99;
+    --line: 229 231 235;
+    --accent: 193 18 31;
+    --accent-strong: 193 18 31;
+    color-scheme: light;
+}
+
+.dark {
+    --surface: 18 18 18;
+    --surface-2: 27 29 33;
+    --ink: 243 244 246;
+    --muted: 156 163 175;
+    --line: 42 45 51;
+    --accent: 255 107 107;
+    --accent-strong: 193 18 31;
+    color-scheme: dark;
+}
+
 [x-cloak] { display: none !important; }
+
+.dark input::placeholder,
+.dark textarea::placeholder { color: rgb(var(--muted)); }
+.dark select option { background-color: rgb(var(--surface)); color: rgb(var(--ink)); }
 
 button:not(:disabled), a[href], summary, select, label[for] { cursor: pointer; }
 button:disabled { cursor: not-allowed; }
+
+/* Transisi tema: tirai miring dari kiri plus kilau bilah, mengikuti referensi. */
+@supports (view-transition-name: root) {
+    ::view-transition-old(root) { animation: none; mix-blend-mode: normal; }
+    ::view-transition-new(root) {
+        animation: .95s cubic-bezier(.65, 0, .35, 1) theme-reveal;
+        mix-blend-mode: normal;
+    }
+}
+@keyframes theme-reveal {
+    0% { clip-path: polygon(-45% -20%, -15% -20%, -60% 120%, -90% 120%); }
+    to { clip-path: polygon(-45% -20%, 145% -20%, 110% 120%, -90% 120%); }
+}
+.sword-glint {
+    z-index: 99999;
+    pointer-events: none;
+    opacity: 0;
+    background: linear-gradient(transparent, rgba(255, 255, 255, .95) 45%, rgba(255, 255, 255, .95) 55%, transparent);
+    width: 8px;
+    height: 140%;
+    position: fixed;
+    top: -20%;
+    left: -25%;
+    transform: rotate(12deg);
+    box-shadow: 0 0 20px 4px rgba(255, 255, 255, .65), 0 0 44px 12px rgba(255, 255, 255, .3);
+}
+@media (max-width: 768px) {
+    .sword-glint { transform: rotate(8.5deg); }
+}
+.sword-glint.slicing { animation: .95s cubic-bezier(.65, 0, .35, 1) forwards sword-glint-move; }
+@keyframes sword-glint-move {
+    0% { opacity: 0; left: -25%; }
+    8% { opacity: 1; }
+    85% { opacity: 1; }
+    to { opacity: 0; left: 125%; }
+}
+@keyframes pulse-burst {
+    0% { opacity: .6; transform: scale(0); }
+    to { opacity: 0; transform: scale(2.2); }
+}
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+    .sword-glint { display: none; }
+}
 
 /* Sidebar admin: scrollbar samar, muncul saat hover atau fokus. */
 .sidebar-track { scrollbar-width: thin; scrollbar-color: transparent transparent; }
@@ -30,13 +101,13 @@ button:disabled { cursor: not-allowed; }
 }
 
 /* Selection highlight */
-::selection { background: rgba(193, 18, 31, .18); color: #16181D; }
+::selection { background: rgb(var(--accent) / .18); color: rgb(var(--ink)); }
 
 /* Scrollbar halaman publik */
 @supports (scrollbar-color: auto) {
-    body { scrollbar-color: #D1D5DB #FFFFFF; }
+    body { scrollbar-color: rgb(var(--line)) rgb(var(--surface)); }
 }
 body::-webkit-scrollbar { width: 8px; }
-body::-webkit-scrollbar-track { background: #FFFFFF; }
-body::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 9999px; }
-body::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
+body::-webkit-scrollbar-track { background: rgb(var(--surface)); }
+body::-webkit-scrollbar-thumb { background: rgb(var(--line)); border-radius: 9999px; }
+body::-webkit-scrollbar-thumb:hover { background: rgb(var(--muted)); }

@@ -2,10 +2,10 @@
     <x-site-header />
 
     <div class="w-full px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-        <div class="pb-6 border-b border-[#E5E7EB]">
-            <p class="text-xs font-semibold tracking-wider text-[#C1121F] uppercase">Pusat Bantuan Pelanggan</p>
-            <h1 class="mt-1 text-3xl sm:text-4xl font-extrabold text-[#16181D] tracking-tight">Pertanyaan yang Sering Diajukan</h1>
-            <p class="mt-2 text-sm text-[#4B5563]">
+        <div class="pb-6 border-b border-line">
+            <p class="text-xs font-semibold tracking-wider text-accent uppercase">Pusat Bantuan Pelanggan</p>
+            <h1 class="mt-1 text-3xl sm:text-4xl font-extrabold text-ink tracking-tight">Pertanyaan yang Sering Diajukan</h1>
+            <p class="mt-2 text-sm text-muted">
                 Panduan praktis dan ketentuan resmi mengenai pemesanan unit, booking fee, verifikasi SPK, dan layanan purnajual dealer.
             </p>
         </div>
@@ -23,12 +23,12 @@
                 ['Bagaimana alur pembelian suku cadang asli (sparepart)?', 'Pilih part dari katalog sparepart cabang terdekat, lakukan pembayaran sesuai nomor SPO yang terbit sebelum deadline, lalu ambil langsung di gudang cabang dealer.'],
                 ['Bisakah membatalkan jadwal test drive atau booking servis?', 'Pembatalan atau pengajuan jadwal ulang dapat dilakukan mandiri melalui menu Pesanan Saya selama status masih dalam tahap Menunggu atau Dikonfirmasi. Pesanan yang sudah berstatus Dikerjakan, Selesai, Hadir, atau Batal tidak dapat diubah.'],
             ] as [$tanya, $jawab])
-                <details class="bg-[#FFFFFF] border border-[#E5E7EB] rounded-2xl overflow-hidden hover:border-[#C1121F] transition-colors group">
-                    <summary class="px-6 py-4 font-bold text-sm sm:text-base text-[#16181D] cursor-pointer min-h-[48px] flex items-center justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C1121F] select-none">
+                <details class="bg-surface border border-line rounded-2xl overflow-hidden hover:border-accent transition-colors group">
+                    <summary class="px-6 py-4 font-bold text-sm sm:text-base text-ink cursor-pointer min-h-[48px] flex items-center justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent select-none">
                         <span>{{ $tanya }}</span>
-                        <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 group-open:text-[#C1121F] transition-transform duration-200 shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        <svg class="w-5 h-5 text-muted group-open:rotate-180 group-open:text-accent transition-transform duration-200 shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </summary>
-                    <div class="px-6 pb-5 pt-1 text-xs sm:text-sm text-[#4B5563] leading-relaxed border-t border-[#E5E7EB]">
+                    <div class="px-6 pb-5 pt-1 text-xs sm:text-sm text-muted leading-relaxed border-t border-line">
                         {{ $jawab }}
                     </div>
                 </details>

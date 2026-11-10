@@ -3,7 +3,7 @@
     <div class="px-3 py-3 flex items-center gap-2 border-b border-white/10">
         <div class="flex items-center gap-2 min-w-0">
             <x-application-logo class="block h-9 w-auto bg-white rounded-lg shrink-0" />
-            <span x-show="!rail" class="font-bold text-[#16181D] truncate" x-cloak>Ayoto Nippon</span>
+            <span x-show="!rail" class="font-bold text-white truncate" x-cloak>Ayoto Nippon</span>
         </div>
     </div>
     <nav class="sidebar-track flex-1 overflow-y-auto px-3 py-4 space-y-5 text-sm">
@@ -85,7 +85,7 @@
         <a href="{{ route('profile.edit') }}" title="Profil" class="flex items-center gap-3 flex-1 min-w-0 rounded-lg min-h-[44px]">
             <span class="w-10 h-10 rounded-full bg-[#C1121F] text-white font-bold text-sm inline-flex items-center justify-center shrink-0" aria-hidden="true">{{ strtoupper(collect(explode(' ', Auth::user()->name ?? ''))->map(fn ($p) => mb_substr($p, 0, 1))->take(2)->implode('')) }}</span>
             <span x-show="!rail" class="flex-1 min-w-0" x-cloak>
-                <span class="block font-medium text-[#16181D] truncate">{{ Auth::user()->name }}</span>
+                <span class="block font-medium text-white truncate">{{ Auth::user()->name }}</span>
                 <span class="block text-xs text-gray-400 capitalize">{{ Auth::user()?->getRoleNames()->first() ?? '-' }}</span>
             </span>
         </a>

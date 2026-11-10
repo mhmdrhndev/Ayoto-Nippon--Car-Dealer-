@@ -1,24 +1,24 @@
 <x-app-layout>
-    <x-slot name="header"><h2 class="font-semibold text-xl text-gray-800 leading-tight capitalize">Laporan {{ $jenis }}</h2></x-slot>
+    <x-slot name="header"><h2 class="font-semibold text-xl text-ink leading-tight capitalize">Laporan {{ $jenis }}</h2></x-slot>
     <div class="py-6 w-full sm:px-6 lg:px-8">
         <div class="flex flex-col sm:flex-row gap-3 mb-4">
             <form method="GET" class="flex flex-col sm:flex-row gap-3 flex-1">
-                <input type="date" name="dari" value="{{ request('dari') }}" class="rounded-lg border-gray-300 text-sm min-h-[44px]">
-                <input type="date" name="sampai" value="{{ request('sampai') }}" class="rounded-lg border-gray-300 text-sm min-h-[44px]">
-                <button class="px-4 py-2 text-sm font-semibold text-white bg-[#C1121F] rounded-lg min-h-[44px]">Filter</button>
+                <input type="date" name="dari" value="{{ request('dari') }}" class="rounded-lg border-line text-sm min-h-[44px]">
+                <input type="date" name="sampai" value="{{ request('sampai') }}" class="rounded-lg border-line text-sm min-h-[44px]">
+                <button class="px-4 py-2 text-sm font-semibold text-white bg-accent-strong rounded-lg min-h-[44px]">Filter</button>
             </form>
-            <a href="{{ route('admin.laporan.export', array_merge(['jenis' => $jenis], request()->only(['dari', 'sampai']))) }}" class="px-4 py-2 text-sm font-semibold text-[#16181D] border border-gray-300 rounded-lg min-h-[44px] inline-flex items-center">Export Excel</a>
+            <a href="{{ route('admin.laporan.export', array_merge(['jenis' => $jenis], request()->only(['dari', 'sampai']))) }}" class="px-4 py-2 text-sm font-semibold text-ink border border-line rounded-lg min-h-[44px] inline-flex items-center">Export Excel</a>
         </div>
         @if (auth()->user()->hasRole('admin-cabang'))
-            <p class="mb-4 p-3 text-sm text-[#16181D] bg-blue-50 border border-blue-200 rounded-lg">Menampilkan data {{ auth()->user()->branch->nama }}.</p>
+            <p class="mb-4 p-3 text-sm text-ink bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/30 rounded-lg">Menampilkan data {{ auth()->user()->branch->nama }}.</p>
         @endif
         @if ($jenis === 'penjualan' && $total !== null)
-            <div class="mb-4 bg-white p-5 rounded-xl shadow-sm"><p class="text-sm text-gray-500">Total omzet{{ auth()->user()->hasRole('admin-cabang') ? ' '.auth()->user()->branch->nama : ' semua cabang' }}</p><p class="text-2xl font-bold text-[#16181D] tabular-nums">Rp {{ number_format($total, 0, ',', '.') }}</p></div>
+            <div class="mb-4 bg-surface p-5 rounded-xl shadow-sm"><p class="text-sm text-muted">Total omzet{{ auth()->user()->hasRole('admin-cabang') ? ' '.auth()->user()->branch->nama : ' semua cabang' }}</p><p class="text-2xl font-bold text-ink tabular-nums">Rp {{ number_format($total, 0, ',', '.') }}</p></div>
         @endif
         @if (empty($rows))
-            <div class="bg-white p-6 rounded-xl shadow-sm"><p class="font-semibold">Tidak ada data.</p><p class="text-sm text-gray-500">Ubah rentang tanggal atau cabang.</p></div>
+            <div class="bg-surface p-6 rounded-xl shadow-sm"><p class="font-semibold">Tidak ada data.</p><p class="text-sm text-muted">Ubah rentang tanggal atau cabang.</p></div>
         @else
-            <div class="bg-white rounded-xl shadow-sm overflow-x-auto">
+            <div class="bg-surface rounded-xl shadow-sm overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead><tr class="border-b">
                         @foreach ($headers as $h)<th class="text-left px-4 py-3">{{ $h }}</th>@endforeach

@@ -4,7 +4,52 @@ import Alpine from 'alpinejs';
 
 window.Alpine = Alpine;
 
+// Ganti tema dengan tirai view transition + kilau bilah, seperti referensi.
+window.toggleTheme = function (event) {
+    var root = document.documentElement;
+    var gelap = !root.classList.contains('dark');
+    var tombol = event && event.currentTarget;
+    var denyut = tombol ? tombol.querySelector('.theme-pulse') : null;
+
+    if (denyut) {
+        denyut.style.background = gelap ? 'rgba(129, 140, 248, .45)' : 'rgba(252, 211, 77, .55)';
+        denyut.style.animation = 'pulse-burst 600ms ease-out';
+        denyut.addEventListener('animationend', function () { denyut.style.animation = ''; }, { once: true });
+    }
+
+    function ganti() {
+        root.classList.toggle('dark', gelap);
+        try { localStorage.setItem('theme', gelap ? 'dark' : 'light'); } catch (e) {}
+    }
+
+    if (document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        var kilau = document.createElement('div');
+        kilau.className = 'sword-glint slicing';
+        document.body.appendChild(kilau);
+        var transisi = document.startViewTransition(ganti);
+        var bersihkan = function () { kilau.remove(); };
+        if (transisi && transisi.finished) {
+            transisi.finished.finally(bersihkan);
+        } else {
+            setTimeout(bersihkan, 950);
+        }
+        return;
+    }
+
+    ganti();
+};
+
+// Tanpa pilihan tersimpan, tema mengikuti perubahan sistem.
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+    try {
+        if (!localStorage.getItem('theme')) {
+            document.documentElement.classList.toggle('dark', e.matches);
+        }
+    } catch (err) {}
+});
+
 Alpine.start();
+
 
 // Scroll-reveal gaya useInView: sekali tampil, dukung stagger dan delay, hormati prefers-reduced-motion.
 (function () {
