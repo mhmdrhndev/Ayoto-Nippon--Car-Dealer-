@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Dokumentasi Teknis dan Implementasi Sistem Ayoto Nippon</title>
+<style>
+  @page {
+    margin: 18mm 16mm 18mm 16mm;
+    @bottom-right {
+      content: counter(page);
+    }
+  }
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10pt;
+    line-height: 1.5;
+    color: #1e293b;
+    background-color: #ffffff;
+  }
+  .cover {
+    text-align: center;
+    padding-top: 50px;
+    padding-bottom: 70px;
+    border-bottom: 3px solid #dc2626;
+    margin-bottom: 30px;
+  }
+  .cover-tag {
+    font-size: 11pt;
+    font-weight: bold;
+    color: #dc2626;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .cover h1 {
+    font-size: 23pt;
+    line-height: 1.25;
+    color: #0f172a;
+    margin: 10px 0 15px 0;
+  }
+  .cover-subtitle {
+    font-size: 12pt;
+    color: #475569;
+    margin-bottom: 30px;
+  }
+  .meta-box {
+    display: inline-block;
+    text-align: left;
+    background-color: #f8fafc;
+    border: 1px solid #cbd5e1;
+    padding: 14px 20px;
+    font-size: 9.5pt;
+    width: 80%;
+    margin: 0 auto;
+  }
+  .meta-box table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .meta-box td {
+    padding: 3px 6px;
+    vertical-align: top;
+    border: none;
+  }
+  .meta-label {
+    font-weight: bold;
+    color: #334155;
+    width: 140px;
+  }
+  h2 {
+    font-size: 14pt;
+    color: #0f172a;
+    border-bottom: 1.5px solid #cbd5e1;
+    padding-bottom: 4px;
+    margin-top: 26px;
+    margin-bottom: 10px;
+  }
+  h3 {
+    font-size: 11.5pt;
+    color: #b91c1c;
+    margin-top: 18px;
+    margin-bottom: 6px;
+  }
+  p {
+    margin: 6px 0 10px 0;
+    text-align: justify;
+  }
+  ul, ol {
+    margin: 6px 0 10px 20px;
+    padding: 0;
+  }
+  li {
+    margin-bottom: 4px;
+  }
+  table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 16px 0;
+    font-size: 9pt;
+  }
+  table.data-table th, table.data-table td {
+    border: 1px solid #cbd5e1;
+    padding: 6px 8px;
+    text-align: left;
+  }
+  table.data-table th {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    font-weight: bold;
+  }
+  table.data-table tr:nth-child(even) td {
+    background-color: #f8fafc;
+  }
+  .card-highlight {
+    background-color: #f8fafc;
+    border-left: 4px solid #dc2626;
+    padding: 10px 14px;
+    margin: 12px 0;
+    font-size: 9.5pt;
+  }
+  .badge {
+    display: inline-block;
+    padding: 2px 6px;
+    font-size: 8pt;
+    font-weight: bold;
+    border-radius: 3px;
+    background-color: #e2e8f0;
+    color: #334155;
+  }
+  .badge-red {
+    background-color: #fee2e2;
+    color: #991b1b;
+  }
+  .badge-green {
+    background-color: #dcfce7;
+    color: #166534;
+  }
+  .page-break {
+    page-break-before: always;
+  }
+  code {
+    font-family: Consolas, monospace;
+    font-size: 8.5pt;
+    background-color: #f1f5f9;
+    padding: 2px 4px;
+    border-radius: 3px;
+    color: #b91c1c;
+  }
+  pre {
+    font-family: Consolas, monospace;
+    font-size: 8.5pt;
+    background-color: #0f172a;
+    color: #f8fafc;
+    padding: 10px;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin: 10px 0;
+    line-height: 1.4;
+  }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="cover-tag">Laporan Proyek Akhir</div>
+  <h1>Web App Dealer Mobil PT Ayoto Nippon</h1>
+  <div class="cover-subtitle">Dokumentasi Teknis, Arsitektur Sistem, dan Realisasi Fungsional</div>
+  
+  <div class="meta-box">
+    <table>
+      <tr>
+        <td class="meta-label">Mata Kuliah:</td>
+        <td>Pemrograman Web II (Semester 7)</td>
+      </tr>
+      <tr>
+        <td class="meta-label">Studi Kasus:</td>
+        <td>Sistem Penjualan dan After-Sales PT Ayoto Nippon</td>
+      </tr>
+      <tr>
+        <td class="meta-label">Kerangka Kerja:</td>
+        <td>Laravel 11, PHP 8.3, MySQL 8 / MariaDB</td>
+      </tr>
+      <tr>
+        <td class="meta-label">Antarmuka:</td>
+        <td>Blade, Tailwind CSS, Alpine.js</td>
+      </tr>
+      <tr>
+        <td class="meta-label">Status Realisasi:</td>
+        <td>Versi 1.0 Final, Semua Modul Utama Teruji</td>
+      </tr>
+      <tr>
+        <td class="meta-label">Disusun Oleh:</td>
+        <td>Raihan dan Tim Pengembang Mahasiswa</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<h2>1. Latar Belakang dan Masalah Operasional</h2>
+<p>
+Operasional dealer mobil konvensional sering kali bertumpu pada komunikasi yang terfragmentasi. Informasi stok mobil, katalog harga, percakapan awal calon pembeli, hingga pemesanan servis berkala tersebar di aplikasi pesan instan, lembar catatan fisik, serta dokumen terpisah. Pola kerja manual semacam ini menimbulkan empat persoalan nyata yang menghambat produktivitas dealer:
+</p>
+<ol>
+  <li><strong>Pencatatan calon pembeli (leads) tidak terstruktur:</strong> Calon konsumen yang bertanya lewat obrolan atau melihat iklan sering kali tidak terdata di basis data pusat. Kondisi ini membuat tenaga penjual (sales) kesulitan melakukan tindak lanjut berkesinambungan.</li>
+  <li><strong>Risiko pemesanan ganda (double-booking) nomor rangka (VIN):</strong> Pada sistem multi-cabang, dua tenaga penjual berbeda dapat menawarkan dan mengunci satu unit kendaraan yang sama secara bersamaan. Jika tidak ada validasi konkuren di tingkat basis data, dealer menghadapi potensi sengketa dengan pembeli.</li>
+  <li><strong>Status pemesanan kendaraan (SPK) tanpa transparansi:</strong> Surat Pesanan Kendaraan (SPK) yang diajukan pembeli sering tertahan tanpa kejelasan pembayaran atau verifikasi. Unit mobil terkunci terlalu lama oleh pemesan yang tidak serius, sehingga mengurangi perputaran inventaris.</li>
+  <li><strong>Tingginya angka ketidakhadiran (no-show) jadwal servis:</strong> Tanpa mekanisme pengingat otomatis terjadwal, pelanggan kerap melupakan tanggal booking servis kendaraan, yang berujung pada kekosongan teknisi dan hilangnya potensi pendapatan bengkel.</li>
+</ol>
+<p>
+Aplikasi web PT Ayoto Nippon dibangun sebagai solusi tunggal terintegrasi untuk menyelesaikan keempat persoalan tersebut. Seluruh alur front-office (katalog publik, simulasi kredit, booking test drive, pengajuan tukar tambah, dan SPK online) dihubungkan langsung ke back-office (antrean verifikasi admin, CRM leads, alokasi teknisi bengkel, manajemen suku cadang, dan pelaporan eksekutif).
+</p>
+
+<h2>2. Arsitektur dan Spesifikasi Teknologi</h2>
+<p>
+Sistem ini menggunakan arsitektur Model-View-Controller (MVC) berbasis kerangka kerja Laravel 11. Pendekatan modular memisahkan logika domain bisnis, penanganan otorisasi peran, antrean asinkron, dan tampilan antarmuka secara teratur.
+</p>
+
+<table class="data-table">
+  <thead>
+    <tr>
+      <th style="width: 25%;">Lapisan</th>
+      <th style="width: 35%;">Teknologi Terpasang</th>
+      <th style="width: 40%;">Peran dan Fungsi Utama</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Backend Framework</td>
+      <td>Laravel 11, PHP 8.3</td>
+      <td>Routing, pengontrol logika bisnis, middleware proteksi, dan Eloquent ORM.</td>
+    </tr>
+    <tr>
+      <td>Basis Data</td>
+      <td>MySQL 8 / MariaDB (Laragon/XAMPP)</td>
+      <td>Penyimpanan relasional, penguncian baris transaksi (pessimistic locking), dan integritas data.</td>
+    </tr>
+    <tr>
+      <td>Frontend UI</td>
+      <td>Blade, Tailwind CSS, Alpine.js</td>
+      <td>Penyusunan komponen responsif (mobile-first), interaktivitas modal dan filter tanpa kerangka kerja berat.</td>
+    </tr>
+    <tr>
+      <td>Otorisasi & Akun</td>
+      <td>Laravel Breeze, Spatie Laravel-Permission</td>
+      <td>Manajemen otentikasi sesi dan pembagian hak akses 7 peran pengguna.</td>
+    </tr>
+    <tr>
+      <td>Pembuatan Dokumen</td>
+      <td>barryvdh/laravel-dompdf (DomPDF 3.1)</td>
+      <td>Penerbitan berkas resmi invoice, kuitansi, dan rincian SPK secara terprogram.</td>
+    </tr>
+    <tr>
+      <td>Pengolahan Laporan</td>
+      <td>maatwebsite/excel (Laravel-Excel 3.1)</td>
+      <td>Ekspor data analitik penjualan, leads, dan servis ke dalam format lembar kerja Excel (.xlsx).</td>
+    </tr>
+    <tr>
+      <td>Antrean & Pekerja Latar</td>
+      <td>Laravel Database Queue Worker</td>
+      <td>Pemrosesan kirim email dan pencatatan notifikasi WhatsApp tanpa membebani respon HTTP.</td>
+    </tr>
+    <tr>
+      <td>Penjadwal Tugas</td>
+      <td>Laravel Artisan Console Scheduler</td>
+      <td>Pemeriksaan otomatis kedaluwarsa SPK tiap jam, pengingat batas bayar H-6, dan pengingat servis H-1.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="page-break"></div>
+
+<h2>3. Struktur Peran Pengguna dan Hak Akses</h2>
+<p>
+Sistem membagi pengguna ke dalam tujuh peran berbeda dengan batas kewenangan yang tegas. Pemisahan ini ditegakkan di tingkat perutean (route middleware) dan kueri lingkup cabang (branch scoping), sehingga staf cabang tertentu tidak dapat memanipulasi data cabang lain.
+</p>
+
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Peran Pengguna</th>
+      <th>Lingkup Data</th>
+      <th>Hak Akses dan Tanggung Jawab Operasional</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Customer</td>
+      <td>Akun Pribadi</td>
+      <td>Melihat katalog, simulasi kredit, pengajuan SPK, unggah bukti bayar, lacak SPK, booking test drive, booking servis, pesanan suku cadang, dan riwayat pesanan.</td>
+    </tr>
+    <tr>
+      <td>Sales</td>
+      <td>Cabang Sendiri</td>
+      <td>Melihat data leads yang ditugaskan, mencatat catatan tindak lanjut (follow-up), mengonfirmasi jadwal test drive, dan memantau status SPK calon pembeli.</td>
+    </tr>
+    <tr>
+      <td>Admin Cabang</td>
+      <td>Cabang Sendiri</td>
+      <td>Memverifikasi bukti transfer SPK, menetapkan harga OTR cabang, mengelola data unit mobil, mengatur nomor rekening cabang, dan memvalidasi order suku cadang.</td>
+    </tr>
+    <tr>
+      <td>Service Advisor (SA)</td>
+      <td>Cabang Sendiri</td>
+      <td>Menerima pendaftaran booking servis, menyusun estimasi biaya jasa dan rincian suku cadang yang dibutuhkan, serta menetapkan mekanik penanggung jawab.</td>
+    </tr>
+    <tr>
+      <td>Mekanik</td>
+      <td>Cabang Sendiri</td>
+      <td>Memperbarui status pengerjaan servis fisik kendaraan dan menandai penyelesaian perbaikan.</td>
+    </tr>
+    <tr>
+      <td>Pimpinan / Owner</td>
+      <td>Seluruh Cabang</td>
+      <td>Akses penuh dashboard eksekutif, rekapitulasi penjualan lintas cabang, tingkat konversi leads, umur stok inventaris, dan komisi tenaga penjual.</td>
+    </tr>
+    <tr>
+      <td>Superadmin</td>
+      <td>Sistem Total</td>
+      <td>Akses penuh seluruh cabang, manajemen akun pengguna, penetapan peran Spatie, konfigurasi global, master brand, model, varian, dan audit log.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>4. Desain Basis Data dan Entitas Utama</h2>
+<p>
+Basis data dirancang dengan tingkat normalisasi tinggi untuk memastikan integritas dan konsistensi relasi antar entitas bisnis. Terdapat 36 tabel aktif di lingkungan operasional, dengan entitas inti sebagai berikut:
+</p>
+<ul>
+  <li><strong>Entitas Kendaraan:</strong> <code>brands</code> (32 merek otomotif), <code>car_models</code> (239 model kendaraan), <code>variants</code> (328 tipe varian mobil), <code>colors</code> (katalog warna resmi), dan <code>units</code> (582 unit fisik terdaftar dengan nomor rangka unik/VIN, tahun produksi, cabang penempatan, dan status ketersediaan).</li>
+  <li><strong>Entitas Transaksi:</strong> <code>orders</code> (pencatatan SPK dengan nomor urut format <code>SPK-YYYY-NNNN</code>, relasi pembeli, unit mobil, cabang, skema pembayaran, booking fee Rp 5.000.000, tenggat waktu bayar, bukti transfer, dan status verifikasi), <code>invoices</code> (dokumen resmi tagihan dan pelunasan dengan nomor <code>INV-YYYY-NNNN</code>), serta <code>bank_accounts</code> (rekening tujuan transfer per cabang).</li>
+  <li><strong>Entitas Layanan Purnajual:</strong> <code>service_bookings</code> (pendaftaran servis dengan nomor polisi, nomor rangka, catatan keluhan, kilometer mobil, dan kuota jam), <code>service_details</code> (item pekerjaan jasa dan suku cadang yang digunakan), <code>spareparts</code> (katalog suku cadang per cabang), serta <code>sparepart_orders</code> dan <code>sparepart_order_items</code> (pemesanan suku cadang mandiri dengan nomor <code>SPO-YYYY-NNNN</code>).</li>
+  <li><strong>Entitas Hubungan Pelanggan (CRM):</strong> <code>leads</code> (prospek calon pembeli yang berasal dari formulir kontak web, simulasi kredit, booking test drive, atau kunjungan showroom), <code>lead_followups</code> (riwayat komunikasi sales), <code>test_drives</code> (jadwal uji kendara), serta <code>trade_ins</code> (pengajuan tukar tambah kendaraan lama).</li>
+  <li><strong>Entitas Pengawasan:</strong> <code>activity_logs</code> (pencatatan jejak audit sistem yang merekam perubahan harga OTR, waktu verifikasi SPK, nama verifikator, serta berkas serah terima kendaraan/BAST).</li>
+</ul>
+
+<div class="page-break"></div>
+
+<h2>5. Implementasi Modul Fungsional dan Logika Bisnis</h2>
+
+<h3>5.1. Katalog Publik dan Manajemen Inventaris VIN</h3>
+<p>
+Katalog kendaraan dapat diakses oleh publik tanpa mewajibkan pendaftaran akun terlebih dahulu. Pengunjung dapat menyaring kendaraan berdasarkan merek, jenis transmisi (manual, otomatis, CVT), jenis bahan bakar, rentang harga OTR, dan lokasi cabang dealer terdekat. Halaman detail menyajikan galeri foto, spesifikasi teknis lengkap, status ketersediaan unit, serta daftar warna yang siap dikirim.
+</p>
+<p>
+Inventaris mobil dikelola berbasis nomor rangka (VIN). Setiap nomor rangka berstatus salah satu dari tiga kondisi: <em>Tersedia</em>, <em>Dipesan</em>, atau <em>Terjual</em>. Ketika sebuah unit sedang dalam proses pemesanan, sistem secara otomatis menonaktifkan unit tersebut dari pilihan pembeli lain untuk mencegah pemesanan ganda.
+</p>
+
+<h3>5.2. Alur Pemesanan Kendaraan (SPK Online) dan Lock Konkuren</h3>
+<p>
+Penerbitan Surat Pesanan Kendaraan (SPK) dirancang dengan kehati-hatian transaksi tingkat tinggi pada basis data. Alur lengkap mencakup langkah berikut:
+</p>
+<ol>
+  <li>Pembeli wajib masuk ke akun terdaftar, memilih cabang dealer dan unit mobil berstatus Tersedia, lalu melengkapi biodata pemesan (NIK 16 digit, nomor telepon, alamat, serta unggahan KTP dan Kartu Keluarga).</li>
+  <li>Sistem mengeksekusi pembuatan pesanan di dalam transaksi basis data dengan penguncian pesimistik (<code>DB::transaction</code> dan <code>lockForUpdate</code>). Jika ada dua pengguna yang menekan tombol pesan pada detik yang sama untuk VIN yang sama, pengguna kedua akan ditolak dengan kode respon 422 dan pesan bahwa unit telah dipesan.</li>
+  <li>Sistem menetapkan status SPK menjadi <code>MenungguBayar</code>, membuat batas waktu pembayaran tepat 24 jam ke depan, dan menerbitkan nomor registrasi otomatis berformat <code>SPK-YYYY-NNNN</code>.</li>
+  <li>Pembeli menerima instruksi pembayaran booking fee sebesar Rp 5.000.000 yang diarahkan ke rekening bank resmi cabang terkait.</li>
+</ol>
+
+<h3>5.3. Verifikasi Pembayaran Manual dan Penerbitan Invoice PDF</h3>
+<p>
+PT Ayoto Nippon menerapkan skema pembayaran transfer manual demi keamanan operasional dealer:
+</p>
+<ul>
+  <li>Pembeli mengunggah bukti transfer melalui halaman Lacak SPK dalam format berkas JPG, PNG, atau PDF (maksimal 2 MB). Setelah bukti masuk, status pesanan berubah menjadi <code>MenungguVerifikasi</code>.</li>
+  <li>Admin cabang memeriksa antrean verifikasi, mencocokkan mutasi rekening, dan mengambil keputusan:
+    <ul>
+      <li><strong>Jika Diterima (Deal):</strong> Status SPK berubah menjadi <code>Deal</code>, status unit VIN resmi diperbarui menjadi <code>Terjual</code>, berkas invoice PDF otomatis diterbitkan via DomPDF, dan notifikasi konfirmasi dikirimkan via antrean email serta pesan WhatsApp.</li>
+      <li><strong>Jika Ditolak:</strong> Admin wajib menyertakan alasan penolakan. Pembeli diberi kesempatan mengunggah ulang bukti pembayaran dengan tenggat baru, atau pesanan dibatalkan sehingga status VIN dikembalikan ke <code>Tersedia</code>.</li>
+    </ul>
+  </li>
+  <li>Seluruh riwayat verifikasi tercatat otomatis di tabel audit log mencakup identitas admin verifikator dan waktu persetujuan.</li>
+</ul>
+
+<h3>5.4. Simulasi Pembiayaan Kredit dan Integrasi Otomatis CRM Leads</h3>
+<p>
+Kalkulator simulasi kredit memungkinkan pengunjung menghitung perkiraan angsuran bulanan berdasarkan harga unit, persentase uang muka (DP), pilihan tenor pembayaran (12 hingga 60 bulan), dan mitra leasing rekanan (seperti BCA Finance, Mandiri Tunas Finance, Adira Finance).
+</p>
+<p>
+Setiap simulasi yang dilakukan pengunjung secara otomatis dikonversi oleh sistem menjadi data prospek (lead) pada modul CRM. Tim sales dapat langsung melihat rincian ketertarikan calon pembeli, menugaskan tenaga penjual, dan menggeser status prospek mengikuti pipeline: <em>Baru</em>, <em>Dihubungi</em>, <em>Test Drive</em>, <em>SPK</em>, hingga <em>Deal</em> atau <em>Batal</em>.
+</p>
+
+<h3>5.5. Manajemen Bengkel dan Pembatasan Kuota Servis</h3>
+<p>
+Modul servis dirancang untuk menghilangkan antrean fisik yang menumpuk di bengkel cabang. Pelanggan mendaftarkan nomor polisi, nomor rangka kendaraan, angka kilometer terakhir, deskripsi keluhan teknis, serta tanggal dan jam kedatangan yang diinginkan.
+</p>
+<p>
+Sistem menegakkan batas kuota maksimal lima kendaraan per cabang untuk setiap blok waktu satu jam. Pengajuan pada slot keenam akan ditolak oleh sistem dengan saran memilih jam lain. Setelah kendaraan tiba di bengkel, Service Advisor (SA) menyusun estimasi pekerjaan dan kebutuhan suku cadang, menugaskan mekanik penanggung jawab, dan saat pengerjaan berstatus <em>Selesai</em>, stok suku cadang di gudang cabang terkait akan terpotong secara otomatis.
+</p>
+
+<div class="page-break"></div>
+
+<h3>5.6. Pemesanan Suku Cadang Mandiri (SPO)</h3>
+<p>
+Selain servis di bengkel, pelanggan dapat memesan suku cadang langsung secara mandiri. Sistem menerbitkan nomor pesanan suku cadang berformat <code>SPO-YYYY-NNNN</code>. Begitu pesanan dibuat, sistem langsung mencadangkan kuantitas stok di gudang agar tidak terbeli oleh orang lain. Jika pembayaran tidak diverifikasi atau pesanan dibatalkan, kuantitas suku cadang dikembalikan secara otomatis ke stok siap jual.
+</p>
+
+<h3>5.7. Penjadwalan Tugas Otomatis dan Antrean Notifikasi</h3>
+<p>
+Untuk menjaga keandalan dan ketepatan waktu operasional, sistem menjalankan perintah konsol terjadwal secara periodik:
+</p>
+<ul>
+  <li><code>spk:expire</code> (dieksekusi setiap jam): Mendeteksi SPK dengan status <code>MenungguBayar</code> yang telah melampaui batas waktu 24 jam. Sistem langsung mengubah status SPK menjadi <code>Expired</code> dan melepaskan unit VIN kembali ke status <code>Tersedia</code>.</li>
+  <li><code>reminders:send</code> (dieksekusi setiap pagi): Mengirimkan pengingat batas waktu bayar H-6 jam kepada pemesan SPK aktif, serta mengirimkan notifikasi pengingat jadwal servis H-1 kepada pemilik kendaraan agar tidak terjadi no-show di bengkel.</li>
+  <li>Pekerja antrean (<code>queue:work</code>): Memproses pekerjaan pengiriman email (<code>SendMailJob</code>) dan pesan WhatsApp (<code>SendWaJob</code>) secara mandiri di latar belakang sehingga antarmuka pengguna tetap responsif dan cepat.</li>
+</ul>
+
+<h2>6. Dashboard Analitik dan Pelaporan Eksekutif</h2>
+<p>
+Sistem menyajikan visualisasi analitik yang disesuaikan dengan kebutuhan setiap peran:
+</p>
+<ul>
+  <li><strong>Dashboard Admin & Sales:</strong> Menyajikan ringkasan antrean verifikasi bayar yang butuh tindakan segera, daftar leads aktif yang perlu dihubungi, jadwal test drive hari ini, dan unit servis yang sedang dikerjakan mekanik.</li>
+  <li><strong>Dashboard Pimpinan:</strong> Menampilkan ringkasan pendapatan kotor per cabang, total unit terjual, perbandingan konversi prospek antar sales, dan indikator unit inventaris yang mengalami penuaan (stok mengendap lebih dari 30 hari).</li>
+  <li><strong>Modul Pelaporan dan Ekspor Excel:</strong> Menyediakan lima laporan baku (Laporan Penjualan, Laporan Leads CRM, Laporan Umur Stok Kendaraan, Laporan Operasional Servis, dan Laporan Komisi Sales) yang dapat disaring berdasarkan periode kalender dan cabang, serta dapat diunduh langsung dalam format spreadsheet (.xlsx) menggunakan pustaka Laravel-Excel.</li>
+</ul>
+
+<h2>7. Evaluasi Keamanan dan Hasil Pengujian (UAT)</h2>
+<p>
+Keamanan sistem dirancang dengan prinsip pertahanan berlapis (defense-in-depth):
+</p>
+<ul>
+  <li><strong>Perlindungan Injeksi & Sengketa Sesi:</strong> Seluruh kueri menggunakan parameter binding Eloquent PDO untuk menangkal SQL Injection. Setiap formulir web wajib memiliki token CSRF, dan output teks disaring melalui escaping Blade untuk mencegah Cross-Site Scripting (XSS).</li>
+  <li><strong>Penyimpanan Berkas Pribadi:</strong> Dokumen sensitif seperti foto KTP pemesan, Kartu Keluarga, dan bukti transfer perbankan disimpan di direktori privat yang tidak dapat diakses langsung via peramban publik. Akses pengunduhan berkas dilindungi oleh middleware verifikasi peran.</li>
+  <li><strong>Pembatasan Frekuensi Permintaan (Rate Limiting):</strong> Titik akhir pengajuan SPK dan unggah bukti transaksi dibatasi melalui middleware throttle untuk mencegah serangan penolakan layanan (Denial of Service) maupun pengunggahan berulang secara masal.</li>
+</ul>
+
+<table class="data-table">
+  <thead>
+    <tr>
+      <th style="width: 35%;">Skenario Pengujian (UAT)</th>
+      <th style="width: 45%;">Tindakan dan Ekspektasi Sistem</th>
+      <th style="width: 20%;">Hasil Verifikasi</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Penerbitan SPK Baru</td>
+      <td>Pelanggan mengajukan SPK, unit terkunci, nomor SPK terbit, dan instruksi bayar dikirim.</td>
+      <td><span class="badge badge-green">Lolos / Hijau</span></td>
+    </tr>
+    <tr>
+      <td>Uji Konkuren VIN Ganda</td>
+      <td>Dua akun memesan satu VIN yang sama secara bersamaan; pesanan kedua ditolak status 422.</td>
+      <td><span class="badge badge-green">Lolos / Hijau</span></td>
+    </tr>
+    <tr>
+      <td>Pembatalan Otomatis Kedaluwarsa</td>
+      <td>SPK melewati batas 24 jam tanpa bayar; status berubah Expired dan VIN kembali Tersedia.</td>
+      <td><span class="badge badge-green">Lolos / Hijau</span></td>
+    </tr>
+    <tr>
+      <td>Verifikasi Bukti & Invoice PDF</td>
+      <td>Admin menerima bukti; pesanan Deal, VIN Terjual, invoice PDF terbit dengan nominal cocok.</td>
+      <td><span class="badge badge-green">Lolos / Hijau</span></td>
+    </tr>
+    <tr>
+      <td>Pembatasan Kuota Servis</td>
+      <td>Pendaftaran servis pada slot jam yang sama menolak pemesanan ke-6 dengan kode respon 422.</td>
+      <td><span class="badge badge-green">Lolos / Hijau</span></td>
+    </tr>
+    <tr>
+      <td>Penyelesaian Servis & Stok</td>
+      <td>Mekanik menandai servis selesai; kuantitas suku cadang gudang berkurang tepat sesuai rincian.</td>
+      <td><span class="badge badge-green">Lolos / Hijau</span></td>
+    </tr>
+    <tr>
+      <td>Penyaringan Hak Akses Role</td>
+      <td>Akun peran Sales mengakses menu Laporan Cabang langsung menerima respon blokir HTTP 403.</td>
+      <td><span class="badge badge-green">Lolos / Hijau</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>8. Kesimpulan</h2>
+<p>
+Pengembangan Web App Dealer Mobil PT Ayoto Nippon v1.0 telah berhasil merealisasikan seluruh kebutuhan sistem manajemen dealer terpadu yang ditetapkan dalam dokumen spesifikasi teknis. Implementasi fitur mencakup pengelolaan siklus hidup kendaraan secara lengkap, mulai dari etalase katalog publik, penguncian inventaris berbasis nomor rangka, verifikasi pembayaran transparan, otomasi purnajual bengkel, hingga pelaporan manajerial lintas cabang. Seluruh pengujian fungsional dan pengujian keamanan telah diverifikasi dengan hasil hijau di lingkungan operasional.
+</p>
+
+</body>
+</html>
