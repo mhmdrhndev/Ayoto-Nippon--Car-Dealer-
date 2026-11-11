@@ -11,12 +11,19 @@ class Order extends Model
     protected $fillable = [
         'no_spk', 'customer_id', 'unit_id', 'branch_id', 'metode', 'leasing_id',
         'dp_rencana', 'tenor', 'angsuran_estimasi', 'booking_fee', 'status',
-        'deadline_at', 'bukti_path', 'bast_path', 'verified_by', 'verified_at', 'tolak_alasan',
+        'deadline_at', 'bukti_path', 'bast_path', 'jadwal_serah_at', 'bast_at', 'stnk_selesai_at',
+        'verified_by', 'verified_at', 'tolak_alasan',
     ];
 
     protected function casts(): array
     {
-        return ['deadline_at' => 'datetime', 'verified_at' => 'datetime'];
+        return [
+            'deadline_at' => 'datetime',
+            'verified_at' => 'datetime',
+            'jadwal_serah_at' => 'datetime',
+            'bast_at' => 'datetime',
+            'stnk_selesai_at' => 'datetime',
+        ];
     }
 
     public function customer(): BelongsTo

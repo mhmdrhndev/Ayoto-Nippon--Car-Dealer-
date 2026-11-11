@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\ContentController;
 use App\Http\Controllers\Admin\HeroSlideController;
 use App\Http\Controllers\Admin\LeasingController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PriceListController;
 use App\Http\Controllers\Admin\PromoController;
 use App\Http\Controllers\Admin\SparepartAdminController;
@@ -92,6 +93,8 @@ Route::middleware(['auth', 'role:sales|admin-cabang|pimpinan|superadmin|owner'])
     Route::get('/verify', [VerifyController::class, 'index'])->name('verify.index');
     Route::patch('/verify/{order}', [VerifyController::class, 'update'])->name('verify.update');
     Route::get('/verify/{order}/file/{jenis}', [VerifyController::class, 'file'])->name('verify.file');
+    Route::get('/pesanan', [OrderController::class, 'index'])->name('pesanan.index');
+    Route::patch('/pesanan/{order}', [OrderController::class, 'update'])->name('pesanan.update');
     Route::get('/leads', [LeadController::class, 'index'])->name('leads.index');
     Route::get('/leads/{lead}', [LeadController::class, 'show'])->name('leads.show');
     Route::patch('/leads/{lead}/assign', [LeadController::class, 'assign'])->name('leads.assign');

@@ -11,7 +11,7 @@
         <!-- Top Gallery & Core Info -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
             <!-- Left: Gallery & Colors -->
-            <div class="lg:col-span-7 space-y-4">
+            <div class="lg:col-span-6 space-y-4">
                 @php
                     $galeri = $variant->units->filter(fn ($u) => $u->foto_utama)->unique('foto_utama')->map(fn ($u) => ['foto' => $u->foto_utama, 'warna' => $u->color_id])->values();
                     $warnaTersedia = $variant->units->where('status', 'Tersedia')->map(fn ($u) => $u->color)->filter()->unique('id')->values();
@@ -19,7 +19,7 @@
 
                 <div class="bg-surface border border-line rounded-3xl overflow-hidden shadow-2xl shadow-black/5">
                     @if ($galeri->isNotEmpty())
-                        <img id="galeri-utama" src="{{ asset($galeri[0]['foto']) }}" alt="{{ $variant->carModel->brand->nama }} {{ $variant->carModel->nama }} {{ $variant->nama }}" fetchpriority="high" class="w-full aspect-[16/10] object-cover transition-all duration-300">
+                        <img id="galeri-utama" src="{{ asset($galeri[0]['foto']) }}" alt="{{ $variant->carModel->brand->nama }} {{ $variant->carModel->nama }} {{ $variant->nama }}" fetchpriority="high" class="w-full aspect-[16/10] lg:max-h-[460px] 2xl:max-h-[540px] object-cover transition-all duration-300">
                         @if ($galeri->count() > 1)
                             <div class="p-3 bg-surface border-t border-line grid grid-cols-4 sm:grid-cols-6 gap-2">
                                 @foreach ($galeri->take(8) as $i => $item)
@@ -31,7 +31,7 @@
                             </div>
                         @endif
                     @else
-                        <div class="w-full aspect-[16/10] bg-surface flex items-center justify-center text-sm text-muted">Foto menyusul</div>
+                        <div class="w-full aspect-[16/10] lg:max-h-[460px] 2xl:max-h-[540px] bg-surface flex items-center justify-center text-sm text-muted">Foto menyusul</div>
                     @endif
                 </div>
 
@@ -57,7 +57,7 @@
             </div>
 
             <!-- Right: Specs & Action Box -->
-            <div class="lg:col-span-5 space-y-6">
+            <div class="lg:col-span-6 space-y-6">
                 @php
                     $spek = $variant->spekLengkap();
                     $mulaiOtr = $variant->priceLists->min('otr');

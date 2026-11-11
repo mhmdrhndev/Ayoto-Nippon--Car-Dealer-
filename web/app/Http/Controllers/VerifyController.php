@@ -121,7 +121,10 @@ class VerifyController extends Controller
             'bast' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'],
         ]);
 
-        $order->update(['bast_path' => $request->file('bast')->store('bast', 'local')]);
+        $order->update([
+            'bast_path' => $request->file('bast')->store('bast', 'local'),
+            'bast_at' => $order->bast_at ?? now(),
+        ]);
         ActivityLog::catat('upload BAST', 'Order', $order->id, "BAST SPK {$order->no_spk} diunggah.");
 
         return back()->with('sukses', 'BAST serah terima tersimpan.');

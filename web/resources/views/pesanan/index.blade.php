@@ -20,18 +20,26 @@
             </div>
             <div class="divide-y divide-line">
                 @forelse ($spks as $order)
-                    <div class="px-6 py-4 flex flex-wrap items-center justify-between gap-3 hover:bg-surface-2 transition-colors">
-                        <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                            <a href="{{ route('spk.show', $order->no_spk) }}" class="font-mono font-bold text-sm text-accent hover:text-accent underline underline-offset-2 min-h-[44px] inline-flex items-center">
-                                {{ $order->no_spk }}
-                            </a>
-                            <span class="text-xs sm:text-sm text-muted">
-                                {{ $order->unit->variant->carModel->brand->nama ?? '' }} {{ $order->unit->variant->carModel->nama ?? '' }} {{ $order->unit->variant->nama ?? '' }}
-                                <span class="text-muted">•</span>
-                                <span class="text-muted">{{ $order->branch->nama }}</span>
-                            </span>
+                    <div class="px-6 py-4 flex flex-wrap items-center justify-between gap-4 hover:bg-surface-2 transition-colors">
+                        <div class="flex items-center gap-4 min-w-0">
+                            <div class="w-16 h-11 rounded-lg overflow-hidden bg-surface-2 shrink-0">
+                                @if ($order->unit->foto_utama)
+                                    <img src="{{ asset($order->unit->foto_utama) }}" alt="" aria-hidden="true" class="w-full h-full object-cover" loading="lazy">
+                                @endif
+                            </div>
+                            <div class="min-w-0">
+                                <a href="{{ route('spk.show', $order->no_spk) }}" class="font-mono font-bold text-sm text-accent hover:text-accent underline underline-offset-2 min-h-[44px] inline-flex items-center">
+                                    {{ $order->no_spk }}
+                                </a>
+                                <p class="text-xs sm:text-sm text-muted truncate">
+                                    {{ $order->unit->variant->carModel->brand->nama ?? '' }} {{ $order->unit->variant->carModel->nama ?? '' }} {{ $order->unit->variant->nama ?? '' }}
+                                    <span class="text-muted">•</span>
+                                    <span class="text-muted">{{ $order->branch->nama }}</span>
+                                </p>
+                            </div>
                         </div>
-                        <div class="flex items-center gap-3">
+                        <div class="flex items-center gap-4">
+                            <span class="text-sm font-semibold text-ink tabular-nums">Rp {{ number_format($order->unit->harga, 0, ',', '.') }}</span>
                             <x-status-badge :status="$order->statusTampil()" />
                             <a href="{{ route('spk.show', $order->no_spk) }}" class="text-xs font-semibold text-muted hover:text-ink min-h-[44px] inline-flex items-center">
                                 Rincian &rarr;

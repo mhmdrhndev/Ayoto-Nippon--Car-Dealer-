@@ -21,80 +21,180 @@
             </a>
         </div>
 
-        <!-- 4 Stat Summary Cards -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-surface border border-line rounded-2xl p-4">
-                <p class="text-[10px] uppercase tracking-wider text-muted font-medium">Nomor SPK</p>
-                <p class="mt-1 text-sm font-bold font-mono text-ink">{{ $order->no_spk }}</p>
+        @php
+            $statusTampil = $order->statusTampil();
+            $warna = $order->unit->color;
+            $namaUnit = trim(($order->unit->variant->carModel->brand->nama ?? '').' '.($order->unit->variant->carModel->nama ?? '').' '.$order->unit->variant->nama);
+        @endphp
+
+        <!-- Ringkasan Pesanan -->
+        <div class="bg-surface border border-line rounded-3xl shadow-xl overflow-hidden">
+            <div class="p-5 sm:p-6 grid grid-cols-1 sm:grid-cols-[10rem_minmax(0,1fr)_auto] gap-5 items-start">
+                <div class="w-full aspect-[16/10] rounded-2xl overflow-hidden bg-surface-2">
+                    @if ($order->unit->foto_utama)
+                        <img src="{{ asset($order->unit->foto_utama) }}" alt="{{ $namaUnit }}" class="w-full h-full object-cover">
+                    @else
+                        <div class="w-full h-full flex items-center justify-center text-xs text-muted">Foto menyusul</div>
+                    @endif
+                </div>
+
+                <div class="min-w-0">
+                    <h2 class="text-xl sm:text-2xl font-extrabold text-ink tracking-tight">{{ $namaUnit }}</h2>
+                    <p class="mt-1.5 flex items-center gap-2 text-xs text-muted">
+                        <span class="w-3 h-3 rounded-full border border-line shrink-0" style="background: {{ $warna?->kode_hex ?: 'transparent' }}"></span>
+                        <span>{{ $warna->nama ?? 'Warna menyusul' }}</span>
+                    </p>
+                    <p class="mt-2 text-xs text-muted">
+                        No. pesanan <span class="font-mono font-semibold text-ink">{{ $order->no_spk }}</span> di Cabang {{ $order->branch->nama }}
+                    </p>
+                    <dl class="mt-3 flex flex-wrap gap-x-6 gap-y-1.5 text-xs">
+                        <div class="flex gap-1.5">
+                            <dt class="text-muted">VIN</dt>
+                            <dd class="font-mono font-semibold text-ink break-all">{{ $order->unit->vin }}</dd>
+                        </div>
+                        <div class="flex gap-1.5">
+                            <dt class="text-muted">Transmisi</dt>
+                            <dd class="font-semibold text-ink">{{ $order->unit->variant->transmisi }}</dd>
+                        </div>
+                        <div class="flex gap-1.5">
+                            <dt class="text-muted">Diajukan</dt>
+                            <dd class="font-semibold text-ink tabular-nums">{{ $order->created_at->format('d M Y') }}</dd>
+                        </div>
+                    </dl>
+                </div>
+
+                <div class="sm:text-right">
+                    <x-status-badge :status="$statusTampil" />
+                    <p class="mt-2 text-xl sm:text-2xl font-extrabold text-ink tabular-nums tracking-tight">Rp {{ number_format($order->unit->harga, 0, ',', '.') }}</p>
+                    <p class="mt-0.5 text-xs text-muted tabular-nums">
+                        @if ($order->metode === 'Kredit')
+                            Kredit {{ $order->tenor }} bulan, DP Rp {{ number_format($order->dp_rencana, 0, ',', '.') }}
+                        @else
+                            {{ $order->metode }}
+                        @endif
+                    </p>
+                </div>
             </div>
-            <div class="bg-surface border border-line rounded-2xl p-4">
-                <p class="text-[10px] uppercase tracking-wider text-muted font-medium">Waktu Pengajuan</p>
-                <p class="mt-1 text-sm font-bold text-ink">{{ $order->created_at->format('d M Y H:i') }}</p>
-            </div>
-            <div class="bg-surface border border-line rounded-2xl p-4">
-                <p class="text-[10px] uppercase tracking-wider text-muted font-medium">Cabang Pengiriman</p>
-                <p class="mt-1 text-sm font-bold text-ink truncate">{{ $order->branch->nama }}</p>
-            </div>
-            <div class="bg-surface border border-line rounded-2xl p-4 flex flex-col justify-between">
-                <p class="text-[10px] uppercase tracking-wider text-muted font-medium">Status Transaksi</p>
-                <div class="mt-1"><x-status-badge status="{{ $order->statusTampil() }}" /></div>
-            </div>
+
+            @if ($order->jadwal_serah_at)
+                <div class="px-5 sm:px-6 py-4 border-t border-line bg-surface-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <p class="text-sm text-muted leading-relaxed">
+                        Unit siap diambil di Cabang {{ $order->branch->nama }} pada
+                        <strong class="text-ink tabular-nums">{{ $order->jadwal_serah_at->format('d M Y') }}</strong>
+                        pukul
+                        <strong class="text-ink tabular-nums">{{ $order->jadwal_serah_at->format('H:i') }}</strong>.
+                    </p>
+                    @if ($order->branch->telp)
+                        <a href="{{ \App\Support\Wa::chat($order->branch->telp, 'Halo '.$order->branch->nama.', saya ingin konfirmasi jadwal pengambilan unit untuk SPK '.$order->no_spk.'.') }}" target="_blank" rel="noopener"
+                            class="px-4 py-2.5 text-center font-bold text-xs text-ink bg-surface border border-line hover:border-emerald-500/50 rounded-xl min-h-[44px] inline-flex items-center justify-center transition-colors">
+                            Konfirmasi via WhatsApp
+                        </a>
+                    @endif
+                </div>
+            @endif
         </div>
 
-        <!-- Unit Overview -->
-        <div class="bg-surface border border-line rounded-3xl p-6 grid grid-cols-1 sm:grid-cols-2 gap-6 items-center shadow-xl">
-            <div class="overflow-hidden rounded-2xl bg-surface">
-                @if ($order->unit->foto_utama)
-                    <img src="{{ asset($order->unit->foto_utama) }}" alt="{{ $order->unit->variant->carModel->brand->nama }} {{ $order->unit->variant->carModel->nama }} {{ $order->unit->variant->nama }}" class="w-full aspect-video object-cover">
-                @else
-                    <div class="w-full aspect-video bg-surface flex items-center justify-center text-sm text-muted">Foto menyusul</div>
-                @endif
-            </div>
-            <div>
-                <p class="text-xs font-semibold text-accent uppercase tracking-wider">{{ $order->unit->variant->carModel->brand->nama }} {{ $order->unit->variant->carModel->nama }}</p>
-                <h2 class="mt-1 text-2xl font-bold text-ink">{{ $order->unit->variant->nama }}</h2>
+        <!-- Tahapan dan Pembayaran -->
+        @php
+            $langkah = [
+                ['label' => 'Pesanan dibuat', 'waktu' => $order->created_at, 'catatan' => 'SPK diterbitkan untuk unit pilihan Anda.'],
+                ['label' => 'Pembayaran diverifikasi', 'waktu' => $order->verified_at, 'catatan' => 'Bukti transfer diperiksa admin cabang.'],
+                ['label' => 'STNK dan BPKB selesai', 'waktu' => $order->stnk_selesai_at, 'catatan' => 'Dokumen kendaraan selesai diurus.'],
+                ['label' => 'Unit siap serah terima', 'waktu' => $order->jadwal_serah_at, 'catatan' => 'Jadwal pengambilan unit di cabang.'],
+                ['label' => 'Unit diserahkan', 'waktu' => $order->bast_at, 'catatan' => 'Berita acara serah terima ditandatangani.'],
+            ];
+            $langkahAktif = null;
+            foreach ($langkah as $i => $l) {
+                if (! $l['waktu']) {
+                    $langkahAktif = $i;
+                    break;
+                }
+            }
+            $dihentikan = in_array($order->status, ['Batal', 'Expired', 'Ditolak'], true);
+        @endphp
 
-                <dl class="mt-4 space-y-2 text-xs sm:text-sm">
-                    <div class="flex justify-between py-1.5 border-b border-line">
-                        <dt class="text-muted">Pilihan Warna Fisik</dt>
-                        <dd class="font-semibold text-ink">{{ $order->unit->color->nama }}</dd>
+        <div class="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-5">
+            <section class="bg-surface border border-line rounded-3xl p-5 sm:p-6 shadow-xl" aria-labelledby="tahapan-pesanan">
+                <h2 id="tahapan-pesanan" class="text-xs font-semibold uppercase tracking-wider text-muted">Tahapan Proses Pemesanan</h2>
+                <ol class="mt-4">
+                    @foreach ($langkah as $i => $l)
+                        @php
+                            $selesai = $l['waktu'] !== null;
+                            $aktif = ! $selesai && $i === $langkahAktif && ! $dihentikan;
+                        @endphp
+                        <li class="flex gap-3">
+                            <div class="flex flex-col items-center shrink-0">
+                                <span class="w-3 h-3 rounded-full mt-1.5 {{ $selesai ? 'bg-accent-strong' : ($aktif ? 'bg-accent-strong ring-4 ring-accent-strong/20' : 'border-2 border-line bg-surface') }}"></span>
+                                @unless ($loop->last)
+                                    <span class="w-px flex-1 my-1 {{ $selesai ? 'bg-accent-strong/40' : 'bg-line' }}"></span>
+                                @endunless
+                            </div>
+                            <div class="pb-4 min-w-0">
+                                <p class="text-sm font-semibold {{ $selesai ? 'text-ink' : ($aktif ? 'text-accent' : 'text-muted') }}">{{ $l['label'] }}</p>
+                                @if ($l['waktu'])
+                                    <p class="text-xs text-muted tabular-nums mt-0.5">{{ $l['waktu']->format('d M Y, H:i') }} WIB</p>
+                                @elseif ($aktif)
+                                    <p class="text-xs text-muted mt-0.5">Tahap berikutnya</p>
+                                @endif
+                                <p class="text-[11px] text-muted mt-0.5 leading-relaxed">{{ $l['catatan'] }}</p>
+                            </div>
+                        </li>
+                    @endforeach
+                </ol>
+                @if ($dihentikan)
+                    <p class="pt-3 border-t border-line text-xs text-muted">Pesanan dihentikan dengan status {{ $statusTampil }}.</p>
+                @endif
+            </section>
+
+            <section class="bg-surface border border-line rounded-3xl p-5 sm:p-6 shadow-xl" aria-labelledby="rincian-pembayaran">
+                <h2 id="rincian-pembayaran" class="text-xs font-semibold uppercase tracking-wider text-muted">Rincian Pembayaran</h2>
+                <dl class="mt-4 divide-y divide-line text-sm">
+                    <div class="flex justify-between gap-3 py-2.5">
+                        <dt class="text-muted">Harga unit</dt>
+                        <dd class="font-semibold text-ink tabular-nums">Rp {{ number_format($order->unit->harga, 0, ',', '.') }}</dd>
                     </div>
-                    <div class="flex justify-between py-1.5 border-b border-line">
-                        <dt class="text-muted">Nomor Rangka (VIN)</dt>
-                        <dd class="font-mono font-semibold text-accent break-all">{{ $order->unit->vin }}</dd>
+                    <div class="flex justify-between gap-3 py-2.5">
+                        <dt class="text-muted">Booking fee</dt>
+                        <dd class="font-semibold text-ink tabular-nums">Rp {{ number_format($order->booking_fee, 0, ',', '.') }}</dd>
                     </div>
-                    <div class="flex justify-between py-1.5 border-b border-line">
-                        <dt class="text-muted">Transmisi</dt>
-                        <dd class="font-semibold text-ink">{{ $order->unit->variant->transmisi }}</dd>
+                    @if ($order->dp_rencana > 0)
+                        <div class="flex justify-between gap-3 py-2.5">
+                            <dt class="text-muted">Uang muka (DP)</dt>
+                            <dd class="font-semibold text-ink tabular-nums">Rp {{ number_format($order->dp_rencana, 0, ',', '.') }}</dd>
+                        </div>
+                    @endif
+                    @if ($order->metode === 'Kredit')
+                        <div class="flex justify-between gap-3 py-2.5">
+                            <dt class="text-muted">Angsuran estimasi</dt>
+                            <dd class="font-semibold text-ink tabular-nums">{{ $order->angsuran_estimasi ? 'Rp '.number_format($order->angsuran_estimasi, 0, ',', '.').' / bulan' : '-' }}</dd>
+                        </div>
+                        <div class="flex justify-between gap-3 py-2.5">
+                            <dt class="text-muted">Tenor</dt>
+                            <dd class="font-semibold text-ink">{{ $order->tenor ? $order->tenor.' bulan' : '-' }}</dd>
+                        </div>
+                        <div class="flex justify-between gap-3 py-2.5">
+                            <dt class="text-muted">Leasing</dt>
+                            <dd class="font-semibold text-ink text-right">{{ $order->leasing->nama ?? '-' }}</dd>
+                        </div>
+                    @endif
+                    <div class="flex justify-between gap-3 py-2.5">
+                        <dt class="text-muted">Metode</dt>
+                        <dd class="font-semibold text-ink">{{ $order->metode }}</dd>
                     </div>
-                    <div class="flex justify-between py-1.5">
-                        <dt class="text-muted">Harga OTR Kendaraan</dt>
-                        <dd class="font-extrabold text-ink tabular-nums">Rp {{ number_format($order->unit->harga, 0, ',', '.') }}</dd>
+                    <div class="flex justify-between gap-3 py-2.5">
+                        <dt class="text-muted">Status pelunasan</dt>
+                        <dd class="text-right">
+                            @if ($order->invoice?->lunas_at)
+                                <span class="font-semibold text-emerald-700 dark:text-emerald-300 tabular-nums">Lunas {{ $order->invoice->lunas_at->format('d M Y') }}</span>
+                            @elseif ($order->invoice)
+                                <span class="font-semibold text-ink">Belum lunas</span>
+                            @else
+                                <span class="text-muted">Invoice belum terbit</span>
+                            @endif
+                        </dd>
                     </div>
                 </dl>
-            </div>
-        </div>
-
-        <!-- Progress Timeline -->
-        @php
-            $alur = ['MenungguBayar' => 'SPK Diterbitkan', 'MenungguVerifikasi' => 'Bukti Diunggah', 'Deal' => 'Terverifikasi (Deal)', 'Lunas' => 'Pelunasan Diterima'];
-            $statusTampil = $order->statusTampil();
-            $posisi = array_search($statusTampil, array_keys($alur), true);
-        @endphp
-        <div class="space-y-4">
-            <h2 class="text-xs font-semibold uppercase tracking-wider text-muted">Tahapan Proses Pemesanan</h2>
-            <ol class="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                @foreach ($alur as $kode => $label)
-                    @php
-                        $lewat = $posisi !== false && array_search($kode, array_keys($alur), true) < $posisi;
-                        $aktif = $posisi !== false && $kode === $statusTampil;
-                    @endphp
-                    <li class="border rounded-2xl p-4 transition-all {{ $aktif ? 'border-accent bg-accent-strong/10 shadow-lg shadow-accent/5' : ($lewat ? 'border-emerald-500/30 bg-emerald-500/10' : 'border-line bg-surface') }}">
-                        <p class="text-sm font-bold {{ $aktif ? 'text-accent' : ($lewat ? 'text-emerald-700 dark:text-emerald-300' : 'text-muted') }}">{{ $label }}</p>
-                        <p class="mt-1 text-xs text-muted">{{ $aktif ? 'Tahap Aktif Saat Ini' : ($lewat ? 'Selesai Terverifikasi' : 'Tahap Selanjutnya') }}</p>
-                    </li>
-                @endforeach
-            </ol>
+            </section>
         </div>
 
         <!-- Payment & Verification Action Panel -->

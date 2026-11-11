@@ -21,7 +21,7 @@
                     <x-nav-icon name="chevron" class="w-4 h-4 transition-transform" ::class="{ 'rotate-180': buka }" />
                 </button>
                 <div x-show="buka" class="space-y-0.5">
-                    @foreach ([['admin.verify.index', 'admin.verify.*', 'Verifikasi SPK', 'check'], ['admin.leads.index', 'admin.leads.*', 'Leads', 'users'], ['admin.units.index', 'admin.units.*', 'Stok Unit', 'box'], ['admin.test-drives.index', 'admin.test-drives.*', 'Test Drive', 'car'], ['admin.trade-ins.index', 'admin.trade-ins.*', 'Trade-In', 'swap']] as [$route, $pola, $label, $ikon])
+                    @foreach ([['admin.verify.index', 'admin.verify.*', 'Verifikasi SPK', 'check'], ['admin.pesanan.index', 'admin.pesanan.*', 'Pesanan', 'doc'], ['admin.leads.index', 'admin.leads.*', 'Leads', 'users'], ['admin.units.index', 'admin.units.*', 'Stok Unit', 'box'], ['admin.test-drives.index', 'admin.test-drives.*', 'Test Drive', 'car'], ['admin.trade-ins.index', 'admin.trade-ins.*', 'Trade-In', 'swap']] as [$route, $pola, $label, $ikon])
                         <a href="{{ route($route) }}" title="{{ $label }}" aria-current="{{ request()->routeIs($pola) ? 'page' : 'false' }}" class="relative flex items-center gap-3 px-3 py-2.5 rounded-lg min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 {{ request()->routeIs($pola) ? 'bg-white/10 font-semibold text-white' : 'hover:bg-white/10 hover:text-white' }}">
                             @if (request()->routeIs($pola))
                                 <span class="absolute left-0 top-2 bottom-2 w-1 rounded-full bg-[#C1121F]"></span>
